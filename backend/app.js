@@ -6,7 +6,7 @@ const dotenv = require("dotenv");
 const app = express();
 dotenv.config();
 
-//const userRoutes = require('./routes/user');
+const userRoutes = require('./routes/user');
 
 //Connections
 mongoose.connect(process.env.DB_LOGIN,
