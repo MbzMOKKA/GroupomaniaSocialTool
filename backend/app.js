@@ -3,10 +3,11 @@ const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const userRoutes = require('./routes/user');
+
+//Setup
 const app = express();
 dotenv.config();
-
-const userRoutes = require('./routes/user');
 
 //Connections
 mongoose
@@ -18,17 +19,11 @@ mongoose
     .catch(() => console.log('Connection to MongoDB failed!'));
 
 //Access to the API from any origin
-app.use((_req, _res, _next) => {
-    _res.setHeader('Access-Control-Allow-Origin', '*');
-    _res.setHeader(
-        'Access-Control-Allow-Headers',
-        'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'
-    );
-    _res.setHeader(
-        'Access-Control-Allow-Methods',
-        'GET, POST, PUT, DELETE, PATCH, OPTIONS'
-    );
-    _next();
+app.use((request, response, next) => {
+    response.setHeader('Access-Control-Allow-Origin', '*');
+    response.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    response.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    next();
 });
 
 //Request's body can be used

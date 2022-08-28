@@ -4,12 +4,18 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 
+//Setup
 const User = require('../models/user');
+const checkUser = require('../utils/checks/user');
 const errorFunctions = require('../utils/responses/errors');
 const successFunctions = require('../utils/responses/successes');
 
 //Exports
 exports.signUp = (request, response, next) => {
+    //Check if the request contains a valid email and password
+    if (checkUser.ifAuthRequestIsValid(request, response) === false) {
+        return null;
+    }
     //Hashing the password of the new user
     bcrypt
         .hash(request.body.password, 11)
@@ -21,28 +27,32 @@ exports.signUp = (request, response, next) => {
                 role: 'staff',
                 state: 'active',
             });
-            //Saving the new user to the data base
+            //Saving the new user to the database
             user.save()
                 //User created
                 .then(() => {
                     successFunctions.sendAccountCreationSuccess(response);
                 })
                 //Creation failed
-                .catch((error) =>
-                    errorFunctions.sendServerError(response, error)
-                );
+                .catch((error) => errorFunctions.sendServerError(response));
         })
         //Hashing failed
-        .catch((error) => errorFunctions.sendServerError(response, error));
+        .catch((error) => errorFunctions.sendServerError(response));
 };
 
 exports.logIn = (request, response, next) => {
+    //Check if the request contains a valid email and password
+    if (checkUser.ifAuthRequestIsValid(request, response) === false) {
+        return null;
+    }
     //Looking if the user exists
-    User.findOne({ email: request.body.email })
+    User.findOne({
+        email: request.body.email,
+    })
         .then((user) => {
             if (user === null) {
                 //User does not exists
-                errorFunctions.sendLogInError(response);
+                errorFunctions.sendLogInError(response, 'Credentials are incorrect');
             } else {
                 //Email is okay
                 bcrypt
@@ -50,25 +60,27 @@ exports.logIn = (request, response, next) => {
                     .then((valid) => {
                         if (!valid) {
                             //Wrong password
-                            errorFunctions.sendLogInError(response);
+                            errorFunctions.sendLogInError(response, 'Credentials are incorrect');
                         } else {
                             //Everything is okay, the user is logged in
                             response.status(200).json({
                                 /*userId: user._id,*/
                                 token: jwt.sign(
-                                    { userId: user._id },
+                                    {
+                                        userId: user._id,
+                                    },
                                     process.env.TOKEN_SECRET_WORD,
-                                    { expiresIn: '48h' }
+                                    {
+                                        expiresIn: '48h',
+                                    }
                                 ),
                             });
                         }
                     })
                     //Server error
-                    .catch((error) =>
-                        errorFunctions.sendServerError(response, error)
-                    );
+                    .catch((error) => errorFunctions.sendServerError(response));
             }
         })
         //Server error
-        .catch((error) => errorFunctions.sendServerError(response, error));
+        .catch((error) => errorFunctions.sendServerError(response));
 };
