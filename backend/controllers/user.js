@@ -28,3 +28,10 @@ exports.getAllUser = (request, response, next) => {
         })
         .catch((error) => errorFunctions.sendServerError(response));
 };
+
+exports.modifyUserRole = (request, response, next) => {
+    const targetUser = request.params.id;
+};
+exports.modifyUserState = (request, response, next) => {
+    const targetUser = request.params.id;
+};

@@ -12,7 +12,7 @@ function SignUp({ setToken, setToday }) {
     const [users, setUserList] = useState([]);
     useEffect(() => {
         async function getAllUsers() {
-            let data = await communicateWithAPI('http://localhost:8000/api/user', 'GET', null);
+            let data = await communicateWithAPI('http://localhost:8000/api/users', 'GET', null);
             const body = await data.json();
             setUserList(body);
         }
