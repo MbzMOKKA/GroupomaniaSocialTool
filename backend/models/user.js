@@ -8,6 +8,7 @@ const schematic = mongoose.Schema({
     password: { type: String, required: true }, //encrypted password
     role: { type: String, required: true }, //"staff" OR "mod" or "admin"
     state: { type: String, required: true }, //"active" OR "restrained" or "suspended"
+    test: { type: Date, required: false },
 });
 
 //Unique email validator
