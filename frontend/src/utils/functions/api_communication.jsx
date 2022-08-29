@@ -25,7 +25,7 @@ export async function submitSignUp(e, token, updateToken, { email, password }) {
     const status = data.status;
     if (status === 201) {
         //account creation success
-        submitLogIn(e, updateToken, { email, password });
+        submitLogIn(e, token, updateToken, { email, password });
     }
 }
 

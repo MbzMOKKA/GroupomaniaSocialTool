@@ -14,23 +14,38 @@ function SignUp() {
     const [password, setPassword] = useState('');
     const [users, setUserList] = useState([]);
 
+    function showUsersToggle(e) {
+        e.preventDefault();
+        setShowUsers(!showUsers);
+        getAllUsers();
+    }
     async function getAllUsers() {
         let data = await communicateWithAPI('http://localhost:8000/api/users', 'GET', token, null);
         const body = await data.json();
         setUserList(body);
     }
-    async function setUserRole(userId, newRole) {
-        //console.log(userId);
+    async function setUserRole(e, userId, newRole) {
+        const element = e.currentTarget.parentElement.querySelector('.userRole');
+        e.preventDefault();
         let data = await communicateWithAPI(`http://localhost:8000/api/users/role/${userId}`, 'PUT', token, { newRole });
+        const status = data.status;
         const body = await data.json();
         console.log(body);
-        //setUserList(body);
+        if (status === 200) {
+            element.textContent = `Role : ${newRole}`;
+        }
     }
-
-    //When page loaded
-    useEffect(() => {
-        getAllUsers();
-    }, []);
+    async function setUserState(e, userId, newState) {
+        const element = e.currentTarget.parentElement.querySelector('.userState');
+        e.preventDefault();
+        let data = await communicateWithAPI(`http://localhost:8000/api/users/state/${userId}`, 'PUT', token, { newState });
+        const status = data.status;
+        const body = await data.json();
+        console.log(body);
+        if (status === 200) {
+            element.textContent = `Role : ${newState}`;
+        }
+    }
 
     //Render
     return (
@@ -53,14 +68,16 @@ function SignUp() {
                 >
                     CONNECT
                 </button>
-                <button
-                    onClick={(e) => {
-                        e.preventDefault();
-                        setShowUsers(!showUsers);
-                    }}
-                >
-                    {showUsers ? <span>HIDE USERS</span> : <span>SHOW USERS</span>}
-                </button>
+                {token !== null ? (
+                    <button
+                        onClick={(e) => {
+                            showUsersToggle(e);
+                        }}
+                    >
+                        {showUsers ? <span>HIDE USERS</span> : <span>SHOW USERS</span>}
+                    </button>
+                ) : null}
+
                 {showUsers ? (
                     <div>
                         {users.map((user) => {
@@ -68,44 +85,42 @@ function SignUp() {
                                 <div key={user._id}>
                                     <h1>{user.email}</h1>
                                     <p>ID : {user._id}</p>
-                                    <p>Role : {user.role}</p>
-                                    <p>State : {user.state}</p>
+                                    <p className="userRole">Role : {user.role}</p>
+                                    <p className="userState">State : {user.state}</p>
                                     <button
                                         onClick={(e) => {
-                                            e.preventDefault();
-                                            setUserRole(user._id, 1);
+                                            setUserRole(e, user._id, 1);
                                         }}
                                     >
                                         ROLE (MOD)
                                     </button>
                                     <button
                                         onClick={(e) => {
-                                            e.preventDefault();
-                                            setUserRole(user._id, 0);
+                                            setUserRole(e, user._id, 0);
                                         }}
                                     >
                                         ROLE (STAFF)
                                     </button>
                                     <button
                                         onClick={(e) => {
-                                            //submitLogIn(e, setToken, setToday, { email, password });
+                                            setUserState(e, user._id, 0);
+                                        }}
+                                    >
+                                        STATE (ACTIVE)
+                                    </button>
+                                    <button
+                                        onClick={(e) => {
+                                            setUserState(e, user._id, 1);
                                         }}
                                     >
                                         STATE (RESTRAINED)
                                     </button>
                                     <button
                                         onClick={(e) => {
-                                            //submitLogIn(e, setToken, setToday, { email, password });
+                                            setUserState(e, user._id, 2);
                                         }}
                                     >
                                         STATE (SUSPENDED)
-                                    </button>
-                                    <button
-                                        onClick={(e) => {
-                                            //submitLogIn(e, setToken, setToday, { email, password });
-                                        }}
-                                    >
-                                        STATE (ACTIVE)
                                     </button>
                                 </div>
                             );

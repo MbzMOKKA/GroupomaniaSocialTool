@@ -7,7 +7,7 @@ const middlewareAuth = require('../middlewares/auth');
 const middlewareMulter = require('../middlewares/multer-config');
 
 //Routes
-router.get('', userController.getAllUser);
+router.get('', middlewareAuth, userController.getAllUser);
 router.put('/role/:id', middlewareAuth, userController.modifyUserRole);
 router.put('/state/:id', middlewareAuth, userController.modifyUserState);
 

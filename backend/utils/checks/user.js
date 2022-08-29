@@ -43,7 +43,7 @@ exports.ifHasRequiredPrivilege = (response, targetUser, minRoleRequired, minStat
         return false;
     }
     if (targetUser.state >= minStateDenied) {
-        errorFunctions.sendUnauthorizeError(response, `Account state isn't allowed`);
+        errorFunctions.sendUnauthorizeError(response, `Account state isn't allowed to perform this`);
         return false;
     }
     return true;
