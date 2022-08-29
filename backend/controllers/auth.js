@@ -6,6 +6,7 @@ dotenv.config();
 
 //Setup
 const User = require('../models/user');
+const check = require('../utils/checks/common');
 const checkUser = require('../utils/checks/user');
 const errorFunctions = require('../utils/responses/errors');
 const successFunctions = require('../utils/responses/successes');
@@ -24,9 +25,8 @@ exports.signUp = (request, response, next) => {
             const user = new User({
                 email: request.body.email,
                 password: hash,
-                role: 'staff',
-                state: 'active',
-                test: Date.now(),
+                role: 0,
+                state: 0,
             });
             //Saving the new user to the database
             user.save()
@@ -46,43 +46,35 @@ exports.logIn = (request, response, next) => {
     if (checkUser.ifAuthRequestIsValid(request, response) === false) {
         return null;
     }
-    //Looking if the user exists
-    User.findOne({
-        email: request.body.email,
-    })
-        .then((user) => {
-            if (user === null) {
-                //User does not exists
-                errorFunctions.sendLogInError(response, 'Credentials are incorrect');
-            } else {
-                //Email is okay
-                bcrypt
-                    .compare(request.body.password, user.password)
-                    .then((valid) => {
-                        if (!valid) {
-                            //Wrong password
-                            errorFunctions.sendLogInError(response, 'Credentials are incorrect');
-                        } else {
-                            //Everything is okay, the user is logged in
-                            response.status(200).json({
-                                /*userId: user._id,*/
-                                test: user.test,
-                                token: jwt.sign(
-                                    {
-                                        userId: user._id,
-                                    },
-                                    process.env.TOKEN_SECRET_WORD,
-                                    {
-                                        expiresIn: '48h',
-                                    }
-                                ),
-                            });
-                        }
-                    })
-                    //Server error
-                    .catch((error) => errorFunctions.sendServerError(response));
-            }
-        })
-        //Server error
-        .catch((error) => errorFunctions.sendServerError(response));
+    //Looking if the account exists
+    check.ifDocumentExists(request, response, User, { email: request.body.email }, 'Credentials are incorrect', (targetUser) => {
+        //Check if the password is valid
+        bcrypt
+            .compare(request.body.password, targetUser.password)
+            .then((valid) => {
+                if (!valid) {
+                    //Wrong password
+                    errorFunctions.sendLogInError(response, 'Credentials are incorrect');
+                } else {
+                    //Checking if the account isn't suspended
+                    if (checkUser.ifHasRequiredPrivilege(response, targetUser, 0, 2)) {
+                        //Everything is okay, the user is logged in
+                        response.status(200).json({
+                            test: targetUser.test,
+                            token: jwt.sign(
+                                {
+                                    userId: targetUser._id,
+                                },
+                                process.env.TOKEN_SECRET_WORD,
+                                {
+                                    expiresIn: '48h',
+                                }
+                            ),
+                        });
+                    }
+                }
+            })
+            //Server error
+            .catch((error) => errorFunctions.sendServerError(response));
+    });
 };

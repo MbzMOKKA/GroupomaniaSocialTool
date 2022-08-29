@@ -1,4 +1,9 @@
+//Imports
 const errorFunctions = require('../responses/errors');
+const User = require('../../models/user');
+const check = require('./common');
+
+//Exports
 
 //Check if the request contains a valid email and password
 exports.ifAuthRequestIsValid = (request, response) => {
@@ -17,6 +22,28 @@ exports.ifAuthRequestIsValid = (request, response) => {
     let emailRegex = /@/;
     if (request.body.email.match(emailRegex) == null) {
         errorFunctions.sendBadRequestError(response, `Email doesn't contain '@'`);
+        return false;
+    }
+    return true;
+};
+
+//Check if the user behind the request is allowed do to something
+exports.ifMatchesExpectedId = (request, response, expectedId) => {
+    if (request.body.auth.userId === expectedId) {
+        return true;
+    }
+    errorFunctions.sendUnauthorizeError(response);
+    return false;
+};
+
+//Check if the user account state is 'active'
+exports.ifHasRequiredPrivilege = (response, targetUser, minRoleRequired, minStateDenied) => {
+    if (targetUser.role < minRoleRequired) {
+        errorFunctions.sendUnauthorizeError(response, `Doesn't have required role`);
+        return false;
+    }
+    if (targetUser.state >= minStateDenied) {
+        errorFunctions.sendUnauthorizeError(response, `Account state isn't allowed`);
         return false;
     }
     return true;

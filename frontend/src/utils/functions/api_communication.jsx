@@ -1,11 +1,12 @@
 //Imports
 
 //Exports
-export async function communicateWithAPI(url, verb, body) {
+export async function communicateWithAPI(url, verb, token, body) {
     const request = {
         method: verb,
         headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(body),
     };
@@ -15,26 +16,25 @@ export async function communicateWithAPI(url, verb, body) {
     return fetch(url, request).then((data) => data);
 }
 
-export async function submitSignUp(e, setToken, setToday, { email, password }) {
+export async function submitSignUp(e, token, updateToken, { email, password }) {
     e.preventDefault();
-    const data = await communicateWithAPI('http://localhost:8000/api/auth/signup', 'POST', {
+    const data = await communicateWithAPI('http://localhost:8000/api/auth/signup', 'POST', token, {
         email,
         password,
     });
     const status = data.status;
     if (status === 201) {
         //account creation success
-        submitLogIn(e, setToken, setToday, { email, password });
+        submitLogIn(e, updateToken, { email, password });
     }
 }
 
-export async function submitLogIn(e, setToken, setToday, { email, password }) {
+export async function submitLogIn(e, token, updateToken, { email, password }) {
     e.preventDefault();
-    const data = await communicateWithAPI('http://localhost:8000/api/auth/login', 'POST', {
+    const data = await communicateWithAPI('http://localhost:8000/api/auth/login', 'POST', token, {
         email,
         password,
     });
     const body = await data.json();
-    setToken(body.token);
-    setToday(body.test);
+    updateToken(body.token);
 }

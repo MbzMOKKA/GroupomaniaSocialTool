@@ -6,9 +6,8 @@ const uniqueValidator = require('mongoose-unique-validator');
 const schematic = mongoose.Schema({
     email: { type: String, required: true, unique: true }, //unique email
     password: { type: String, required: true }, //encrypted password
-    role: { type: String, required: true }, //"staff" OR "mod" or "admin"
-    state: { type: String, required: true }, //"active" OR "restrained" or "suspended"
-    test: { type: Date, required: false },
+    role: { type: Number, required: true }, //0 = staff, 1 = moderator, 2 = administrator
+    state: { type: Number, required: true }, //0 = active, 1 = restrained, 2 = suspended
 });
 
 //Unique email validator

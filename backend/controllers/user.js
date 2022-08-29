@@ -6,6 +6,7 @@ dotenv.config();
 
 //Setup
 const User = require('../models/user');
+const check = require('../utils/checks/common');
 const checkUser = require('../utils/checks/user');
 const errorFunctions = require('../utils/responses/errors');
 const successFunctions = require('../utils/responses/successes');
@@ -30,8 +31,19 @@ exports.getAllUser = (request, response, next) => {
 };
 
 exports.modifyUserRole = (request, response, next) => {
-    const targetUser = request.params.id;
+    const modUserId = request.auth.userId;
+    console.log(modUserId);
+    const targetUserId = request.params.id;
+    //Checking if the target exists
+    check.ifDocumentExists(request, response, User, { _id: targetUserId }, "This user doesn't exists", (targetUser) => {
+        //Getting the mod account
+        check.ifDocumentExists(request, response, User, { _id: modUserId }, "This user doesn't exists", (modUser) => {
+            if (checkUser.ifHasRequiredPrivilege(response, modUser, 2, 1)) {
+            }
+        });
+    });
 };
 exports.modifyUserState = (request, response, next) => {
-    const targetUser = request.params.id;
+    const targetUserId = request.params.id;
+    console.log('MODIFY USER STATE');
 };
