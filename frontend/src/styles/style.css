@@ -1,0 +1,18 @@
+body {
+    color: rgb(198, 216, 253);
+    background-color: rgb(69, 80, 221);
+}
+button {
+    padding: 10px;
+    color: rgb(198, 216, 253);
+    background-color: rgb(54, 72, 172);
+    margin: 5px;
+}
+button:hover {
+    cursor: pointer;
+    background-color: rgb(172, 54, 172);
+}
+input {
+    color: rgb(198, 216, 253);
+    background-color: rgb(37, 40, 82);
+}

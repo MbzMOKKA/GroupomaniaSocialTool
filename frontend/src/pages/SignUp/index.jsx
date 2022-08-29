@@ -59,7 +59,7 @@ function SignUp() {
                         setShowUsers(!showUsers);
                     }}
                 >
-                    {showUsers ? <p>HIDE USERS</p> : <p>SHOW USERS</p>}
+                    {showUsers ? <span>HIDE USERS</span> : <span>SHOW USERS</span>}
                 </button>
                 {showUsers ? (
                     <div>
@@ -73,7 +73,7 @@ function SignUp() {
                                     <button
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            setUserRole(user._id, 'mod');
+                                            setUserRole(user._id, 1);
                                         }}
                                     >
                                         ROLE (MOD)
@@ -81,7 +81,7 @@ function SignUp() {
                                     <button
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            setUserRole(user._id, 'staff');
+                                            setUserRole(user._id, 0);
                                         }}
                                     >
                                         ROLE (STAFF)
