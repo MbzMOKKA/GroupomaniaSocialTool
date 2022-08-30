@@ -15,9 +15,9 @@ const successFunctions = require('../utils/responses/successes');
 //Exports
 exports.getAllUser = (request, response, next) => {
     const askingUserId = request.auth.userId;
-    //Getting the mod account
-    check.ifDocumentExists(request, response, User, { _id: askingUserId }, "This user doesn't exists", (askingUser) => {
-        //Checking if the mod have the privilege
+    //Getting the requester account
+    check.ifDocumentExists(request, response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+        //Checking if the requester isn't suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
             //Getting every user documents from the database
             User.find()

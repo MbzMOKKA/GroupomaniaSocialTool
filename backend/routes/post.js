@@ -7,13 +7,14 @@ const middlewareAuth = require('../middlewares/auth');
 const middlewareMulter = require('../middlewares/multer-config');
 
 //Routes
-router.get('', postController.getAllPosts);
-router.get('/:id', postController.getOnePost);
-router.post('', postController.uploadPost);
-router.post('/:id', postController.commentPost);
-router.post('/like/:id', postController.likePost);
-router.put('/:id', postController.modifyPost);
-router.delete('/:id', postController.deletePost);
+router.get('', middlewareAuth, postController.getAllPosts);
+router.get('/:id', middlewareAuth, postController.getOnePost);
+router.get('/new/:id', middlewareAuth, postController.getNewPosts);
+router.post('', middlewareAuth, middlewareMulter, postController.uploadPost);
+router.post('/:id', middlewareAuth, middlewareMulter, postController.commentPost);
+router.post('/like/:id', middlewareAuth, postController.likePost);
+router.put('/:id', middlewareAuth, middlewareMulter, postController.modifyPost);
+router.delete('/:id', middlewareAuth, postController.deletePost);
 
 //Exports
 module.exports = router;

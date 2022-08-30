@@ -67,7 +67,7 @@ exports.logIn = (request, response, next) => {
                                 },
                                 process.env.TOKEN_SECRET_WORD,
                                 {
-                                    expiresIn: '48h',
+                                    expiresIn: '24h',
                                 }
                             ),
                         });
