@@ -1,6 +1,10 @@
+#CURRENT
+
+todo.txt
+
 #BACKEND
 
-backend/node_modules/*
+backend/node_modules
 backend/images/*
 backend/.env
 

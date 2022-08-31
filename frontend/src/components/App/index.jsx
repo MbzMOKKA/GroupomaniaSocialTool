@@ -15,7 +15,7 @@ function App() {
     const [posts, setPostList] = useState([]);
     const [unread, setUnread] = useState(0);
     const [newCheckCounter, setNewCheckCounter] = useState(0);
-    const newCheckCooldown = 1000 * 1;
+    const newCheckCooldown = 1000 * 5;
 
     async function uploadPost(e) {
         e.preventDefault();
@@ -30,6 +30,7 @@ function App() {
             getAllPosts(token, setPostList);
         }
     }, [token]);
+
     //Getting the token from the storage when loading the page
     useEffect(() => {
         const prevToken = localStorage.getItem('Token');
@@ -39,11 +40,12 @@ function App() {
             updateToken(prevToken);
         }
     }, []);
+
     //New post check loop
     useEffect(() => {
         let lastPostLoadedId = null;
         try {
-            lastPostLoadedId = posts[posts.length - 1]._id;
+            lastPostLoadedId = posts[0]._id;
         } catch (error) {
             lastPostLoadedId = null;
         }
@@ -51,14 +53,18 @@ function App() {
             getNewPosts(token, lastPostLoadedId, posts, setPostList, unread, setUnread, newCheckCounter, setNewCheckCounter);
         }, newCheckCooldown);
     }, [newCheckCounter]);
+
     //Changing the page title when new message are recieved
     useEffect(() => {
+        let name = ``;
         if (unread > 0) {
-            document.title = `(${unread}) Groupomania`;
+            name = name + `(${unread}) `;
         } else {
-            document.title = `Groupomania`;
         }
+        name = name + `Groupomania`;
+        document.title = name;
     }, [unread]);
+
     return (
         <div>
             <SignUp setPostList={setPostList} />

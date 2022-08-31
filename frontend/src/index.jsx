@@ -9,10 +9,9 @@ import { TokenProvider } from './utils/context/index';
 
 //Render
 const root = ReactDOM.createRoot(document.getElementById('root'));
+//<React.StrictMode>
 root.render(
-    <React.StrictMode>
-        <TokenProvider>
-            <App />
-        </TokenProvider>
-    </React.StrictMode>
+    <TokenProvider>
+        <App />
+    </TokenProvider>
 );

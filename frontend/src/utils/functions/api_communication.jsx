@@ -49,18 +49,18 @@ export async function getAllPosts(token, setPostList) {
 export async function getNewPosts(token, lastPostLoadedId, posts, setPostList, unread, setUnread, newCheckCounter, setNewCheckCounter) {
     try {
         if (lastPostLoadedId !== null) {
-            console.log('la');
             const data = await communicateWithAPI(`http://localhost:8000/api/posts/new/${lastPostLoadedId}`, 'GET', token, null);
             if (data.status === 200) {
                 const body = await data.json();
-                //setPostList(body);
+                setUnread(unread + body.length);
+                setPostList([...body, ...posts]);
             }
-
-            //setUnread(unread + 1);
         }
     } catch (error) {
     } finally {
-        console.log('ici');
         setNewCheckCounter(newCheckCounter + 1);
+        if (document.hasFocus()) {
+            setUnread(0);
+        }
     }
 }

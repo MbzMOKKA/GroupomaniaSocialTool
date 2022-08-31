@@ -7,6 +7,7 @@ dotenv.config();
 //Setup
 const User = require('../models/user');
 const Post = require('../models/post');
+const doAction = require('../utils/actions/common');
 const check = require('../utils/checks/common');
 const checkUser = require('../utils/checks/user');
 const errorFunctions = require('../utils/responses/errors');
@@ -25,20 +26,9 @@ exports.getAllPosts = (request, response, next) => {
                     let finalIndex = postList.length - 1;
                     //creating a list that only contain the data we want to send and in an antichronological order
                     for (const post of postList) {
-                        finalPostList[finalIndex] = {
-                            postUploadedBefore: post.postUploadedBefore, //TEMPORARY
-                            _id: post._id,
-                            uploaderId: post.uploaderId,
-                            contentText: post.contentText,
-                            contentImg: post.contentImg,
-                            commentCounter: post.parentPost.length,
-                            likeCounter: post.userLikeList.length,
-                            uploadDate: post.uploadDate,
-                            editCounter: post.editCounter,
-                        };
+                        finalPostList[finalIndex] = doAction.formatHomepagePost(post);
                         finalIndex--;
                     }
-
                     response.status(200).json(finalPostList);
                 })
                 .catch((error) => errorFunctions.sendServerError(response));
@@ -49,14 +39,51 @@ exports.getAllPosts = (request, response, next) => {
 exports.getOnePost = (request, response, next) => {
     const targetPostId = request.params.id;
 };
-exports.getNewPosts = (request, response, next) => {};
+exports.getNewPosts = (request, response, next) => {
+    const askingUserId = request.auth.userId;
+    const lastPostSeenId = request.params.id;
+    //Getting the requester account
+    check.ifDocumentExists(request, response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+        //Checking if the requester isn't suspended
+        if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
+            Post.findOne({ _id: lastPostSeenId })
+                .then((lastPostSeen) => {
+                    if (lastPostSeen === null) {
+                        errorFunctions.sendBadRequestError(response);
+                    } else {
+                        const lastIndex = lastPostSeen.postUploadedBefore;
+                        //Finding every new post
+                        let newPostList = [];
+                        doAction
+                            .findNewPost(response, Post, lastIndex + 1, newPostList)
+                            .then((result) => {
+                                if (result === true) {
+                                    //Every new posts were collected, now proceeding to send them
+                                    let finalPostList = [];
+                                    let finalIndex = 0;
+                                    //creating a list that only contain the data we want to send and in an antichronological order
+                                    for (const post of newPostList) {
+                                        finalPostList[finalIndex] = doAction.formatHomepagePost(post);
+                                        finalIndex++;
+                                    }
+                                    response.status(200).json(finalPostList);
+                                }
+                            })
+                            .catch((error) => errorFunctions.sendServerError(response));
+                    }
+                })
+                .catch((error) => errorFunctions.sendServerError(response));
+        }
+    });
+};
 exports.uploadPost = (request, response, next) => {
+    //TEMPORARY
     const askingUserId = request.auth.userId;
     Post.count({}, function (err, count) {
         const post = new Post({
             postUploadedBefore: count,
             uploaderId: askingUserId,
-            parentPost: 's',
+            parentPost: 'null',
             childPosts: [],
             userLikeList: [],
             contentText: Date.now(),
@@ -67,7 +94,7 @@ exports.uploadPost = (request, response, next) => {
         post.save()
             //Post created
             .then(() => {
-                successFunctions.sendAccountCreationSuccess(response);
+                successFunctions.sendUploadSuccess(response);
             })
             //Creation failed
             .catch((error) => errorFunctions.sendServerError(response, error));
