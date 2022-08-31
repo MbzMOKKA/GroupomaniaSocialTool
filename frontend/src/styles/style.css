@@ -16,3 +16,19 @@ input {
     color: rgb(198, 216, 253);
     background-color: rgb(37, 40, 82);
 }
+textarea {
+    resize: none;
+    width: 500px;
+    height: 200px;
+}
+.postImg {
+    width: 30%;
+}
+#token_display {
+    width: 60%;
+}
+#token_display p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

@@ -77,27 +77,34 @@ exports.getNewPosts = (request, response, next) => {
     });
 };
 exports.uploadPost = (request, response, next) => {
-    //TEMPORARY
     const askingUserId = request.auth.userId;
-    Post.count({}, function (err, count) {
-        const post = new Post({
-            postUploadedBefore: count,
-            uploaderId: askingUserId,
-            parentPost: 'null',
-            childPosts: [],
-            userLikeList: [],
-            contentText: Date.now(),
-            contentImg: 's',
-            uploadDate: Date.now(),
-            editCounter: 0,
-        });
-        post.save()
-            //Post created
-            .then(() => {
-                successFunctions.sendUploadSuccess(response);
-            })
-            //Creation failed
-            .catch((error) => errorFunctions.sendServerError(response, error));
+    //Getting the requester account
+    check.ifDocumentExists(request, response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+        //Checking if the requester isn't restrained or suspended
+        if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
+            //Couting how much posts existed on the database before
+            Post.count({}, function (err, count) {
+                const upload = new Post({
+                    postUploadedBefore: count,
+                    uploaderId: askingUserId,
+                    parentPost: 'null',
+                    childPosts: [],
+                    userLikeList: [],
+                    contentText: request.body.uploadFormTxt,
+                    contentImg: `${request.protocol}://${request.get('host')}/images/${request.file.filename}`,
+                    uploadDate: Date.now(),
+                    editCounter: 0,
+                });
+                upload
+                    .save()
+                    //Post created
+                    .then(() => {
+                        successFunctions.sendUploadSuccess(response);
+                    })
+                    //Creation failed
+                    .catch((error) => errorFunctions.sendServerError(response, error));
+            });
+        }
     });
 };
 exports.commentPost = (request, response, next) => {};

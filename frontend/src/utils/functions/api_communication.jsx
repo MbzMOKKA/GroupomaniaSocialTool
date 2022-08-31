@@ -39,16 +39,26 @@ export async function submitLogIn(e, token, updateToken, { email, password }) {
     updateToken(body.token);
 }
 
-export async function getAllPosts(token, setPostList) {
+export async function getAllPosts(token, setPostList, addAsUnread, unread, setUnread) {
     const data = await communicateWithAPI(`http://localhost:8000/api/posts`, 'GET', token, null);
     if (data.status === 200) {
         const body = await data.json();
+        if (addAsUnread === true) {
+            setUnread(unread + body.length);
+        }
         setPostList(body);
     }
 }
 export async function getNewPosts(token, lastPostLoadedId, posts, setPostList, unread, setUnread, newCheckCounter, setNewCheckCounter) {
     try {
-        if (lastPostLoadedId !== null) {
+        if (token === null) {
+            throw new Error('Token is null');
+        }
+        if (lastPostLoadedId === null) {
+            //No post yet, trying to get every posts from the api
+            getAllPosts(token, setPostList, true, unread, setUnread);
+        } else {
+            //Some posts are already shown, trying to get only new post from the api
             const data = await communicateWithAPI(`http://localhost:8000/api/posts/new/${lastPostLoadedId}`, 'GET', token, null);
             if (data.status === 200) {
                 const body = await data.json();
