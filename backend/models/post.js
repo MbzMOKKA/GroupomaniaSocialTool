@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const schematic = mongoose.Schema({
     postUploadedBefore: { type: Number, required: true }, //the amount of posts that were already made when this one is uploaded
     uploaderId: { type: String, required: true }, //id of the user that own this post
+    uploaderDisplayName: { type: String, required: true }, //display name of the user that own this post
     parentPost: { type: String, required: true }, //id of the parent post in the database
     childPosts: { type: Array, required: true }, //array of the id of the comment posts
     userLikeList: { type: Array, required: true }, //array of the id of the user that liked the post

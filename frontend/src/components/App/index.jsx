@@ -19,6 +19,7 @@ function App() {
     const [uploadContentTxt, setUploadContentTxt] = useState('');
     const [uploadContentImg, setUploadContentImg] = useState(null);
     const newCheckCooldown = 1000 * 3;
+    const contentTxtLengthLimit = 1000;
 
     async function uploadPost(e) {
         e.preventDefault();
@@ -33,17 +34,31 @@ function App() {
         };
         const url = `http://localhost:8000/api/posts`;
         axios.post(url, formData, config).then((data) => {
-            data.json().then((body) => {
-                console.log(body);
-            });
+            const status = data.status;
+            if (status === 201) {
+                //Upload successful : resetting the form
+                setUploadContentTxt('');
+                setUploadContentImg(null);
+                document.getElementById('uploadFormTxt').value = '';
+                document.getElementById('uploadFormImg').value = null;
+                formImagePreviewChange(null);
+            }
         });
     }
-
+    function formImagePreviewChange(newFile) {
+        const img = document.getElementById('uploadFormImgPreview');
+        if (img !== null) {
+            if (newFile === null) {
+                img.src = '#';
+            } else {
+                img.src = URL.createObjectURL(newFile);
+            }
+        }
+    }
     function userSelectUploadImg(e) {
         setUploadContentImg(e.target.files[0]);
         if (e.target.files && e.target.files[0]) {
-            const img = document.getElementById('uploadFormImgPreview');
-            img.src = URL.createObjectURL(e.target.files[0]); // set src to blob url
+            formImagePreviewChange(e.target.files[0]);
         }
     }
     useEffect(() => {
@@ -104,45 +119,67 @@ function App() {
                         <div>
                             <form
                                 id="uploadForm"
-                                name="uploadForm"
                                 onSubmit={(e) => {
                                     uploadPost(e);
                                 }}
                             >
                                 <label htmlFor="uploadFormTxt">Text :</label>
-                                <textarea id="uploadFormTxt" name="uploadFormTxt" maxLength={1000} onChange={(e) => setUploadContentTxt(e.target.value)}></textarea>
+                                <textarea id="uploadFormTxt" name="uploadFormTxt" maxLength={contentTxtLengthLimit} onChange={(e) => setUploadContentTxt(e.target.value)}></textarea>
+
+                                {document.getElementById('uploadFormTxt') !== null ? (
+                                    <p>
+                                        {document.getElementById('uploadFormTxt').value.length}/{contentTxtLengthLimit}
+                                    </p>
+                                ) : null}
+
                                 <label htmlFor="uploadFormImg">Image :</label>
                                 <input id="uploadFormImg" name="uploadFormImg" type="file" accept="image/png, image/jpg, image/jpeg, image/gif" onChange={(e) => userSelectUploadImg(e)} />
-                                <img id="uploadFormImgPreview" src="#" alt="upload content" width={100} height={100} />
+                                <img id="uploadFormImgPreview" src="#" alt="upload content" width={200} height={200} />
                                 <button type="submit">UPLOAD</button>
                             </form>
                         </div>
                         <p>======================================</p>
                         {posts.map((post) => {
                             return (
-                                <div key={post._id}>
-                                    <h2>ID : {post._id}</h2>
-                                    <p>{post.contentText}</p>
+                                <div className="uploaded_post" key={post._id}>
+                                    <h2>{post.uploaderDisplayName} :</h2>
+                                    <b>"{post.contentText}"</b>
                                     <p> ### </p>
-                                    <p>[TEMPORARY] Index : {post.postUploadedBefore}</p>
+                                    <p>ID : {post._id}</p>
                                     <p>UploaderId : {post.uploaderId}</p>
                                     <p>Upload date : {formatDate(post.uploadDate)}</p>
                                     <p>Edited {post.editCounter} time</p>
-                                    <img className="postImg" src={post.contentImg} alt="Post content" />
-                                    <button
-                                        onClick={(e) => {
-                                            //setUserRole(e, user._id, 1);
-                                        }}
-                                    >
-                                        LIKE ({post.likeCounter})
-                                    </button>
-                                    <button
-                                        onClick={(e) => {
-                                            //setUserRole(e, user._id, 1);
-                                        }}
-                                    >
-                                        OPEN COMMENTS ({post.commentCounter})
-                                    </button>
+                                    {post.contentImg !== 'no_img' ? <img className="postImg" src={post.contentImg} alt="Post content" /> : null}
+                                    <div>
+                                        <button
+                                            onClick={(e) => {
+                                                //setUserRole(e, user._id, 1);
+                                            }}
+                                        >
+                                            LIKE ({post.likeCounter})
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                //setUserRole(e, user._id, 1);
+                                            }}
+                                        >
+                                            OPEN COMMENTS ({post.commentCounter})
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                //setUserRole(e, user._id, 1);
+                                            }}
+                                        >
+                                            EDIT
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                //setUserRole(e, user._id, 1);
+                                            }}
+                                        >
+                                            DELETE
+                                        </button>
+                                    </div>
                                 </div>
                             );
                         })}

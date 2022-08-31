@@ -16,9 +16,9 @@ exports.updateDocumentOnDB = (response, collection, documentId, newDocumentConte
 //Create an object that represent a post shown in the homepage that will be sent to the user
 exports.formatHomepagePost = (post) => {
     return {
-        postUploadedBefore: post.postUploadedBefore, //TEMPORARY
         _id: post._id,
         uploaderId: post.uploaderId,
+        uploaderDisplayName: post.uploaderDisplayName,
         contentText: post.contentText,
         contentImg: post.contentImg,
         commentCounter: post.childPosts.length,
