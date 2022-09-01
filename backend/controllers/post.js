@@ -11,6 +11,7 @@ const Post = require('../models/post');
 const doAction = require('../utils/actions/common');
 const check = require('../utils/checks/common');
 const checkUser = require('../utils/checks/user');
+const checkPost = require('../utils/checks/post');
 const errorFunctions = require('../utils/responses/errors');
 const successFunctions = require('../utils/responses/successes');
 
@@ -85,40 +86,32 @@ exports.uploadPost = (request, response, next) => {
     check.ifDocumentExists(request, response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
         //Checking if the requester isn't restrained or suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
-            const contentImg = request.file ? `${request.protocol}://${request.get('host')}/images/${request.file.filename}` : 'no_img';
+            const contentImg = request.file ? doAction.buildImageUploadedURL(request) : 'no_img';
             const contentTxt = request.body.uploadFormTxt;
-            const contentTxtLengthLimit = 1000;
-            //Posts content text must contain ]0;1000] caracters
-            if (contentTxt.length > contentTxtLengthLimit) {
-                errorFunctions.sendBadRequestError(response, `Post text content cannot be longer than ${contentTxtLengthLimit} caracters`);
-            } else {
-                if (contentTxt.length <= 0) {
-                    errorFunctions.sendBadRequestError(response, `Post text content cannot be empty`);
-                } else {
-                    //Couting how much posts existed on the database before
-                    Post.count({}, function (err, count) {
-                        const upload = new Post({
-                            postUploadedBefore: count,
-                            uploaderId: askingUserId,
-                            uploaderDisplayName: askingUser.email,
-                            parentPost: 'null',
-                            childPosts: [],
-                            userLikeList: [],
-                            contentText: contentTxt,
-                            contentImg: contentImg,
-                            uploadDate: Date.now(),
-                            editCounter: 0,
-                        });
-                        upload
-                            .save()
-                            //Post created
-                            .then(() => {
-                                successFunctions.sendUploadSuccess(response);
-                            })
-                            //Creation failed
-                            .catch((error) => errorFunctions.sendServerError(response, error));
+            if (checkPost.ifContentTxtIsValid(contentTxt)) {
+                //Couting how much posts existed on the database before
+                Post.count({}, function (err, count) {
+                    const upload = new Post({
+                        postUploadedBefore: count,
+                        uploaderId: askingUserId,
+                        uploaderDisplayName: askingUser.email,
+                        parentPost: 'null',
+                        childPosts: [],
+                        userLikeList: [],
+                        contentText: contentTxt,
+                        contentImg: contentImg,
+                        uploadDate: Date.now(),
+                        editCounter: 0,
                     });
-                }
+                    upload
+                        .save()
+                        //Post created
+                        .then(() => {
+                            successFunctions.sendUploadSuccess(response);
+                        })
+                        //Creation failed
+                        .catch((error) => errorFunctions.sendServerError(response, error));
+                });
             }
         }
     });
@@ -134,7 +127,6 @@ exports.likePost = (request, response, next) => {
     //Getting the requester account
     check.ifDocumentExists(request, response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
         //Checking if the post exists
-
         check.ifDocumentExists(request, response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
             //Checking if the requester isn't restrained or suspended
             if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
@@ -150,9 +142,9 @@ exports.likePost = (request, response, next) => {
                 }
                 const newLikeCounter = targetPost.userLikeList.length;
                 //Updating the likes on the data base
-                Post.updateOne({ _id: targetPostId }, targetPost)
-                    .then(() => response.status(200).json({ message, newLikeCounter }))
-                    .catch((error) => errorFunctions.sendServerError(response));
+                doAction.updateDocumentOnDB(response, Post, targetPostId, targetPost, () => {
+                    response.status(200).json({ message, newLikeCounter });
+                });
             }
         });
     });
@@ -160,6 +152,58 @@ exports.likePost = (request, response, next) => {
 
 exports.modifyPost = (request, response, next) => {
     const askingUserId = request.auth.userId;
+    const targetPostId = request.params.id;
+    //Getting the requester account
+    check.ifDocumentExists(request, response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+        //Checking if the post exists
+        check.ifDocumentExists(request, response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
+            //Checking if the requester isn't restrained or suspended
+            if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
+                //Checking if the requester own the post
+                if (askingUserId === targetPost.uploaderId) {
+                    const contentTxt = request.body.uploadFormTxt;
+                    if (checkPost.ifContentTxtIsValid(contentTxt)) {
+                        const oldContentImg = targetPost.contentImg;
+                        let contentImg = oldContentImg;
+                        let imageIsChanged = false;
+                        if (request.file) {
+                            //Image is changed
+                            contentImg = doAction.buildImageUploadedURL(request);
+                            imageIsChanged = true;
+                        } else {
+                            if (request.body.uploadFormImg === 'no_img') {
+                                //Image is changed to be removed
+                                contentImg = request.body.uploadFormImg;
+                                imageIsChanged = true;
+                            }
+                        }
+                        //updating the img and text of the post
+                        targetPost.contentImg = contentImg;
+                        targetPost.contentText = contentTxt;
+                        targetPost.editCounter++;
+                        const returnedUpdatedPost = doAction.formatHomepagePost(targetPost);
+                        //deleting the old image
+                        if (imageIsChanged) {
+                            const filename = oldContentImg.split('/images/')[1];
+                            fileSystem.unlink(`images/${filename}`, () => {
+                                //updating the post on the database
+                                doAction.updateDocumentOnDB(response, Post, targetPostId, targetPost, () => {
+                                    response.status(200).json({ returnedUpdatedPost });
+                                });
+                            });
+                        } else {
+                            //updating the post on the database
+                            doAction.updateDocumentOnDB(response, Post, targetPostId, targetPost, () => {
+                                response.status(200).json({ returnedUpdatedPost });
+                            });
+                        }
+                    }
+                } else {
+                    errorFunctions.sendUnauthorizeError(response, "Impossible to edit this post : you don't own it");
+                }
+            }
+        });
+    });
 };
 
 exports.deletePost = (request, response, next) => {

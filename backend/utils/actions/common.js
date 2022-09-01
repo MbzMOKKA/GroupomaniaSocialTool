@@ -3,7 +3,7 @@ const errorFunctions = require('../responses/errors');
 
 //Exports
 
-//Check if a document exists on the database
+//Update a document on the database
 exports.updateDocumentOnDB = (response, collection, documentId, newDocumentContent, callback) => {
     collection
         .updateOne({ _id: documentId }, newDocumentContent)
@@ -26,6 +26,10 @@ exports.formatHomepagePost = (post) => {
         uploadDate: post.uploadDate,
         editCounter: post.editCounter,
     };
+};
+//Create an URL for the image uploaded by the user
+exports.buildImageUploadedURL = (request) => {
+    return `${request.protocol}://${request.get('host')}/images/${request.file.filename}`;
 };
 
 //Find a new post to add without having to refresh the page

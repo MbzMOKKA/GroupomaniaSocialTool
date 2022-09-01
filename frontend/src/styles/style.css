@@ -1,6 +1,7 @@
 body {
     color: rgb(198, 216, 253);
     background-color: rgb(69, 80, 221);
+    margin: 0;
 }
 button {
     padding: 10px;
@@ -20,6 +21,7 @@ textarea {
     resize: none;
     width: 500px;
     height: 200px;
+    background-color: rgb(91, 150, 216);
 }
 .postImg {
     width: 30%;
@@ -38,10 +40,28 @@ textarea {
     padding: 30px;
     margin: 10px;
 }
-#uploadForm {
+.uploadForm {
     border: 5px solid black;
     padding: 30px;
     margin: 10px;
     display: flex;
     flex-direction: column;
+}
+#edit_post_container {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.75);
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.editForm {
+    border: 5px solid black;
+    background-color: rgba(33, 85, 133, 0.5);
+    padding: 30px;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
 }

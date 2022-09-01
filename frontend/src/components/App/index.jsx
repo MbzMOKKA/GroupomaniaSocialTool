@@ -6,6 +6,7 @@ import { formatDate } from '../../utils/functions/misc';
 import { useContext } from 'react';
 import { TokenContext } from '../../utils/context/index';
 import { useEffect } from 'react';
+import PostEdit from '../PostEdit';
 import axios from 'axios';
 
 //Preparation
@@ -13,6 +14,7 @@ import axios from 'axios';
 //Component
 function App() {
     const { token, updateToken } = useContext(TokenContext);
+    const [editedPostObj, setEditedPostObj] = useState(null);
     const [posts, setPostList] = useState([]);
     const [unread, setUnread] = useState(0);
     const [newCheckCounter, setNewCheckCounter] = useState(0);
@@ -33,16 +35,23 @@ function App() {
             },
         };
         const url = `http://localhost:8000/api/posts`;
-        axios.post(url, formData, config).then((data) => {
-            const status = data.status;
-            if (status === 201) {
-                //Upload successful : resetting the form
-                setUploadContentTxt('');
-                setUploadContentImg(null);
-                document.getElementById('uploadFormTxt').value = '';
-                document.getElementById('uploadFormImg').value = null;
-                formImagePreviewChange(null);
-            }
+        const data = await axios.post(url, formData, config);
+        const status = data.status;
+        if (status === 201) {
+            //Upload successful : resetting the form
+            setUploadContentTxt('');
+            setUploadContentImg(null);
+            document.getElementById('uploadFormTxt').value = '';
+            document.getElementById('uploadFormImg').value = null;
+            formImagePreviewChange(null);
+        }
+    }
+    function startEditPost(e, post) {
+        e.preventDefault();
+        setEditedPostObj({
+            _id: post._id,
+            contentTxt: post.contentText,
+            contentImg: post.contentImg,
         });
     }
     function formImagePreviewChange(newFile) {
@@ -104,8 +113,11 @@ function App() {
         document.title = name;
     }, [unread]);
 
+    //Render
     return (
         <div>
+            {editedPostObj === null ? null : <PostEdit editedPostObj={editedPostObj} setEditedPostObj={setEditedPostObj} posts={posts} setPostList={setPostList} />}
+
             <SignUp setPostList={setPostList} />
             {token === null ? null : ( //If user is connected
                 <div>
@@ -118,7 +130,7 @@ function App() {
                         <h1>------------------ POSTS ------------------</h1>
                         <div>
                             <form
-                                id="uploadForm"
+                                className="uploadForm"
                                 onSubmit={(e) => {
                                     uploadPost(e);
                                 }}
@@ -139,7 +151,7 @@ function App() {
                             </form>
                         </div>
                         <p>======================================</p>
-                        {posts.map((post) => {
+                        {posts.map((post, index) => {
                             return (
                                 <div className="uploaded_post" key={post._id}>
                                     <h2>{post.uploaderDisplayName} :</h2>
@@ -167,7 +179,7 @@ function App() {
                                         </button>
                                         <button
                                             onClick={(e) => {
-                                                //setUserRole(e, user._id, 1);
+                                                startEditPost(e, post);
                                             }}
                                         >
                                             EDIT
