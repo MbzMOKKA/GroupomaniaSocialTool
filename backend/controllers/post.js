@@ -1,5 +1,6 @@
 //Imports
 const bcrypt = require('bcrypt');
+const fileSystem = require('fs');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -39,6 +40,7 @@ exports.getAllPosts = (request, response, next) => {
 exports.getOnePost = (request, response, next) => {
     const targetPostId = request.params.id;
 };
+
 exports.getNewPosts = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const lastPostSeenId = request.params.id;
@@ -76,6 +78,7 @@ exports.getNewPosts = (request, response, next) => {
         }
     });
 };
+
 exports.uploadPost = (request, response, next) => {
     const askingUserId = request.auth.userId;
     //Getting the requester account
@@ -120,7 +123,66 @@ exports.uploadPost = (request, response, next) => {
         }
     });
 };
-exports.commentPost = (request, response, next) => {};
-exports.likePost = (request, response, next) => {};
-exports.modifyPost = (request, response, next) => {};
-exports.deletePost = (request, response, next) => {};
+
+exports.commentPost = (request, response, next) => {
+    const askingUserId = request.auth.userId;
+};
+
+exports.likePost = (request, response, next) => {
+    const askingUserId = request.auth.userId;
+    const targetPostId = request.params.id;
+    //Getting the requester account
+    check.ifDocumentExists(request, response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+        //Checking if the post exists
+
+        check.ifDocumentExists(request, response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
+            //Checking if the requester isn't restrained or suspended
+            if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
+                let message = 'Like successful';
+                if (targetPost.userLikeList.includes(askingUserId) === false) {
+                    //User hasn't liked yet: we like
+                    targetPost.userLikeList.push(askingUserId);
+                } else {
+                    message = 'Unlike successful';
+                    //User has already liked: we remove the like
+                    const userIdIndexLike = targetPost.userLikeList.indexOf(askingUserId);
+                    targetPost.userLikeList.splice(userIdIndexLike);
+                }
+                const newLikeCounter = targetPost.userLikeList.length;
+                //Updating the likes on the data base
+                Post.updateOne({ _id: targetPostId }, targetPost)
+                    .then(() => response.status(200).json({ message, newLikeCounter }))
+                    .catch((error) => errorFunctions.sendServerError(response));
+            }
+        });
+    });
+};
+
+exports.modifyPost = (request, response, next) => {
+    const askingUserId = request.auth.userId;
+};
+
+exports.deletePost = (request, response, next) => {
+    const askingUserId = request.auth.userId;
+    const targetPostId = request.params.id;
+    //Getting the requester account
+    check.ifDocumentExists(request, response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+        //Checking if the post exists
+        check.ifDocumentExists(request, response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
+            //Checking if the requester isn't restrained or suspended
+            if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
+                //Checking if the requester can do this action (deleting your own post or being moderator/admin)
+                if (askingUserId === targetPost.uploaderId || checkUser.ifHasRequiredPrivilege(response, askingUser, 1, 1) === true) {
+                    //Deleting the image of the sauce on the server
+                    const filename = targetPost.contentImg.split('/images/')[1];
+                    fileSystem.unlink(`images/${filename}`, () => {
+                        //Deleting the sauce from the data base
+                        Post.deleteOne({ _id: targetPostId })
+                            .then(() => successFunctions.sendDeleteSuccess(response))
+                            .catch((error) => errorFunctions.sendServerError(response));
+                    });
+                }
+            }
+        });
+    });
+};

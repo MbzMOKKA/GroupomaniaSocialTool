@@ -1,5 +1,5 @@
 //Imports
-import { getNewPosts, getAllPosts } from '../../utils/functions/api_communication';
+import { getNewPosts, getAllPosts, deletePost, likePost } from '../../utils/functions/api_communication';
 import { useState } from 'react';
 import SignUp from '../../pages/SignUp';
 import { formatDate } from '../../utils/functions/misc';
@@ -153,7 +153,7 @@ function App() {
                                     <div>
                                         <button
                                             onClick={(e) => {
-                                                //setUserRole(e, user._id, 1);
+                                                likePost(e, token, post._id, posts);
                                             }}
                                         >
                                             LIKE ({post.likeCounter})
@@ -174,7 +174,7 @@ function App() {
                                         </button>
                                         <button
                                             onClick={(e) => {
-                                                //setUserRole(e, user._id, 1);
+                                                deletePost(e, token, post._id, posts);
                                             }}
                                         >
                                             DELETE

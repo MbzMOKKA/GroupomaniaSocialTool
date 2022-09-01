@@ -74,3 +74,32 @@ export async function getNewPosts(token, lastPostLoadedId, posts, setPostList, u
         }
     }
 }
+
+export async function deletePost(e, token, postToDeleteId, postList) {
+    e.preventDefault();
+    const data = await communicateWithAPI(`http://localhost:8000/api/posts/${postToDeleteId}`, 'DELETE', token, null);
+    const status = data.status;
+    if (status === 200) {
+        for (let index in postList) {
+            if (postList[index]._id === postToDeleteId) {
+                postList.splice(index, 1);
+                break;
+            }
+        }
+        const body = await data.json();
+    }
+}
+export async function likePost(e, token, postToLikeId, postList) {
+    e.preventDefault();
+    const data = await communicateWithAPI(`http://localhost:8000/api/posts/like/${postToLikeId}`, 'POST', token, null);
+    const status = data.status;
+    if (status === 200) {
+        const body = await data.json();
+        for (let index in postList) {
+            if (postList[index]._id === postToLikeId) {
+                postList[index].likeCounter = body.newLikeCounter;
+                break;
+            }
+        }
+    }
+}
