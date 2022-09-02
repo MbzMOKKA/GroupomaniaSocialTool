@@ -39,7 +39,29 @@ exports.getAllPosts = (request, response, next) => {
 };
 
 exports.getOnePost = (request, response, next) => {
+    const askingUserId = request.auth.userId;
     const targetPostId = request.params.id;
+    //Getting the requester account
+    check.ifDocumentExists(request, response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+        //Checking if the post exists
+        check.ifDocumentExists(request, response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
+            //Checking if the requester isn't restrained or suspended
+            if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
+                const detailledPost = {
+                    _id: targetPost._id,
+                    uploaderId: targetPost.uploaderId,
+                    uploaderDisplayName: targetPost.uploaderDisplayName,
+                    childPosts: targetPost.childPosts,
+                    likeCounter: targetPost.userLikeList.length,
+                    contentText: targetPost.contentText,
+                    contentImg: targetPost.contentImg,
+                    uploadDate: targetPost.uploadDate,
+                    editCounter: targetPost.editCounter,
+                };
+                response.status(200).json(detailledPost);
+            }
+        });
+    });
 };
 
 exports.getNewPosts = (request, response, next) => {

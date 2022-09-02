@@ -103,3 +103,11 @@ export async function likePost(e, token, postToLikeId, postList) {
         }
     }
 }
+
+export async function getPostDetails(token, postId, setPostDetails) {
+    const data = await communicateWithAPI(`http://localhost:8000/api/posts/${postId}`, 'GET', token, null);
+    if (data.status === 200) {
+        const body = await data.json();
+        setPostDetails(body);
+    }
+}

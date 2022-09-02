@@ -7,6 +7,7 @@ import { useContext } from 'react';
 import { TokenContext } from '../../utils/context/index';
 import { useEffect } from 'react';
 import PostEdit from '../PostEdit';
+import PostDetails from '../../pages/PostDetails';
 import axios from 'axios';
 
 //Preparation
@@ -15,6 +16,7 @@ import axios from 'axios';
 function App() {
     const { token, updateToken } = useContext(TokenContext);
     const [editedPostObj, setEditedPostObj] = useState(null);
+    const [detailledPostId, setDetailledPostId] = useState(null);
     const [posts, setPostList] = useState([]);
     const [unread, setUnread] = useState(0);
     const [newCheckCounter, setNewCheckCounter] = useState(0);
@@ -117,88 +119,91 @@ function App() {
     return (
         <div>
             {editedPostObj === null ? null : <PostEdit editedPostObj={editedPostObj} setEditedPostObj={setEditedPostObj} posts={posts} setPostList={setPostList} />}
-
-            <SignUp setPostList={setPostList} />
-            {token === null ? null : ( //If user is connected
-                <div>
-                    <div id="token_display">
-                        <p>Token : {token}</p>
-                        <p>LocalStorage token : {localStorage.getItem('Token')}</p>
-                    </div>
-
+            {detailledPostId === null ? null : <PostDetails detailledPostId={detailledPostId} setDetailledPostId={setDetailledPostId} />}
+            <div id="page_container">
+                <SignUp setPostList={setPostList} />
+                {token === null ? null : ( //If user is connected
                     <div>
-                        <h1>------------------ POSTS ------------------</h1>
-                        <div>
-                            <form
-                                className="uploadForm"
-                                onSubmit={(e) => {
-                                    uploadPost(e);
-                                }}
-                            >
-                                <label htmlFor="uploadFormTxt">Text :</label>
-                                <textarea id="uploadFormTxt" name="uploadFormTxt" maxLength={contentTxtLengthLimit} onChange={(e) => setUploadContentTxt(e.target.value)}></textarea>
-
-                                {document.getElementById('uploadFormTxt') !== null ? (
-                                    <p>
-                                        {document.getElementById('uploadFormTxt').value.length}/{contentTxtLengthLimit}
-                                    </p>
-                                ) : null}
-
-                                <label htmlFor="uploadFormImg">Image :</label>
-                                <input id="uploadFormImg" name="uploadFormImg" type="file" accept="image/png, image/jpg, image/jpeg, image/gif" onChange={(e) => userSelectUploadImg(e)} />
-                                <img id="uploadFormImgPreview" src="#" alt="upload content" width={200} height={200} />
-                                <button type="submit">UPLOAD</button>
-                            </form>
+                        <div id="token_display">
+                            <p>Token : {token}</p>
+                            <p>LocalStorage token : {localStorage.getItem('Token')}</p>
                         </div>
-                        <p>======================================</p>
-                        {posts.map((post, index) => {
-                            return (
-                                <div className="uploaded_post" key={post._id}>
-                                    <h2>{post.uploaderDisplayName} :</h2>
-                                    <b>"{post.contentText}"</b>
-                                    <p> ### </p>
-                                    <p>ID : {post._id}</p>
-                                    <p>UploaderId : {post.uploaderId}</p>
-                                    <p>Upload date : {formatDate(post.uploadDate)}</p>
-                                    <p>Edited {post.editCounter} time</p>
-                                    {post.contentImg !== 'no_img' ? <img className="postImg" src={post.contentImg} alt="Post content" /> : null}
-                                    <div>
-                                        <button
-                                            onClick={(e) => {
-                                                likePost(e, token, post._id, posts);
-                                            }}
-                                        >
-                                            LIKE ({post.likeCounter})
-                                        </button>
-                                        <button
-                                            onClick={(e) => {
-                                                //setUserRole(e, user._id, 1);
-                                            }}
-                                        >
-                                            OPEN COMMENTS ({post.commentCounter})
-                                        </button>
-                                        <button
-                                            onClick={(e) => {
-                                                startEditPost(e, post);
-                                            }}
-                                        >
-                                            EDIT
-                                        </button>
-                                        <button
-                                            onClick={(e) => {
-                                                deletePost(e, token, post._id, posts);
-                                            }}
-                                        >
-                                            DELETE
-                                        </button>
+
+                        <div>
+                            <h1>------------------ POSTS ------------------</h1>
+                            <div>
+                                <form
+                                    className="uploadForm"
+                                    onSubmit={(e) => {
+                                        uploadPost(e);
+                                    }}
+                                >
+                                    <label htmlFor="uploadFormTxt">Text :</label>
+                                    <textarea id="uploadFormTxt" name="uploadFormTxt" maxLength={contentTxtLengthLimit} onChange={(e) => setUploadContentTxt(e.target.value)}></textarea>
+
+                                    {document.getElementById('uploadFormTxt') !== null ? (
+                                        <p>
+                                            {document.getElementById('uploadFormTxt').value.length}/{contentTxtLengthLimit}
+                                        </p>
+                                    ) : null}
+
+                                    <label htmlFor="uploadFormImg">Image :</label>
+                                    <input id="uploadFormImg" name="uploadFormImg" type="file" accept="image/png, image/jpg, image/jpeg, image/gif" onChange={(e) => userSelectUploadImg(e)} />
+                                    <img id="uploadFormImgPreview" src="#" alt="upload content" width={200} height={200} />
+                                    <button type="submit">UPLOAD</button>
+                                </form>
+                            </div>
+                            <p>======================================</p>
+                            {posts.map((post, index) => {
+                                return (
+                                    <div className="uploaded_post" key={post._id}>
+                                        <h2>{post.uploaderDisplayName} :</h2>
+                                        <b>"{post.contentText}"</b>
+                                        <p> ### </p>
+                                        <p>ID : {post._id}</p>
+                                        <p>UploaderId : {post.uploaderId}</p>
+                                        <p>Upload date : {formatDate(post.uploadDate)}</p>
+                                        <p>Edited {post.editCounter} time</p>
+                                        {post.contentImg !== 'no_img' ? <img className="postImg" src={post.contentImg} alt="Post content" /> : null}
+                                        <div>
+                                            <button
+                                                onClick={(e) => {
+                                                    likePost(e, token, post._id, posts);
+                                                }}
+                                            >
+                                                LIKE ({post.likeCounter})
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setDetailledPostId(post._id);
+                                                }}
+                                            >
+                                                OPEN COMMENTS ({post.commentCounter})
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    startEditPost(e, post);
+                                                }}
+                                            >
+                                                EDIT
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    deletePost(e, token, post._id, posts);
+                                                }}
+                                            >
+                                                DELETE
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            );
-                        })}
+                                );
+                            })}
+                        </div>
                     </div>
-                </div>
-            )}
-            {/*formatDate(today)*/}
+                )}
+                {/*formatDate(today)*/}
+            </div>
         </div>
     );
 }
