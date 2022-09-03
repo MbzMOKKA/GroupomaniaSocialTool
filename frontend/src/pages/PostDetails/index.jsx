@@ -31,7 +31,8 @@ function PostDetails({ detailledPostId, setDetailledPostId }) {
         const data = await axios.post(url, formData, config);
         const status = data.status;
         if (status === 201) {
-            //Upload successful : resetting the form
+            //Upload successful : adding your comment to the list displayed
+            postDetails.comments.push(data.data.returnedUploadedComment);
         }
     }
     //Render

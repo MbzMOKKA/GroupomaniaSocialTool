@@ -181,7 +181,8 @@ exports.commentPost = (request, response, next) => {
                                 targetPost.childPosts.push(targetComment._id);
                                 //updating the parent post on the database to include the comment as a child
                                 doAction.updateDocumentOnDB(response, Post, targetPostId, targetPost, () => {
-                                    successFunctions.sendUploadSuccess(response);
+                                    const returnedUploadedComment = doPostAction.formatSimplifiedPost(targetComment);
+                                    response.status(201).json({ returnedUploadedComment });
                                 });
                             })
                             //Creation failed
