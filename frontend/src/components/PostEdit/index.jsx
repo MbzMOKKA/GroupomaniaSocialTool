@@ -9,7 +9,7 @@ import axios from 'axios';
 //Component
 function PostEdit({ editedPostObj, setEditedPostObj, posts, setPostList }) {
     const contentTxtLengthLimit = 1000;
-    const { token, updateToken } = useContext(TokenContext);
+    const { token /*updateToken*/ } = useContext(TokenContext);
     const [uploadContentTxt, setUploadContentTxt] = useState(editedPostObj.contentTxt);
     const [uploadContentImg, setUploadContentImg] = useState(editedPostObj.contentImg);
     function formImagePreviewChange(newFile) {

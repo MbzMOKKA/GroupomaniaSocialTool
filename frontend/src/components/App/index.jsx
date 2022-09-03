@@ -158,13 +158,15 @@ function App() {
                                 return (
                                     <div className="uploaded_post" key={post._id}>
                                         <h2>{post.uploaderDisplayName} :</h2>
-                                        <b>"{post.contentText}"</b>
-                                        <p> ### </p>
+                                        <p>
+                                            <b>"{post.contentText}"</b>
+                                        </p>
+                                        {post.contentImg !== 'no_img' ? <img className="postImg" src={post.contentImg} alt="Post content" /> : null}
+                                        <p> Details : </p>
                                         <p>ID : {post._id}</p>
                                         <p>UploaderId : {post.uploaderId}</p>
                                         <p>Upload date : {formatDate(post.uploadDate)}</p>
                                         <p>Edited {post.editCounter} time</p>
-                                        {post.contentImg !== 'no_img' ? <img className="postImg" src={post.contentImg} alt="Post content" /> : null}
                                         <div>
                                             <button
                                                 onClick={(e) => {

@@ -4,7 +4,7 @@ const errorFunctions = require('../responses/errors');
 //Exports
 
 //Check if a document exists on the database
-exports.ifDocumentExists = (request, response, collection, testObj, customErrorMsg, callback) => {
+exports.ifDocumentExists = (response, collection, testObj, customErrorMsg, callback) => {
     collection
         .findOne(testObj)
         .then((document) => {

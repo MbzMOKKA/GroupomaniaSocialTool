@@ -89,10 +89,12 @@ textarea {
     margin: 10px;
     display: flex;
     flex-direction: column;
+    min-width: 50vw;
 }
 .post_comments {
     overflow: auto;
     border: 2px solid black;
     padding: 10px;
     height: 20vh;
+    min-height: 35vh;
 }

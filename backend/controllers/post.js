@@ -9,6 +9,7 @@ dotenv.config();
 const User = require('../models/user');
 const Post = require('../models/post');
 const doAction = require('../utils/actions/common');
+const doPostAction = require('../utils/actions/post');
 const check = require('../utils/checks/common');
 const checkUser = require('../utils/checks/user');
 const checkPost = require('../utils/checks/post');
@@ -18,19 +19,23 @@ const successFunctions = require('../utils/responses/successes');
 //Exports
 exports.getAllPosts = (request, response, next) => {
     const askingUserId = request.auth.userId;
+
     //Getting the requester account
-    check.ifDocumentExists(request, response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
         //Checking if the requester isn't suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
             Post.find()
                 .then((postList) => {
                     let finalPostList = [];
-                    let finalIndex = postList.length - 1;
+                    let finalIndex = 0;
                     //creating a list that only contain the data we want to send and in an antichronological order
-                    for (const post of postList) {
-                        finalPostList[finalIndex] = doAction.formatHomepagePost(post);
-                        finalIndex--;
+                    for (let i = 0; i < postList.length; i++) {
+                        if (postList[i].parentPost === 'null') {
+                            finalPostList[finalIndex] = doPostAction.formatSimplifiedPost(postList[i]);
+                            finalIndex++;
+                        }
                     }
+
                     response.status(200).json(finalPostList);
                 })
                 .catch((error) => errorFunctions.sendServerError(response));
@@ -42,23 +47,27 @@ exports.getOnePost = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const targetPostId = request.params.id;
     //Getting the requester account
-    check.ifDocumentExists(request, response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
         //Checking if the post exists
-        check.ifDocumentExists(request, response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
+        check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
             //Checking if the requester isn't restrained or suspended
             if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
-                const detailledPost = {
-                    _id: targetPost._id,
-                    uploaderId: targetPost.uploaderId,
-                    uploaderDisplayName: targetPost.uploaderDisplayName,
-                    childPosts: targetPost.childPosts,
-                    likeCounter: targetPost.userLikeList.length,
-                    contentText: targetPost.contentText,
-                    contentImg: targetPost.contentImg,
-                    uploadDate: targetPost.uploadDate,
-                    editCounter: targetPost.editCounter,
-                };
-                response.status(200).json(detailledPost);
+                //Getting the content of the comments
+                doPostAction.getChildPostsContent(response, Post, targetPost.childPosts).then((comments) => {
+                    //Sending the result
+                    const detailledPost = {
+                        _id: targetPost._id,
+                        uploaderId: targetPost.uploaderId,
+                        uploaderDisplayName: targetPost.uploaderDisplayName,
+                        comments: comments,
+                        likeCounter: targetPost.userLikeList.length,
+                        contentText: targetPost.contentText,
+                        contentImg: targetPost.contentImg,
+                        uploadDate: targetPost.uploadDate,
+                        editCounter: targetPost.editCounter,
+                    };
+                    response.status(200).json(detailledPost);
+                });
             }
         });
     });
@@ -68,7 +77,7 @@ exports.getNewPosts = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const lastPostSeenId = request.params.id;
     //Getting the requester account
-    check.ifDocumentExists(request, response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
         //Checking if the requester isn't suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
             Post.findOne({ _id: lastPostSeenId })
@@ -79,7 +88,7 @@ exports.getNewPosts = (request, response, next) => {
                         const lastIndex = lastPostSeen.postUploadedBefore;
                         //Finding every new post
                         let newPostList = [];
-                        doAction
+                        doPostAction
                             .findNewPost(response, Post, lastIndex + 1, newPostList)
                             .then((result) => {
                                 if (result === true) {
@@ -88,7 +97,7 @@ exports.getNewPosts = (request, response, next) => {
                                     let finalIndex = 0;
                                     //creating a list that only contain the data we want to send and in an antichronological order
                                     for (const post of newPostList) {
-                                        finalPostList[finalIndex] = doAction.formatHomepagePost(post);
+                                        finalPostList[finalIndex] = doPostAction.formatSimplifiedPost(post);
                                         finalIndex++;
                                     }
                                     response.status(200).json(finalPostList);
@@ -105,10 +114,10 @@ exports.getNewPosts = (request, response, next) => {
 exports.uploadPost = (request, response, next) => {
     const askingUserId = request.auth.userId;
     //Getting the requester account
-    check.ifDocumentExists(request, response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
         //Checking if the requester isn't restrained or suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
-            const contentImg = request.file ? doAction.buildImageUploadedURL(request) : 'no_img';
+            const contentImg = request.file ? doPostAction.buildImageUploadedURL(request) : 'no_img';
             const contentTxt = request.body.uploadFormTxt;
             if (checkPost.ifContentTxtIsValid(contentTxt)) {
                 //Couting how much posts existed on the database before
@@ -141,15 +150,56 @@ exports.uploadPost = (request, response, next) => {
 
 exports.commentPost = (request, response, next) => {
     const askingUserId = request.auth.userId;
+    const targetPostId = request.params.id;
+    //Getting the requester account
+    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+        //Checking if the post exists
+        check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
+            //Checking if the requester isn't restrained or suspended
+            if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
+                const contentImg = request.file ? doPostAction.buildImageUploadedURL(request) : 'no_img';
+                const contentTxt = request.body.uploadFormTxt;
+                if (checkPost.ifContentTxtIsValid(contentTxt)) {
+                    //Couting how much posts existed on the database before
+                    Post.count({}, function (err, count) {
+                        const upload = new Post({
+                            postUploadedBefore: count,
+                            uploaderId: askingUserId,
+                            uploaderDisplayName: askingUser.email,
+                            parentPost: targetPost._id,
+                            childPosts: [],
+                            userLikeList: [],
+                            contentText: contentTxt,
+                            contentImg: contentImg,
+                            uploadDate: Date.now(),
+                            editCounter: 0,
+                        });
+                        upload
+                            .save()
+                            //Post created
+                            .then((targetComment) => {
+                                targetPost.childPosts.push(targetComment._id);
+                                //updating the parent post on the database to include the comment as a child
+                                doAction.updateDocumentOnDB(response, Post, targetPostId, targetPost, () => {
+                                    successFunctions.sendUploadSuccess(response);
+                                });
+                            })
+                            //Creation failed
+                            .catch((error) => errorFunctions.sendServerError(response, error));
+                    });
+                }
+            }
+        });
+    });
 };
 
 exports.likePost = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const targetPostId = request.params.id;
     //Getting the requester account
-    check.ifDocumentExists(request, response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
         //Checking if the post exists
-        check.ifDocumentExists(request, response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
+        check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
             //Checking if the requester isn't restrained or suspended
             if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
                 let message = 'Like successful';
@@ -176,9 +226,9 @@ exports.modifyPost = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const targetPostId = request.params.id;
     //Getting the requester account
-    check.ifDocumentExists(request, response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
         //Checking if the post exists
-        check.ifDocumentExists(request, response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
+        check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
             //Checking if the requester isn't restrained or suspended
             if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
                 //Checking if the requester own the post
@@ -190,7 +240,7 @@ exports.modifyPost = (request, response, next) => {
                         let imageIsChanged = false;
                         if (request.file) {
                             //Image is changed
-                            contentImg = doAction.buildImageUploadedURL(request);
+                            contentImg = doPostAction.buildImageUploadedURL(request);
                             imageIsChanged = true;
                         } else {
                             if (request.body.uploadFormImg === 'no_img') {
@@ -203,7 +253,7 @@ exports.modifyPost = (request, response, next) => {
                         targetPost.contentImg = contentImg;
                         targetPost.contentText = contentTxt;
                         targetPost.editCounter++;
-                        const returnedUpdatedPost = doAction.formatHomepagePost(targetPost);
+                        const returnedUpdatedPost = doPostAction.formatSimplifiedPost(targetPost);
                         //deleting the old image
                         if (imageIsChanged) {
                             const filename = oldContentImg.split('/images/')[1];
@@ -232,9 +282,9 @@ exports.deletePost = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const targetPostId = request.params.id;
     //Getting the requester account
-    check.ifDocumentExists(request, response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
         //Checking if the post exists
-        check.ifDocumentExists(request, response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
+        check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
             //Checking if the requester isn't restrained or suspended
             if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
                 //Checking if the requester can do this action (deleting your own post or being moderator/admin)

@@ -16,7 +16,7 @@ const successFunctions = require('../utils/responses/successes');
 exports.getAllUser = (request, response, next) => {
     const askingUserId = request.auth.userId;
     //Getting the requester account
-    check.ifDocumentExists(request, response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
         //Checking if the requester isn't suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
             //Getting every user documents from the database
@@ -44,9 +44,9 @@ exports.modifyUserRole = (request, response, next) => {
     const targetUserId = request.params.id;
     const newRole = request.body.newRole;
     //Checking if the target exists
-    check.ifDocumentExists(request, response, User, { _id: targetUserId }, "This user doesn't exists", (targetUser) => {
+    check.ifDocumentExists(response, User, { _id: targetUserId }, "This user doesn't exists", (targetUser) => {
         //Getting the mod account
-        check.ifDocumentExists(request, response, User, { _id: modUserId }, "This user doesn't exists", (modUser) => {
+        check.ifDocumentExists(response, User, { _id: modUserId }, "This user doesn't exists", (modUser) => {
             //Checking if the mod have the privilege
             if (checkUser.ifHasRequiredPrivilege(response, modUser, 2, 1)) {
                 if (targetUser.role < 2) {
@@ -73,9 +73,9 @@ exports.modifyUserState = (request, response, next) => {
     const targetUserId = request.params.id;
     const newState = request.body.newState;
     //Checking if the target exists
-    check.ifDocumentExists(request, response, User, { _id: targetUserId }, "This user doesn't exists", (targetUser) => {
+    check.ifDocumentExists(response, User, { _id: targetUserId }, "This user doesn't exists", (targetUser) => {
         //Getting the mod account
-        check.ifDocumentExists(request, response, User, { _id: modUserId }, "This user doesn't exists", (modUser) => {
+        check.ifDocumentExists(response, User, { _id: modUserId }, "This user doesn't exists", (modUser) => {
             //Checking if the mod have the privilege
             if (checkUser.ifHasRequiredPrivilege(response, modUser, targetUser.role + 1, 1)) {
                 if (modUser.role >= 2 || newState < 2) {

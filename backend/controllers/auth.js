@@ -47,7 +47,7 @@ exports.logIn = (request, response, next) => {
         return null;
     }
     //Looking if the account exists
-    check.ifDocumentExists(request, response, User, { email: request.body.email }, 'Credentials are incorrect', (targetUser) => {
+    check.ifDocumentExists(response, User, { email: request.body.email }, 'Credentials are incorrect', (targetUser) => {
         //Check if the password is valid
         bcrypt
             .compare(request.body.password, targetUser.password)

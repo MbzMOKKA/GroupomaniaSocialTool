@@ -86,7 +86,7 @@ export async function deletePost(e, token, postToDeleteId, postList) {
                 break;
             }
         }
-        const body = await data.json();
+        //const body = await data.json();
     }
 }
 export async function likePost(e, token, postToLikeId, postList) {
