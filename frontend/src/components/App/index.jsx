@@ -75,7 +75,7 @@ function App() {
     useEffect(() => {
         if (token !== null) {
             //Loading post when the user is connected
-            getAllPosts(token, setPostList, false, null, null);
+            getAllPosts(token, posts, setPostList, false, null, null);
         }
     }, [token]);
 
@@ -91,7 +91,7 @@ function App() {
     }, []);
 
     //New post check loop
-    useEffect(() => {
+    /*useEffect(() => {
         let lastPostLoadedId = null;
         try {
             lastPostLoadedId = posts[0]._id;
@@ -102,7 +102,7 @@ function App() {
             getNewPosts(token, lastPostLoadedId, posts, setPostList, unread, setUnread, newCheckCounter, setNewCheckCounter);
         }, newCheckCooldown);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [newCheckCounter]);
+    }, [newCheckCounter]);*/
 
     //Changing the page title when new message are recieved
     useEffect(() => {
@@ -201,6 +201,13 @@ function App() {
                                     </div>
                                 );
                             })}
+                            <button
+                                onClick={() => {
+                                    getAllPosts(token, posts, setPostList, false, null, null);
+                                }}
+                            >
+                                LOAD MORE
+                            </button>
                         </div>
                     </div>
                 )}

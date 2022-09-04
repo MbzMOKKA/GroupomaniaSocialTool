@@ -7,8 +7,8 @@ const middlewareAuth = require('../middlewares/auth');
 const middlewareMulter = require('../middlewares/multer-config');
 
 //Routes
-router.get('', middlewareAuth, postController.getAllPosts);
-router.get('/:id', middlewareAuth, postController.getOnePost);
+router.get('/:loaded', middlewareAuth, postController.getAllPosts);
+router.get('/details/:id', middlewareAuth, postController.getOnePost);
 router.get('/new/:id', middlewareAuth, postController.getNewPosts);
 router.post('', middlewareAuth, middlewareMulter, postController.uploadPost);
 router.post('/:id', middlewareAuth, middlewareMulter, postController.commentPost);

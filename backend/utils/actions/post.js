@@ -26,14 +26,12 @@ exports.buildImageUploadedURL = (request) => {
 
 //Find a new post to add without having to refresh the page
 async function findNewPost(response, Post, lastIndex, newPostList) {
-    let test = '?';
+    let returned = '?';
     await Post.findOne({ postUploadedBefore: lastIndex })
         .then((nextPost) => {
             if (nextPost === null) {
                 //No new post to find remaining : end of recursion
-                //console.log('>true');
-                test = true;
-                //return true;
+                returned = true;
             } else {
                 if (nextPost.parentPost == 'null') {
                     //New post found, trying then to find an other one
@@ -41,27 +39,66 @@ async function findNewPost(response, Post, lastIndex, newPostList) {
                 } else {
                     //New comment found, still trying to find a new post
                 }
-                test = findNewPost(response, Post, lastIndex + 1, newPostList);
+                returned = findNewPost(response, Post, lastIndex + 1, newPostList);
             }
         })
         .catch((error) => {
             errorFunctions.sendServerError(response);
             console.log('>false');
-            test = false;
+            returned = false;
         });
 
-    return test;
+    return returned;
 }
 exports.findNewPost = findNewPost;
 
 //Return an array of every comments on a post
-async function getChildPostsContent(response, Post, childPosts) {
+async function findChildPostsContent(response, Post, childPosts) {
     let comments = [];
     for (let i = 0; i < childPosts.length; i++) {
         const childPostId = childPosts[i];
         const comment = await Post.findOne({ _id: childPostId });
-        comments.push(doPostAction.formatSimplifiedPost(comment));
+        if (comment !== null) {
+            comments.push(doPostAction.formatSimplifiedPost(comment));
+        }
     }
     return comments;
 }
-exports.getChildPostsContent = getChildPostsContent;
+exports.findChildPostsContent = findChildPostsContent;
+
+//Return an array of X posts
+async function findHomepagePosts(response, Post, scanIndex, postLoadedByClient) {
+    //console.log('Scan index : ' + scanIndex);
+    //console.log('Loaded by client : ' + postLoadedByClient);
+    //Ignoring the posts and comments that the user has already loaded
+    while (postLoadedByClient > 0) {
+        const post = await Post.findOne({ postUploadedBefore: scanIndex });
+        if (post !== null) {
+            if (post.parentPost === 'null') {
+                postLoadedByClient--;
+            }
+        }
+        if (scanIndex < 0) {
+            postLoadedByClient = 0;
+        }
+        scanIndex--;
+    }
+    //Finding the next few posts that the user is requesting while ignoring comments
+    let scanRemaining = 3; //Maximum amount of posts returned at once : it doesn't return every existing posts
+    let posts = [];
+    while (scanRemaining > 0) {
+        const post = await Post.findOne({ postUploadedBefore: scanIndex });
+        if (post !== null) {
+            if (post.parentPost === 'null') {
+                posts.push(doPostAction.formatSimplifiedPost(post));
+                scanRemaining--;
+            }
+        }
+        scanIndex--;
+        if (scanIndex < 0) {
+            scanRemaining = 0;
+        }
+    }
+    return posts;
+}
+exports.findHomepagePosts = findHomepagePosts;

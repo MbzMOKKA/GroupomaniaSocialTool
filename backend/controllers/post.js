@@ -19,26 +19,23 @@ const successFunctions = require('../utils/responses/successes');
 //Exports
 exports.getAllPosts = (request, response, next) => {
     const askingUserId = request.auth.userId;
-
+    const postLoadedByClient = request.params.loaded;
     //Getting the requester account
     check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
         //Checking if the requester isn't suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
-            Post.find()
-                .then((postList) => {
-                    let finalPostList = [];
-                    let finalIndex = 0;
-                    //creating a list that only contain the data we want to send and in an antichronological order
-                    for (let i = 0; i < postList.length; i++) {
-                        if (postList[i].parentPost === 'null') {
-                            finalPostList[finalIndex] = doPostAction.formatSimplifiedPost(postList[i]);
-                            finalIndex++;
-                        }
-                    }
-
-                    response.status(200).json(finalPostList);
-                })
-                .catch((error) => errorFunctions.sendServerError(response));
+            Post.countDocuments({}, function (error, count) {
+                if (error) {
+                    errorFunctions.sendServerError(response);
+                } else {
+                    doPostAction
+                        .findHomepagePosts(response, Post, count - 1, postLoadedByClient)
+                        .then((postList) => {
+                            response.status(200).json(postList);
+                        })
+                        .catch((error) => errorFunctions.sendServerError(response));
+                }
+            });
         }
     });
 };
@@ -53,7 +50,7 @@ exports.getOnePost = (request, response, next) => {
             //Checking if the requester isn't restrained or suspended
             if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
                 //Getting the content of the comments
-                doPostAction.getChildPostsContent(response, Post, targetPost.childPosts).then((comments) => {
+                doPostAction.findChildPostsContent(response, Post, targetPost.childPosts).then((comments) => {
                     //Sending the result
                     const detailledPost = {
                         _id: targetPost._id,
@@ -121,7 +118,7 @@ exports.uploadPost = (request, response, next) => {
             const contentTxt = request.body.uploadFormTxt;
             if (checkPost.ifContentTxtIsValid(contentTxt)) {
                 //Couting how much posts existed on the database before
-                Post.count({}, function (err, count) {
+                Post.countDocuments({}, function (err, count) {
                     const upload = new Post({
                         postUploadedBefore: count,
                         uploaderId: askingUserId,
