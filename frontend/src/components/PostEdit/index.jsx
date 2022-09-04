@@ -46,8 +46,9 @@ function PostEdit({ editedPostObj, setEditedPostObj, posts, setPostList }) {
             //Edit successful : closing the edit post component and updating the post
             const body = data.data;
             for (let index in posts) {
-                if (posts[index]._id === body.returnedUpdatedPost._id) {
-                    posts[index] = body.returnedUpdatedPost;
+                if (posts[index]._id === body._id) {
+                    posts[index].contentText = body.contentText;
+                    posts[index].contentImg = body.contentImg;
                     break;
                 }
             }

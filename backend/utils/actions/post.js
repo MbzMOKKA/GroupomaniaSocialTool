@@ -2,15 +2,16 @@
 const errorFunctions = require('../responses/errors');
 const check = require('../checks/common');
 const doPostAction = require('./post');
+const doAction = require('./common');
 
 //Exports
 
 //Create an object that represent a post shown in the homepage that will be sent to the user
-exports.formatSimplifiedPost = (post) => {
+async function formatSimplifiedPost(response, post) {
     return {
         _id: post._id,
         uploaderId: post.uploaderId,
-        uploaderDisplayName: post.uploaderDisplayName,
+        uploaderDisplayName: await doAction.getUserDisplayName(response, post.uploaderId),
         contentText: post.contentText,
         contentImg: post.contentImg,
         commentCounter: post.childPosts.length,
@@ -18,7 +19,9 @@ exports.formatSimplifiedPost = (post) => {
         uploadDate: post.uploadDate,
         editCounter: post.editCounter,
     };
-};
+}
+exports.formatSimplifiedPost = formatSimplifiedPost;
+
 //Create an URL for the image uploaded by the user
 exports.buildImageUploadedURL = (request) => {
     return `${request.protocol}://${request.get('host')}/images/${request.file.filename}`;
@@ -26,12 +29,12 @@ exports.buildImageUploadedURL = (request) => {
 
 //Find a new post to add without having to refresh the page
 async function findNewPost(response, Post, lastIndex, newPostList) {
-    let returned = '?';
+    let result = false;
     await Post.findOne({ postUploadedBefore: lastIndex })
         .then((nextPost) => {
             if (nextPost === null) {
                 //No new post to find remaining : end of recursion
-                returned = true;
+                result = true;
             } else {
                 if (nextPost.parentPost == 'null') {
                     //New post found, trying then to find an other one
@@ -39,16 +42,25 @@ async function findNewPost(response, Post, lastIndex, newPostList) {
                 } else {
                     //New comment found, still trying to find a new post
                 }
-                returned = findNewPost(response, Post, lastIndex + 1, newPostList);
+                result = findNewPost(response, Post, lastIndex + 1, newPostList);
             }
         })
         .catch((error) => {
             errorFunctions.sendServerError(response);
             console.log('>false');
-            returned = false;
+            result = false;
         });
-
-    return returned;
+    //Every new posts were collected, now proceeding to send them
+    if (result === true) {
+        let finalPostList = [];
+        let finalIndex = 0;
+        //creating a list that only contain the data we want to send and in an antichronological order
+        for (const post of newPostList) {
+            finalPostList[finalIndex] = await doPostAction.formatSimplifiedPost(response, post);
+            finalIndex++;
+        }
+        response.status(200).json(finalPostList);
+    }
 }
 exports.findNewPost = findNewPost;
 
@@ -59,7 +71,8 @@ async function findChildPostsContent(response, Post, childPosts) {
         const childPostId = childPosts[i];
         const comment = await Post.findOne({ _id: childPostId });
         if (comment !== null) {
-            comments.push(doPostAction.formatSimplifiedPost(comment));
+            const commentFormatted = await doPostAction.formatSimplifiedPost(response, comment);
+            comments.push(commentFormatted);
         }
     }
     return comments;
@@ -68,8 +81,6 @@ exports.findChildPostsContent = findChildPostsContent;
 
 //Return an array of X posts
 async function findHomepagePosts(response, Post, scanIndex, postLoadedByClient) {
-    //console.log('Scan index : ' + scanIndex);
-    //console.log('Loaded by client : ' + postLoadedByClient);
     //Ignoring the posts and comments that the user has already loaded
     while (postLoadedByClient > 0) {
         const post = await Post.findOne({ postUploadedBefore: scanIndex });
@@ -83,14 +94,15 @@ async function findHomepagePosts(response, Post, scanIndex, postLoadedByClient) 
         }
         scanIndex--;
     }
-    //Finding the next few posts that the user is requesting while ignoring comments
-    let scanRemaining = 3; //Maximum amount of posts returned at once : it doesn't return every existing posts
+    let scanRemaining = 5; //Maximum amount of posts returned at once : it doesn't return every existing posts
     let posts = [];
+    //Finding the next few posts that the user is requesting while ignoring comments
     while (scanRemaining > 0) {
         const post = await Post.findOne({ postUploadedBefore: scanIndex });
         if (post !== null) {
             if (post.parentPost === 'null') {
-                posts.push(doPostAction.formatSimplifiedPost(post));
+                const postFormatted = await doPostAction.formatSimplifiedPost(response, post);
+                posts.push(postFormatted);
                 scanRemaining--;
             }
         }

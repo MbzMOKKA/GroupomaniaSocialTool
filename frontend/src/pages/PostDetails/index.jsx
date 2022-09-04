@@ -32,7 +32,9 @@ function PostDetails({ detailledPostId, setDetailledPostId }) {
         const status = data.status;
         if (status === 201) {
             //Upload successful : adding your comment to the list displayed
-            postDetails.comments.push(data.data.returnedUploadedComment);
+            let comments = postDetails.comments;
+            comments.push(data.data.returnedUploadedComment);
+            setPostDetails({ ...postDetails, comments });
         }
     }
     //Render

@@ -77,6 +77,7 @@ function App() {
             //Loading post when the user is connected
             getAllPosts(token, posts, setPostList, false, null, null);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
     //Getting the token from the storage when loading the page
@@ -91,7 +92,7 @@ function App() {
     }, []);
 
     //New post check loop
-    /*useEffect(() => {
+    useEffect(() => {
         let lastPostLoadedId = null;
         try {
             lastPostLoadedId = posts[0]._id;
@@ -102,7 +103,7 @@ function App() {
             getNewPosts(token, lastPostLoadedId, posts, setPostList, unread, setUnread, newCheckCounter, setNewCheckCounter);
         }, newCheckCooldown);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [newCheckCounter]);*/
+    }, [newCheckCounter]);
 
     //Changing the page title when new message are recieved
     useEffect(() => {
@@ -192,7 +193,7 @@ function App() {
                                             </button>
                                             <button
                                                 onClick={(e) => {
-                                                    deletePost(e, token, post._id, posts);
+                                                    deletePost(e, token, post._id, posts, setPostList);
                                                 }}
                                             >
                                                 DELETE

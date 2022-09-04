@@ -1,5 +1,6 @@
 //Imports
 const errorFunctions = require('../responses/errors');
+const User = require('../../models/user');
 
 //Exports
 
@@ -12,3 +13,13 @@ exports.updateDocumentOnDB = (response, collection, documentId, newDocumentConte
         })
         .catch((error) => errorFunctions.sendServerError(response));
 };
+
+//Return the display name (email) of an user from his account ID
+async function getUserDisplayName(response, userId) {
+    const user = await User.findById(userId);
+    if (user === null) {
+        errorFunctions.sendServerError(response);
+    }
+    return user.email;
+}
+exports.getUserDisplayName = getUserDisplayName;

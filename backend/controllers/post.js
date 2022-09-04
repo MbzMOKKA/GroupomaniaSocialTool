@@ -51,19 +51,21 @@ exports.getOnePost = (request, response, next) => {
             if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
                 //Getting the content of the comments
                 doPostAction.findChildPostsContent(response, Post, targetPost.childPosts).then((comments) => {
-                    //Sending the result
-                    const detailledPost = {
-                        _id: targetPost._id,
-                        uploaderId: targetPost.uploaderId,
-                        uploaderDisplayName: targetPost.uploaderDisplayName,
-                        comments: comments,
-                        likeCounter: targetPost.userLikeList.length,
-                        contentText: targetPost.contentText,
-                        contentImg: targetPost.contentImg,
-                        uploadDate: targetPost.uploadDate,
-                        editCounter: targetPost.editCounter,
-                    };
-                    response.status(200).json(detailledPost);
+                    doAction.getUserDisplayName(response, targetPost.uploaderId).then((uploaderDisplayName) => {
+                        //Sending the result
+                        const detailledPost = {
+                            _id: targetPost._id,
+                            uploaderId: targetPost.uploaderId,
+                            uploaderDisplayName: uploaderDisplayName,
+                            comments: comments,
+                            likeCounter: targetPost.userLikeList.length,
+                            contentText: targetPost.contentText,
+                            contentImg: targetPost.contentImg,
+                            uploadDate: targetPost.uploadDate,
+                            editCounter: targetPost.editCounter,
+                        };
+                        response.status(200).json(detailledPost);
+                    });
                 });
             }
         });
@@ -85,22 +87,7 @@ exports.getNewPosts = (request, response, next) => {
                         const lastIndex = lastPostSeen.postUploadedBefore;
                         //Finding every new post
                         let newPostList = [];
-                        doPostAction
-                            .findNewPost(response, Post, lastIndex + 1, newPostList)
-                            .then((result) => {
-                                if (result === true) {
-                                    //Every new posts were collected, now proceeding to send them
-                                    let finalPostList = [];
-                                    let finalIndex = 0;
-                                    //creating a list that only contain the data we want to send and in an antichronological order
-                                    for (const post of newPostList) {
-                                        finalPostList[finalIndex] = doPostAction.formatSimplifiedPost(post);
-                                        finalIndex++;
-                                    }
-                                    response.status(200).json(finalPostList);
-                                }
-                            })
-                            .catch((error) => errorFunctions.sendServerError(response));
+                        doPostAction.findNewPost(response, Post, lastIndex + 1, newPostList);
                     }
                 })
                 .catch((error) => errorFunctions.sendServerError(response));
@@ -122,7 +109,6 @@ exports.uploadPost = (request, response, next) => {
                     const upload = new Post({
                         postUploadedBefore: count,
                         uploaderId: askingUserId,
-                        uploaderDisplayName: askingUser.email,
                         parentPost: 'null',
                         childPosts: [],
                         userLikeList: [],
@@ -162,7 +148,6 @@ exports.commentPost = (request, response, next) => {
                         const upload = new Post({
                             postUploadedBefore: count,
                             uploaderId: askingUserId,
-                            uploaderDisplayName: askingUser.email,
                             parentPost: targetPost._id,
                             childPosts: [],
                             userLikeList: [],
@@ -178,8 +163,9 @@ exports.commentPost = (request, response, next) => {
                                 targetPost.childPosts.push(targetComment._id);
                                 //updating the parent post on the database to include the comment as a child
                                 doAction.updateDocumentOnDB(response, Post, targetPostId, targetPost, () => {
-                                    const returnedUploadedComment = doPostAction.formatSimplifiedPost(targetComment);
-                                    response.status(201).json({ returnedUploadedComment });
+                                    doPostAction.formatSimplifiedPost(response, targetComment).then((returnedUploadedComment) => {
+                                        response.status(201).json({ returnedUploadedComment });
+                                    });
                                 });
                             })
                             //Creation failed
@@ -200,12 +186,12 @@ exports.likePost = (request, response, next) => {
         check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
             //Checking if the requester isn't restrained or suspended
             if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
-                let message = 'Like successful';
+                let message = 'Liked';
                 if (targetPost.userLikeList.includes(askingUserId) === false) {
                     //User hasn't liked yet: we like
                     targetPost.userLikeList.push(askingUserId);
                 } else {
-                    message = 'Unlike successful';
+                    message = 'Unliked';
                     //User has already liked: we remove the like
                     const userIdIndexLike = targetPost.userLikeList.indexOf(askingUserId);
                     targetPost.userLikeList.splice(userIdIndexLike);
@@ -251,20 +237,24 @@ exports.modifyPost = (request, response, next) => {
                         targetPost.contentImg = contentImg;
                         targetPost.contentText = contentTxt;
                         targetPost.editCounter++;
-                        const returnedUpdatedPost = doPostAction.formatSimplifiedPost(targetPost);
+                        const newPostContent = {
+                            _id: targetPost._id,
+                            contentText: targetPost.contentText,
+                            contentImg: targetPost.contentImg,
+                        };
                         //deleting the old image
                         if (imageIsChanged) {
                             const filename = oldContentImg.split('/images/')[1];
                             fileSystem.unlink(`images/${filename}`, () => {
                                 //updating the post on the database
                                 doAction.updateDocumentOnDB(response, Post, targetPostId, targetPost, () => {
-                                    response.status(200).json({ returnedUpdatedPost });
+                                    response.status(200).json(newPostContent);
                                 });
                             });
                         } else {
                             //updating the post on the database
                             doAction.updateDocumentOnDB(response, Post, targetPostId, targetPost, () => {
-                                response.status(200).json({ returnedUpdatedPost });
+                                response.status(200).json(newPostContent);
                             });
                         }
                     }
