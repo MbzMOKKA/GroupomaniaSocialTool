@@ -99,8 +99,12 @@ function App() {
         } catch (error) {
             lastPostLoadedId = null;
         }
+        getNewPosts(token, lastPostLoadedId, posts, setPostList, unread, setUnread);
         setTimeout(() => {
-            getNewPosts(token, lastPostLoadedId, posts, setPostList, unread, setUnread, newCheckCounter, setNewCheckCounter);
+            setNewCheckCounter(newCheckCounter + 1);
+            if (document.hasFocus()) {
+                setUnread(0);
+            }
         }, newCheckCooldown);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [newCheckCounter]);

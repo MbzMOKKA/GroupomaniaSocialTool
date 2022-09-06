@@ -105,7 +105,28 @@ exports.uploadPost = (request, response, next) => {
             const contentTxt = request.body.uploadFormTxt;
             if (checkPost.ifContentTxtIsValid(contentTxt)) {
                 //Couting how much posts existed on the database before
-                Post.countDocuments({}, function (err, count) {
+                doPostAction.getPostUploadedBefore(response, Post).then((newPostIndex) => {
+                    const upload = new Post({
+                        postUploadedBefore: newPostIndex,
+                        uploaderId: askingUserId,
+                        parentPost: 'null',
+                        childPosts: [],
+                        userLikeList: [],
+                        contentText: contentTxt,
+                        contentImg: contentImg,
+                        uploadDate: Date.now(),
+                        editCounter: 0,
+                    });
+                    upload
+                        .save()
+                        //Post created
+                        .then(() => {
+                            successFunctions.sendUploadSuccess(response);
+                        })
+                        //Creation failed
+                        .catch((error) => errorFunctions.sendServerError(response, error));
+                });
+                /*Post.countDocuments({}, function (err, count) {
                     const upload = new Post({
                         postUploadedBefore: count,
                         uploaderId: askingUserId,
@@ -125,7 +146,7 @@ exports.uploadPost = (request, response, next) => {
                         })
                         //Creation failed
                         .catch((error) => errorFunctions.sendServerError(response, error));
-                });
+                });*/
             }
         }
     });

@@ -94,7 +94,7 @@ async function findHomepagePosts(response, Post, scanIndex, postLoadedByClient) 
         }
         scanIndex--;
     }
-    let scanRemaining = 5; //Maximum amount of posts returned at once : it doesn't return every existing posts
+    let scanRemaining = 3; //Maximum amount of posts returned at once : it doesn't return every existing posts
     let posts = [];
     //Finding the next few posts that the user is requesting while ignoring comments
     while (scanRemaining > 0) {
@@ -114,3 +114,20 @@ async function findHomepagePosts(response, Post, scanIndex, postLoadedByClient) 
     return posts;
 }
 exports.findHomepagePosts = findHomepagePosts;
+
+//
+async function getPostUploadedBefore(response, Post) {
+    try {
+        const newestPost = await Post.find().sort({ _id: -1 }).limit(1);
+        if (newestPost[0] === null) {
+            //No existing post yet
+            return 0;
+        } else {
+            //At least one post exists, we return its index+1
+            return newestPost[0].postUploadedBefore + 1;
+        }
+    } catch (error) {
+        errorFunctions.sendServerError(response, error);
+    }
+}
+exports.getPostUploadedBefore = getPostUploadedBefore;

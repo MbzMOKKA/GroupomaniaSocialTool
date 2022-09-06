@@ -50,7 +50,7 @@ export async function getAllPosts(token, posts, setPostList, addAsUnread, unread
         setPostList([...posts, ...body]);
     }
 }
-export async function getNewPosts(token, lastPostLoadedId, posts, setPostList, unread, setUnread, newCheckCounter, setNewCheckCounter) {
+export async function getNewPosts(token, lastPostLoadedId, posts, setPostList, unread, setUnread) {
     try {
         if (token === null) {
             throw new Error('Token is null');
@@ -64,16 +64,10 @@ export async function getNewPosts(token, lastPostLoadedId, posts, setPostList, u
             if (data.status === 200) {
                 const body = await data.json();
                 setUnread(unread + body.length);
-                //setPostList([...body, ...posts]);
+                setPostList([...body, ...posts]);
             }
         }
-    } catch (error) {
-    } finally {
-        setNewCheckCounter(newCheckCounter + 1);
-        if (document.hasFocus()) {
-            setUnread(0);
-        }
-    }
+    } catch (error) {}
 }
 
 export async function deletePost(e, token, postToDeleteId, postList, setPostList) {
