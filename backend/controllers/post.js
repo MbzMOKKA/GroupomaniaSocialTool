@@ -24,17 +24,12 @@ exports.getAllPosts = (request, response, next) => {
     check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
         //Checking if the requester isn't suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
-            Post.countDocuments({}, function (error, count) {
-                if (error) {
-                    errorFunctions.sendServerError(response);
-                } else {
-                    doPostAction
-                        .findHomepagePosts(response, Post, count - 1, postLoadedByClient)
-                        .then((postList) => {
-                            response.status(200).json(postList);
-                        })
-                        .catch((error) => errorFunctions.sendServerError(response));
-                }
+            //Finding the newest post uploaded
+            doPostAction.getLastPostUploadedIndex(response, Post).then((lastPostIndex) => {
+                //Getting the last few post uploaded from there
+                doPostAction.findHomepagePosts(response, Post, lastPostIndex, postLoadedByClient).then((postList) => {
+                    response.status(200).json(postList);
+                });
             });
         }
     });
@@ -79,18 +74,15 @@ exports.getNewPosts = (request, response, next) => {
     check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
         //Checking if the requester isn't suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
-            Post.findOne({ _id: lastPostSeenId })
-                .then((lastPostSeen) => {
-                    if (lastPostSeen === null) {
-                        errorFunctions.sendBadRequestError(response);
-                    } else {
-                        const lastIndex = lastPostSeen.postUploadedBefore;
-                        //Finding every new post
-                        let newPostList = [];
-                        doPostAction.findNewPost(response, Post, lastIndex + 1, newPostList);
+            //Finding the newest post uploaded
+            doPostAction.getLastPostUploadedIndex(response, Post).then((lastPostIndex) => {
+                //Getting the last few post uploaded from there that the user doesn't have
+                doPostAction.findNewPosts(response, Post, lastPostIndex, lastPostSeenId).then((newPostList) => {
+                    if (newPostList !== null) {
+                        response.status(200).json(newPostList);
                     }
-                })
-                .catch((error) => errorFunctions.sendServerError(response));
+                });
+            });
         }
     });
 };
@@ -105,9 +97,9 @@ exports.uploadPost = (request, response, next) => {
             const contentTxt = request.body.uploadFormTxt;
             if (checkPost.ifContentTxtIsValid(contentTxt)) {
                 //Couting how much posts existed on the database before
-                doPostAction.getPostUploadedBefore(response, Post).then((newPostIndex) => {
+                doPostAction.getLastPostUploadedIndex(response, Post).then((lastPostIndex) => {
                     const upload = new Post({
-                        postUploadedBefore: newPostIndex,
+                        postUploadedBefore: lastPostIndex + 1,
                         uploaderId: askingUserId,
                         parentPost: 'null',
                         childPosts: [],
@@ -126,27 +118,6 @@ exports.uploadPost = (request, response, next) => {
                         //Creation failed
                         .catch((error) => errorFunctions.sendServerError(response, error));
                 });
-                /*Post.countDocuments({}, function (err, count) {
-                    const upload = new Post({
-                        postUploadedBefore: count,
-                        uploaderId: askingUserId,
-                        parentPost: 'null',
-                        childPosts: [],
-                        userLikeList: [],
-                        contentText: contentTxt,
-                        contentImg: contentImg,
-                        uploadDate: Date.now(),
-                        editCounter: 0,
-                    });
-                    upload
-                        .save()
-                        //Post created
-                        .then(() => {
-                            successFunctions.sendUploadSuccess(response);
-                        })
-                        //Creation failed
-                        .catch((error) => errorFunctions.sendServerError(response, error));
-                });*/
             }
         }
     });

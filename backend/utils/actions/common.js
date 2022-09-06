@@ -18,7 +18,8 @@ exports.updateDocumentOnDB = (response, collection, documentId, newDocumentConte
 async function getUserDisplayName(response, userId) {
     const user = await User.findById(userId);
     if (user === null) {
-        errorFunctions.sendServerError(response);
+        //errorFunctions.sendServerError(response);
+        throw 'getUserDisplayName : user not found';
     }
     return user.email;
 }

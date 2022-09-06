@@ -14,6 +14,6 @@ module.exports = (request, response, next) => {
         };
         next();
     } catch (error) {
-        response.status(401).json({ error });
+        response.status(401).json({ message: 'Token expired or invalid' });
     }
 };

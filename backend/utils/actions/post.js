@@ -28,41 +28,36 @@ exports.buildImageUploadedURL = (request) => {
 };
 
 //Find a new post to add without having to refresh the page
-async function findNewPost(response, Post, lastIndex, newPostList) {
-    let result = false;
-    await Post.findOne({ postUploadedBefore: lastIndex })
-        .then((nextPost) => {
-            if (nextPost === null) {
-                //No new post to find remaining : end of recursion
-                result = true;
-            } else {
-                if (nextPost.parentPost == 'null') {
-                    //New post found, trying then to find an other one
-                    newPostList.unshift(nextPost);
-                } else {
-                    //New comment found, still trying to find a new post
+async function findNewPosts(response, Post, indexMax, lastPostSeenId) {
+    //Finalizing the range of exploration
+    const lastPostSeen = await Post.findById(lastPostSeenId);
+    if (lastPostSeen === null) {
+        errorFunctions.sendBadRequestError(response, "Last post seen doesn't exists");
+        return null;
+    }
+    try {
+        const indexMin = lastPostSeen.postUploadedBefore;
+        //Scanning new posts (must exists and not be a comment) in this range
+        let newPostList = [];
+        let scanIndex = indexMax;
+        while (scanIndex > indexMin) {
+            const newPost = await Post.findOne({ postUploadedBefore: scanIndex });
+            if (newPost !== null) {
+                //Checking if the post isn't a comment
+                if (newPost.parentPost === 'null') {
+                    const newPostFormatted = await doPostAction.formatSimplifiedPost(response, newPost);
+                    newPostList.push(newPostFormatted);
                 }
-                result = findNewPost(response, Post, lastIndex + 1, newPostList);
             }
-        })
-        .catch((error) => {
-            errorFunctions.sendServerError(response);
-            console.log('>false');
-            result = false;
-        });
-    //Every new posts were collected, now proceeding to send them
-    if (result === true) {
-        let finalPostList = [];
-        let finalIndex = 0;
-        //creating a list that only contain the data we want to send and in an antichronological order
-        for (const post of newPostList) {
-            finalPostList[finalIndex] = await doPostAction.formatSimplifiedPost(response, post);
-            finalIndex++;
+            scanIndex--;
         }
-        response.status(200).json(finalPostList);
+        return newPostList;
+    } catch (error) {
+        errorFunctions.sendServerError(response);
+        return null;
     }
 }
-exports.findNewPost = findNewPost;
+exports.findNewPosts = findNewPosts;
 
 //Return an array of every comments on a post
 async function findChildPostsContent(response, Post, childPosts) {
@@ -115,19 +110,19 @@ async function findHomepagePosts(response, Post, scanIndex, postLoadedByClient) 
 }
 exports.findHomepagePosts = findHomepagePosts;
 
-//
-async function getPostUploadedBefore(response, Post) {
+//getting the post index of the newly uploaded post
+async function getLastPostUploadedIndex(response, Post) {
     try {
         const newestPost = await Post.find().sort({ _id: -1 }).limit(1);
-        if (newestPost[0] === null) {
+        if (newestPost[0] === undefined) {
             //No existing post yet
-            return 0;
+            return -1;
         } else {
             //At least one post exists, we return its index+1
-            return newestPost[0].postUploadedBefore + 1;
+            return newestPost[0].postUploadedBefore;
         }
     } catch (error) {
         errorFunctions.sendServerError(response, error);
     }
 }
-exports.getPostUploadedBefore = getPostUploadedBefore;
+exports.getLastPostUploadedIndex = getLastPostUploadedIndex;

@@ -71,13 +71,11 @@ export async function getNewPosts(token, lastPostLoadedId, posts, setPostList, u
 }
 
 export async function deletePost(e, token, postToDeleteId, postList, setPostList) {
-    console.log(postList);
     e.preventDefault();
     const data = await communicateWithAPI(`http://localhost:8000/api/posts/${postToDeleteId}`, 'DELETE', token, null);
     const status = data.status;
     if (status === 200) {
         let newPostList = postList;
-        console.log(newPostList);
         for (let index in newPostList) {
             if (newPostList[index]._id === postToDeleteId) {
                 newPostList.splice(index, 1);
