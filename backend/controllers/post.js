@@ -40,10 +40,10 @@ exports.getOnePost = (request, response, next) => {
     const targetPostId = request.params.id;
     //Getting the requester account
     check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
-        //Checking if the post exists
-        check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
-            //Checking if the requester isn't restrained or suspended
-            if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
+        //Checking if the requester isn't restrained or suspended
+        if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
+            //Checking if the post exists
+            check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
                 //Getting the content of the comments
                 doPostAction.findChildPostsContent(response, Post, targetPost.childPosts, askingUserId).then((comments) => {
                     doAction.getUserDisplayName(response, targetPost.uploaderId).then((uploaderDisplayName) => {
@@ -63,8 +63,8 @@ exports.getOnePost = (request, response, next) => {
                         response.status(200).json(detailledPost);
                     });
                 });
-            }
-        });
+            });
+        }
     });
 };
 
@@ -129,10 +129,10 @@ exports.commentPost = (request, response, next) => {
     const targetPostId = request.params.id;
     //Getting the requester account
     check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
-        //Checking if the post exists
-        check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
-            //Checking if the requester isn't restrained or suspended
-            if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
+        //Checking if the requester isn't restrained or suspended
+        if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
+            //Checking if the post exists
+            check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
                 const contentImg = request.file ? doPostAction.buildImageUploadedURL(request) : 'no_img';
                 const contentTxt = request.body.uploadFormTxt;
                 if (checkPost.ifContentTxtIsValid(contentTxt)) {
@@ -165,8 +165,8 @@ exports.commentPost = (request, response, next) => {
                             .catch((error) => errorFunctions.sendServerError(response, error));
                     });
                 }
-            }
-        });
+            });
+        }
     });
 };
 
@@ -175,10 +175,10 @@ exports.likePost = (request, response, next) => {
     const targetPostId = request.params.id;
     //Getting the requester account
     check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
-        //Checking if the post exists
-        check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
-            //Checking if the requester isn't restrained or suspended
-            if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
+        //Checking if the requester isn't restrained or suspended
+        if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
+            //Checking if the post exists
+            check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
                 let actionName = 'Like';
                 let actionDone = false;
                 const userHasLiked = targetPost.userLikeList.includes(askingUserId);
@@ -211,8 +211,8 @@ exports.likePost = (request, response, next) => {
                 } else {
                     errorFunctions.sendBadRequestError(response, actionName + ` failed : bad request`);
                 }
-            }
-        });
+            });
+        }
     });
 };
 
@@ -221,12 +221,12 @@ exports.modifyPost = (request, response, next) => {
     const targetPostId = request.params.id;
     //Getting the requester account
     check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
-        //Checking if the post exists
-        check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
-            //Checking if the requester isn't restrained or suspended
-            if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
-                //Checking if the requester own the post
-                if (askingUserId === targetPost.uploaderId) {
+        //Checking if the requester isn't restrained or suspended
+        if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
+            //Checking if the post exists
+            check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
+                //Checking if the requester can do this action (deleting your own post or being admin)
+                if (askingUserId === targetPost.uploaderId || checkUser.ifHasRequiredPrivilege(response, askingUser, 2, 1) === true) {
                     const contentTxt = request.body.uploadFormTxt;
                     if (checkPost.ifContentTxtIsValid(contentTxt)) {
                         const oldContentImg = targetPost.contentImg;
@@ -268,11 +268,9 @@ exports.modifyPost = (request, response, next) => {
                             });
                         }
                     }
-                } else {
-                    errorFunctions.sendUnauthorizeError(response, "Impossible to edit this post : you don't own it");
                 }
-            }
-        });
+            });
+        }
     });
 };
 
@@ -281,22 +279,25 @@ exports.deletePost = (request, response, next) => {
     const targetPostId = request.params.id;
     //Getting the requester account
     check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
-        //Checking if the post exists
-        check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
-            //Checking if the requester isn't restrained or suspended
-            if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
-                //Checking if the requester can do this action (deleting your own post or being moderator/admin)
-                if (askingUserId === targetPost.uploaderId || checkUser.ifHasRequiredPrivilege(response, askingUser, 1, 1) === true) {
-                    //Deleting the image of the sauce on the server
-                    const filename = targetPost.contentImg.split('/images/')[1];
-                    fileSystem.unlink(`images/${filename}`, () => {
-                        //Deleting the sauce from the data base
-                        Post.deleteOne({ _id: targetPostId })
-                            .then(() => successFunctions.sendDeleteSuccess(response))
-                            .catch((error) => errorFunctions.sendServerError(response));
-                    });
-                }
-            }
-        });
+        //Checking if the requester isn't restrained or suspended
+        if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
+            //Checking if the post exists
+            check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
+                //Getting the post uploader
+                check.ifDocumentExists(response, User, { _id: targetPost.uploaderId }, 'Uploader account no longer exists: you must delete this post directly from the database', (uploaderUser) => {
+                    //Checking if the requester can do this action (deleting your own post or being moderator/admin)
+                    if (askingUserId === targetPost.uploaderId || checkUser.ifHasRequiredPrivilege(response, askingUser, uploaderUser.role + 1, 1) === true) {
+                        //Deleting the image of the sauce on the server
+                        const filename = targetPost.contentImg.split('/images/')[1];
+                        fileSystem.unlink(`images/${filename}`, () => {
+                            //Deleting the sauce from the data base
+                            Post.deleteOne({ _id: targetPostId })
+                                .then(() => successFunctions.sendDeleteSuccess(response))
+                                .catch((error) => errorFunctions.sendServerError(response));
+                        });
+                    }
+                });
+            });
+        }
     });
 };

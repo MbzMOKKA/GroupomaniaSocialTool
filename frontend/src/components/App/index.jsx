@@ -126,6 +126,7 @@ function App() {
             {editedPostObj === null ? null : <PostEdit editedPostObj={editedPostObj} setEditedPostObj={setEditedPostObj} posts={posts} setPostList={setPostList} />}
             {detailledPostId === null ? null : <PostDetails detailledPostId={detailledPostId} setDetailledPostId={setDetailledPostId} />}
             <div id="page_container">
+                PASSWORD : oc2022p7
                 <SignUp setPostList={setPostList} />
                 {token === null ? null : ( //If user is connected
                     <div>

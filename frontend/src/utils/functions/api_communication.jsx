@@ -75,7 +75,7 @@ export async function deletePost(e, token, postToDeleteId, postList, setPostList
     const data = await communicateWithAPI(`http://localhost:8000/api/posts/${postToDeleteId}`, 'DELETE', token, null);
     const status = data.status;
     if (status === 200) {
-        let newPostList = postList;
+        let newPostList = JSON.parse(JSON.stringify(postList));
         for (let index in newPostList) {
             if (newPostList[index]._id === postToDeleteId) {
                 newPostList.splice(index, 1);
