@@ -27,7 +27,7 @@ exports.getAllPosts = (request, response, next) => {
             //Finding the newest post uploaded
             doPostAction.getLastPostUploadedIndex(response, Post).then((lastPostIndex) => {
                 //Getting the last few post uploaded from there
-                doPostAction.findHomepagePosts(response, Post, lastPostIndex, postLoadedByClient).then((postList) => {
+                doPostAction.findHomepagePosts(response, Post, lastPostIndex, postLoadedByClient, askingUserId).then((postList) => {
                     response.status(200).json(postList);
                 });
             });
@@ -45,7 +45,7 @@ exports.getOnePost = (request, response, next) => {
             //Checking if the requester isn't restrained or suspended
             if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
                 //Getting the content of the comments
-                doPostAction.findChildPostsContent(response, Post, targetPost.childPosts).then((comments) => {
+                doPostAction.findChildPostsContent(response, Post, targetPost.childPosts, askingUserId).then((comments) => {
                     doAction.getUserDisplayName(response, targetPost.uploaderId).then((uploaderDisplayName) => {
                         //Sending the result
                         const detailledPost = {
@@ -53,6 +53,7 @@ exports.getOnePost = (request, response, next) => {
                             uploaderId: targetPost.uploaderId,
                             uploaderDisplayName: uploaderDisplayName,
                             comments: comments,
+                            youHaveLiked: checkUser.ifHasLikedPost(targetPost, askingUserId),
                             likeCounter: targetPost.userLikeList.length,
                             contentText: targetPost.contentText,
                             contentImg: targetPost.contentImg,
@@ -77,7 +78,7 @@ exports.getNewPosts = (request, response, next) => {
             //Finding the newest post uploaded
             doPostAction.getLastPostUploadedIndex(response, Post).then((lastPostIndex) => {
                 //Getting the last few post uploaded from there that the user doesn't have
-                doPostAction.findNewPosts(response, Post, lastPostIndex, lastPostSeenId).then((newPostList) => {
+                doPostAction.findNewPosts(response, Post, lastPostIndex, lastPostSeenId, askingUserId).then((newPostList) => {
                     if (newPostList !== null) {
                         response.status(200).json(newPostList);
                     }
@@ -155,7 +156,7 @@ exports.commentPost = (request, response, next) => {
                                 targetPost.childPosts.push(targetComment._id);
                                 //updating the parent post on the database to include the comment as a child
                                 doAction.updateDocumentOnDB(response, Post, targetPostId, targetPost, () => {
-                                    doPostAction.formatSimplifiedPost(response, targetComment).then((returnedUploadedComment) => {
+                                    doPostAction.formatSimplifiedPost(response, targetComment, askingUserId).then((returnedUploadedComment) => {
                                         response.status(201).json({ returnedUploadedComment });
                                     });
                                 });
@@ -178,21 +179,38 @@ exports.likePost = (request, response, next) => {
         check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
             //Checking if the requester isn't restrained or suspended
             if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
-                let message = 'Liked';
-                if (targetPost.userLikeList.includes(askingUserId) === false) {
-                    //User hasn't liked yet: we like
-                    targetPost.userLikeList.push(askingUserId);
-                } else {
-                    message = 'Unliked';
-                    //User has already liked: we remove the like
-                    const userIdIndexLike = targetPost.userLikeList.indexOf(askingUserId);
-                    targetPost.userLikeList.splice(userIdIndexLike);
+                let actionName = 'Like';
+                let actionDone = false;
+                const userHasLiked = targetPost.userLikeList.includes(askingUserId);
+                switch (request.body.action) {
+                    case true: //Trying to like
+                        if (userHasLiked === false) {
+                            //User hasn't liked yet: we like
+                            targetPost.userLikeList.push(askingUserId);
+                            actionDone = true;
+                        }
+                        break;
+                    case false: //Trying to unlike
+                        actionName = 'Unlike';
+                        if (userHasLiked === true) {
+                            //User hasn't liked yet: we like
+                            const userIdIndexLike = targetPost.userLikeList.indexOf(askingUserId);
+                            targetPost.userLikeList.splice(userIdIndexLike, 1);
+                            actionDone = true;
+                        }
+                        break;
+                    default: //Unknown action
+                        actionName = 'Unknown action';
+                        break;
                 }
-                const newLikeCounter = targetPost.userLikeList.length;
-                //Updating the likes on the data base
-                doAction.updateDocumentOnDB(response, Post, targetPostId, targetPost, () => {
-                    response.status(200).json({ message, newLikeCounter });
-                });
+                if (actionDone === true) {
+                    //Updating the likes on the data base if something has been done
+                    doAction.updateDocumentOnDB(response, Post, targetPostId, targetPost, () => {
+                        response.status(200).json({ message: actionName + ` successful` });
+                    });
+                } else {
+                    errorFunctions.sendBadRequestError(response, actionName + ` failed : bad request`);
+                }
             }
         });
     });

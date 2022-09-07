@@ -175,7 +175,7 @@ function App() {
                                         <div>
                                             <button
                                                 onClick={(e) => {
-                                                    likePost(e, token, post._id, posts);
+                                                    likePost(e, token, post._id, posts, setPostList);
                                                 }}
                                             >
                                                 LIKE ({post.likeCounter})

@@ -85,25 +85,34 @@ export async function deletePost(e, token, postToDeleteId, postList, setPostList
         setPostList(newPostList);
     }
 }
-export async function likePost(e, token, postToLikeId, postList) {
+export async function likePost(e, token, postToLikeId, postList, setPostList) {
     e.preventDefault();
-    const data = await communicateWithAPI(`http://localhost:8000/api/posts/like/${postToLikeId}`, 'POST', token, null);
-    const status = data.status;
-    if (status === 200) {
-        const body = await data.json();
-        for (let index in postList) {
-            if (postList[index]._id === postToLikeId) {
-                postList[index].likeCounter = body.newLikeCounter;
-                break;
+    let action = undefined;
+    //changing the like locally
+    let newPostList = JSON.parse(JSON.stringify(postList));
+    for (let index in newPostList) {
+        const post = newPostList[index];
+        if (post._id === postToLikeId) {
+            if (post.youHaveLiked === true) {
+                post.likeCounter--;
+            } else {
+                post.likeCounter++;
             }
+            post.youHaveLiked = !post.youHaveLiked;
+            action = post.youHaveLiked;
+            break;
         }
     }
+    setPostList(newPostList);
+    //sending the new desired like state to the server
+    await communicateWithAPI(`http://localhost:8000/api/posts/like/${postToLikeId}`, 'POST', token, { action });
 }
 
 export async function getPostDetails(token, postId, setPostDetails) {
     const data = await communicateWithAPI(`http://localhost:8000/api/posts/details/${postId}`, 'GET', token, null);
     if (data.status === 200) {
         const body = await data.json();
+        console.log(body);
         setPostDetails(body);
     }
 }

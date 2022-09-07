@@ -48,3 +48,11 @@ exports.ifHasRequiredPrivilege = (response, targetUser, minRoleRequired, minStat
     }
     return true;
 };
+
+//Check if the user account state is 'active'
+exports.ifHasLikedPost = (post, askingUserId) => {
+    if (post.userLikeList.includes(askingUserId) === true) {
+        return true;
+    }
+    return false;
+};
