@@ -27,6 +27,7 @@ exports.ifAuthRequestIsValid = (request, response) => {
     return true;
 };
 
+/*
 //Check if the user behind the request is allowed do to something
 exports.ifMatchesExpectedId = (request, response, expectedId) => {
     if (request.body.auth.userId === expectedId) {
@@ -34,7 +35,7 @@ exports.ifMatchesExpectedId = (request, response, expectedId) => {
     }
     errorFunctions.sendUnauthorizeError(response);
     return false;
-};
+};*/
 
 //Check if the user account state is 'active'
 exports.ifHasRequiredPrivilege = (response, targetUser, minRoleRequired, minStateDenied) => {

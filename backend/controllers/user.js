@@ -46,7 +46,7 @@ exports.modifyUserRole = (request, response, next) => {
     //Checking if the target exists
     check.ifDocumentExists(response, User, { _id: targetUserId }, "This user doesn't exists", (targetUser) => {
         //Getting the mod account
-        check.ifDocumentExists(response, User, { _id: modUserId }, "This user doesn't exists", (modUser) => {
+        check.ifDocumentExists(response, User, { _id: modUserId }, 'Invalid token', (modUser) => {
             //Checking if the mod have the privilege
             if (checkUser.ifHasRequiredPrivilege(response, modUser, 2, 1)) {
                 if (targetUser.role < 2) {
@@ -75,8 +75,8 @@ exports.modifyUserState = (request, response, next) => {
     //Checking if the target exists
     check.ifDocumentExists(response, User, { _id: targetUserId }, "This user doesn't exists", (targetUser) => {
         //Getting the mod account
-        check.ifDocumentExists(response, User, { _id: modUserId }, "This user doesn't exists", (modUser) => {
-            //Checking if the mod have the privilege
+        check.ifDocumentExists(response, User, { _id: modUserId }, 'Invalid token', (modUser) => {
+            //Checking if the mod have the privilege (own post or being admin)
             if (checkUser.ifHasRequiredPrivilege(response, modUser, targetUser.role + 1, 1)) {
                 if (modUser.role >= 2 || newState < 2) {
                     //Checking if the targetted user doesn't already have this state as its current

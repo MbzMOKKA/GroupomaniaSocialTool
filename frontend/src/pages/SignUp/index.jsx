@@ -22,32 +22,25 @@ function SignUp() {
         }
     }
     async function getAllUsers() {
-        const data = await communicateWithAPI('http://localhost:8000/api/users', 'GET', token, null);
-        if (data.status === 200) {
-            const body = await data.json();
-            setUserList(body);
+        const result = await communicateWithAPI('http://localhost:8000/api/users', 'GET', token, null);
+        if (result.status === 200) {
+            setUserList(result.data);
         }
     }
     async function setUserRole(e, userId, newRole) {
         const element = e.currentTarget.parentElement.querySelector('.userRole');
         e.preventDefault();
-        const data = await communicateWithAPI(`http://localhost:8000/api/users/role/${userId}`, 'PUT', token, { newRole });
-        const status = data.status;
-        const body = await data.json();
-        console.log(body);
-        if (status === 200) {
+        const result = await communicateWithAPI(`http://localhost:8000/api/users/role/${userId}`, 'PUT', token, { newRole });
+        if (result.status === 200) {
             element.textContent = `Role : ${newRole}`;
         }
     }
     async function setUserState(e, userId, newState) {
         const element = e.currentTarget.parentElement.querySelector('.userState');
         e.preventDefault();
-        let data = await communicateWithAPI(`http://localhost:8000/api/users/state/${userId}`, 'PUT', token, { newState });
-        const status = data.status;
-        const body = await data.json();
-        console.log(body);
-        if (status === 200) {
-            element.textContent = `Role : ${newState}`;
+        const result = await communicateWithAPI(`http://localhost:8000/api/users/state/${userId}`, 'PUT', token, { newState });
+        if (result.status === 200) {
+            element.textContent = `State : ${newState}`;
         }
     }
 

@@ -1,7 +1,7 @@
 //Imports
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { getPostDetails } from '../../utils/functions/api_communication';
+import { getPostDetails, communicateWithAPI } from '../../utils/functions/api_communication';
 import { useContext } from 'react';
 import { TokenContext } from '../../utils/context/index';
 import { formatDate } from '../../utils/functions/misc';
@@ -24,16 +24,13 @@ function PostDetails({ detailledPostId, setDetailledPostId }) {
         const config = {
             headers: {
                 'content-type': 'multipart/form-data',
-                Authorization: `Bearer ${token}`,
             },
         };
-        const url = `http://localhost:8000/api/posts/${detailledPostId}`;
-        const data = await axios.post(url, formData, config);
-        const status = data.status;
-        if (status === 201) {
+        const result = await communicateWithAPI(`http://localhost:8000/api/posts/${detailledPostId}`, 'POST', token, formData, config);
+        if (result.status === 201) {
             //Upload successful : adding your comment to the list displayed
             let comments = postDetails.comments;
-            comments.push(data.data.returnedUploadedComment);
+            comments.push(result.data.returnedUploadedComment);
             setPostDetails({ ...postDetails, comments });
         }
     }

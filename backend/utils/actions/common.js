@@ -15,7 +15,7 @@ exports.updateDocumentOnDB = (response, collection, documentId, newDocumentConte
 };
 
 //Return the display name (email) of an user from his account ID
-async function getUserDisplayName(response, userId) {
+async function getUserDisplayName(userId) {
     const user = await User.findById(userId);
     if (user === null) {
         //errorFunctions.sendServerError(response);

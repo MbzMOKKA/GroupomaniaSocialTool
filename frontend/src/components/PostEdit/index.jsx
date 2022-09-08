@@ -40,11 +40,10 @@ function PostEdit({ editedPostObj, setEditedPostObj, posts, setPostList }) {
             },
         };
         const url = `http://localhost:8000/api/posts/${editedPostObj._id}`;
-        const data = await axios.put(url, formData, config);
-        const status = data.status;
-        if (status === 200) {
+        const result = await axios.put(url, formData, config);
+        if (result.status === 200) {
             //Edit successful : closing the edit post component and updating the post
-            const body = data.data;
+            const body = result.data;
             for (let index in posts) {
                 if (posts[index]._id === body._id) {
                     posts[index].contentText = body.contentText;
@@ -54,21 +53,6 @@ function PostEdit({ editedPostObj, setEditedPostObj, posts, setPostList }) {
             }
             setEditedPostObj(null);
         }
-        /*
-        axios.put(url, formData, config).then((data) => {
-            const status = data.status;
-            if (status === 200) {
-                //Edit successful : closing the edit post component and updating the post
-                const body = await data.json();
-                for (let index in posts) {
-                    if (posts[index]._id === ) {
-                        
-                        break;
-                    }
-                }
-                setEditedPostObj(null);
-            }
-        });*/
     }
     return (
         <div id="edit_post_container">

@@ -25,9 +25,9 @@ exports.getAllPosts = (request, response, next) => {
         //Checking if the requester isn't suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
             //Finding the newest post uploaded
-            doPostAction.getLastPostUploadedIndex(response, Post).then((lastPostIndex) => {
+            doPostAction.getLastPostUploadedIndex(response).then((lastPostIndex) => {
                 //Getting the last few post uploaded from there
-                doPostAction.findHomepagePosts(response, Post, lastPostIndex, postLoadedByClient, askingUserId).then((postList) => {
+                doPostAction.findHomepagePosts(lastPostIndex, postLoadedByClient, askingUserId).then((postList) => {
                     response.status(200).json(postList);
                 });
             });
@@ -45,8 +45,8 @@ exports.getOnePost = (request, response, next) => {
             //Checking if the post exists
             check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
                 //Getting the content of the comments
-                doPostAction.findChildPostsContent(response, Post, targetPost.childPosts, askingUserId).then((comments) => {
-                    doAction.getUserDisplayName(response, targetPost.uploaderId).then((uploaderDisplayName) => {
+                doPostAction.findChildPostsContent(targetPost.childPosts, askingUserId).then((comments) => {
+                    doAction.getUserDisplayName(targetPost.uploaderId).then((uploaderDisplayName) => {
                         //Sending the result
                         const detailledPost = {
                             _id: targetPost._id,
@@ -76,9 +76,9 @@ exports.getNewPosts = (request, response, next) => {
         //Checking if the requester isn't suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
             //Finding the newest post uploaded
-            doPostAction.getLastPostUploadedIndex(response, Post).then((lastPostIndex) => {
+            doPostAction.getLastPostUploadedIndex(response).then((lastPostIndex) => {
                 //Getting the last few post uploaded from there that the user doesn't have
-                doPostAction.findNewPosts(response, Post, lastPostIndex, lastPostSeenId, askingUserId).then((newPostList) => {
+                doPostAction.findNewPosts(response, lastPostIndex, lastPostSeenId, askingUserId).then((newPostList) => {
                     if (newPostList !== null) {
                         response.status(200).json(newPostList);
                     }
@@ -98,7 +98,7 @@ exports.uploadPost = (request, response, next) => {
             const contentTxt = request.body.uploadFormTxt;
             if (checkPost.ifContentTxtIsValid(contentTxt)) {
                 //Couting how much posts existed on the database before
-                doPostAction.getLastPostUploadedIndex(response, Post).then((lastPostIndex) => {
+                doPostAction.getLastPostUploadedIndex(response).then((lastPostIndex) => {
                     const upload = new Post({
                         postUploadedBefore: lastPostIndex + 1,
                         uploaderId: askingUserId,
@@ -156,7 +156,7 @@ exports.commentPost = (request, response, next) => {
                                 targetPost.childPosts.push(targetComment._id);
                                 //updating the parent post on the database to include the comment as a child
                                 doAction.updateDocumentOnDB(response, Post, targetPostId, targetPost, () => {
-                                    doPostAction.formatSimplifiedPost(response, targetComment, askingUserId).then((returnedUploadedComment) => {
+                                    doPostAction.formatSimplifiedPost(targetComment, askingUserId).then((returnedUploadedComment) => {
                                         response.status(201).json({ returnedUploadedComment });
                                     });
                                 });

@@ -4,15 +4,16 @@ const check = require('../checks/common');
 const checkUser = require('../checks/user');
 const doPostAction = require('./post');
 const doAction = require('./common');
+const Post = require('../../models/post');
 
 //Exports
 
 //Create an object that represent an undetailled post shown that will be sent to the user
-async function formatSimplifiedPost(response, post, askingUserId) {
+async function formatSimplifiedPost(post, askingUserId) {
     return {
         _id: post._id,
         uploaderId: post.uploaderId,
-        uploaderDisplayName: await doAction.getUserDisplayName(response, post.uploaderId),
+        uploaderDisplayName: await doAction.getUserDisplayName(post.uploaderId),
         contentText: post.contentText,
         contentImg: post.contentImg,
         commentCounter: post.childPosts.length,
@@ -30,7 +31,7 @@ exports.buildImageUploadedURL = (request) => {
 };
 
 //Find a new post to add without having to refresh the page
-async function findNewPosts(response, Post, indexMax, lastPostSeenId, askingUserId) {
+async function findNewPosts(response, indexMax, lastPostSeenId, askingUserId) {
     //Finalizing the range of exploration
     const lastPostSeen = await Post.findById(lastPostSeenId);
     if (lastPostSeen === null) {
@@ -47,7 +48,7 @@ async function findNewPosts(response, Post, indexMax, lastPostSeenId, askingUser
             if (newPost !== null) {
                 //Checking if the post isn't a comment
                 if (newPost.parentPost === 'null') {
-                    const newPostFormatted = await doPostAction.formatSimplifiedPost(response, newPost, askingUserId);
+                    const newPostFormatted = await doPostAction.formatSimplifiedPost(newPost, askingUserId);
                     newPostList.push(newPostFormatted);
                 }
             }
@@ -62,13 +63,13 @@ async function findNewPosts(response, Post, indexMax, lastPostSeenId, askingUser
 exports.findNewPosts = findNewPosts;
 
 //Return an array of every comments on a post
-async function findChildPostsContent(response, Post, childPosts, askingUserId) {
+async function findChildPostsContent(childPosts, askingUserId) {
     let comments = [];
     for (let i = 0; i < childPosts.length; i++) {
         const childPostId = childPosts[i];
-        const comment = await Post.findOne({ _id: childPostId });
+        const comment = await Post.findById(childPostId);
         if (comment !== null) {
-            const commentFormatted = await doPostAction.formatSimplifiedPost(response, comment, askingUserId);
+            const commentFormatted = await doPostAction.formatSimplifiedPost(comment, askingUserId);
             comments.push(commentFormatted);
         }
     }
@@ -77,7 +78,7 @@ async function findChildPostsContent(response, Post, childPosts, askingUserId) {
 exports.findChildPostsContent = findChildPostsContent;
 
 //Return an array of X posts
-async function findHomepagePosts(response, Post, scanIndex, postLoadedByClient, askingUserId) {
+async function findHomepagePosts(scanIndex, postLoadedByClient, askingUserId) {
     //Ignoring the posts and comments that the user has already loaded
     while (postLoadedByClient > 0) {
         const post = await Post.findOne({ postUploadedBefore: scanIndex });
@@ -98,7 +99,7 @@ async function findHomepagePosts(response, Post, scanIndex, postLoadedByClient, 
         const post = await Post.findOne({ postUploadedBefore: scanIndex });
         if (post !== null) {
             if (post.parentPost === 'null') {
-                const postFormatted = await doPostAction.formatSimplifiedPost(response, post, askingUserId);
+                const postFormatted = await doPostAction.formatSimplifiedPost(post, askingUserId);
                 posts.push(postFormatted);
                 scanRemaining--;
             }
@@ -113,7 +114,7 @@ async function findHomepagePosts(response, Post, scanIndex, postLoadedByClient, 
 exports.findHomepagePosts = findHomepagePosts;
 
 //getting the post index of the newly uploaded post
-async function getLastPostUploadedIndex(response, Post) {
+async function getLastPostUploadedIndex(response) {
     try {
         const newestPost = await Post.find().sort({ _id: -1 }).limit(1);
         if (newestPost[0] === undefined) {

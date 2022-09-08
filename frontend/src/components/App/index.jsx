@@ -1,8 +1,8 @@
 //Imports
-import { getNewPosts, getAllPosts, deletePost, likePost } from '../../utils/functions/api_communication';
+import { getNewPosts, getAllPosts, deletePost, likePost, communicateWithAPI } from '../../utils/functions/api_communication';
 import { useState } from 'react';
 import SignUp from '../../pages/SignUp';
-import { formatDate } from '../../utils/functions/misc';
+import { formatDate, copyTextToClipboard, downloadFile } from '../../utils/functions/misc';
 import { useContext } from 'react';
 import { TokenContext } from '../../utils/context/index';
 import { useEffect } from 'react';
@@ -22,7 +22,7 @@ function App() {
     const [newCheckCounter, setNewCheckCounter] = useState(0);
     const [uploadContentTxt, setUploadContentTxt] = useState('');
     const [uploadContentImg, setUploadContentImg] = useState(null);
-    const newCheckCooldown = 1000 * 3;
+    const newCheckCooldown = 1000 * 5;
     const contentTxtLengthLimit = 1000;
 
     async function uploadPost(e) {
@@ -33,13 +33,10 @@ function App() {
         const config = {
             headers: {
                 'content-type': 'multipart/form-data',
-                Authorization: `Bearer ${token}`,
             },
         };
-        const url = `http://localhost:8000/api/posts`;
-        const data = await axios.post(url, formData, config);
-        const status = data.status;
-        if (status === 201) {
+        const result = await communicateWithAPI(`http://localhost:8000/api/posts`, 'POST', token, formData, config);
+        if (result.status === 201) {
             //Upload successful : resetting the form
             setUploadContentTxt('');
             setUploadContentImg(null);
@@ -63,6 +60,14 @@ function App() {
                 img.src = '#';
             } else {
                 img.src = URL.createObjectURL(newFile);
+            }
+        }
+        const button = document.getElementById('uploadDownload');
+        if (button !== null) {
+            if (newFile === null) {
+                button.href = '#';
+            } else {
+                button.href = URL.createObjectURL(newFile);
             }
         }
     }
@@ -126,7 +131,13 @@ function App() {
             {editedPostObj === null ? null : <PostEdit editedPostObj={editedPostObj} setEditedPostObj={setEditedPostObj} posts={posts} setPostList={setPostList} />}
             {detailledPostId === null ? null : <PostDetails detailledPostId={detailledPostId} setDetailledPostId={setDetailledPostId} />}
             <div id="page_container">
-                PASSWORD : oc2022p7
+                <button
+                    onClick={() => {
+                        copyTextToClipboard(`oc2022p7`);
+                    }}
+                >
+                    COPY PASSWORD
+                </button>
                 <SignUp setPostList={setPostList} />
                 {token === null ? null : ( //If user is connected
                     <div>
@@ -134,7 +145,6 @@ function App() {
                             <p>Token : {token}</p>
                             <p>LocalStorage token : {localStorage.getItem('Token')}</p>
                         </div>
-
                         <div>
                             <h1>------------------ POSTS ------------------</h1>
                             <div>
@@ -154,7 +164,7 @@ function App() {
                                     ) : null}
 
                                     <label htmlFor="uploadFormImg">Image :</label>
-                                    <input id="uploadFormImg" name="uploadFormImg" type="file" accept="image/png, image/jpg, image/jpeg, image/gif" onChange={(e) => userSelectUploadImg(e)} />
+                                    <input id="uploadFormImg" name="uploadFormImg" type="file" /*accept="image/png, image/jpg, image/jpeg, image/gif"*/ onChange={(e) => userSelectUploadImg(e)} />
                                     <img id="uploadFormImgPreview" src="#" alt="upload content" width={200} height={200} />
                                     <button type="submit">UPLOAD</button>
                                 </form>
@@ -167,7 +177,19 @@ function App() {
                                         <p>
                                             <b>"{post.contentText}"</b>
                                         </p>
-                                        {post.contentImg !== 'no_img' ? <img className="postImg" src={post.contentImg} alt="Post content" /> : null}
+                                        {post.contentImg !== 'no_img' ? (
+                                            <div>
+                                                <img className="postImg" src={post.contentImg} alt="Post content" />
+                                                <button
+                                                    onClick={() => {
+                                                        downloadFile(post.contentImg, 'attached_file_' + post._id);
+                                                    }}
+                                                >
+                                                    DOWNLOAD
+                                                </button>
+                                            </div>
+                                        ) : null}
+
                                         <p> Details : </p>
                                         <p>ID : {post._id}</p>
                                         <p>UploaderId : {post.uploaderId}</p>
