@@ -1,11 +1,16 @@
 //Imports
-//import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { StyledTitle, StyledExplaination } from './style';
 
 function ErrorNotFound() {
     return (
-        <div>
-            <h1>Erreur 404</h1>
-        </div>
+        <main className="padded-app-container">
+            <StyledTitle>Erreur 404</StyledTitle>
+            <StyledExplaination>Cette page n'existe pas</StyledExplaination>
+            <p>
+                <Link to="/">Retourner en lieu sûr</Link>
+            </p>
+        </main>
     );
 }
 

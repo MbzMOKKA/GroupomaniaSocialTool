@@ -1,7 +1,7 @@
 //Imports
 import { Link, Navigate } from 'react-router-dom';
 import { useState } from 'react';
-import { StyledButtonLogIn, StyledForm, StyledNoAccountMsg } from '../style';
+import { StyledSubmitButton, StyledForm, StyledInfo } from '../style';
 import InputContainer from '../../../components/common/InputContainer/index';
 import ErrorMsg from '../../../components/common/ErrorMsg/index';
 import { submitLogIn } from '../../../utils/api_communication/index';
@@ -14,12 +14,13 @@ function LogIn() {
     const [password, setPassword] = useState('');
     const [showErrorApiResponse, setShowErrorApiResponse] = useState(null);
     return (
-        <div>
+        <main>
             {
                 //Redirect to Homepage when logged in
                 token !== null ? <Navigate to="/" replace={true} /> : null
             }
             <StyledForm
+                className="padded-app-container"
                 onSubmit={(e) => {
                     e.preventDefault();
                     submitLogIn(token, updateToken, { email, password }, setShowErrorApiResponse);
@@ -55,16 +56,16 @@ function LogIn() {
                         showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null
                     }
                 </div>
-                <StyledButtonLogIn type="submit">Se connecter</StyledButtonLogIn>
+                <StyledSubmitButton type="submit">Se connecter</StyledSubmitButton>
             </StyledForm>
-            <StyledNoAccountMsg>
+            <StyledInfo>
                 <p>
                     <i className="fa-solid fa-circle-info" />
                     Pas encore de compte ?<br />
                     <Link to="/signup">Créez-en un ici !</Link>
                 </p>
-            </StyledNoAccountMsg>
-        </div>
+            </StyledInfo>
+        </main>
     );
 }
 

@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import GlobalStyle from './utils/style/GlobalStyle';
 import ErrorNotFound from './pages/ErrorNotFound/index';
 import Home from './pages/Home/index';
+import UserList from './pages/UserList/index';
 import LogIn from './pages/auth/LogIn/index';
 import SignUp from './pages/auth/SignUp/index';
 import Header from './components/Header/index';
@@ -21,6 +22,7 @@ root.render(
                 <Route exact path="/" element={<Home />}></Route>
                 <Route path="/login" element={<LogIn />}></Route>
                 <Route path="/signup" element={<SignUp />}></Route>
+                <Route path="/users" element={<UserList />}></Route>
                 <Route path="*" element={<ErrorNotFound />}></Route>
             </Routes>
         </SessionProvider>

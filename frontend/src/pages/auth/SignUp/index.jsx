@@ -1,7 +1,7 @@
 //Imports
 import { Link, Navigate } from 'react-router-dom';
 import { useState } from 'react';
-import { StyledButtonLogIn, StyledForm, StyledNoAccountMsg } from '../style';
+import { StyledSubmitButton, StyledForm, StyledInfo } from '../style';
 import InputContainer from '../../../components/common/InputContainer/index';
 import ErrorMsg from '../../../components/common/ErrorMsg/index';
 import { submitSignUp } from '../../../utils/api_communication/index';
@@ -26,12 +26,13 @@ function SignUp() {
     }
 
     return (
-        <div>
+        <main>
             {
                 //Redirect to Homepage when logged in
                 token !== null ? <Navigate to="/" replace={true} /> : null
             }
             <StyledForm
+                className="padded-app-container"
                 onSubmit={(e) => {
                     e.preventDefault();
                     if (checkIfBothPasswordMatches() === true) {
@@ -89,16 +90,16 @@ function SignUp() {
                         showErrorPasswordNotSame === true ? <ErrorMsg>· La confirmation du mot de passe ne correspond pas !</ErrorMsg> : null
                     }
                 </div>
-                <StyledButtonLogIn type="submit">Créer un compte</StyledButtonLogIn>
+                <StyledSubmitButton type="submit">Créer un compte</StyledSubmitButton>
             </StyledForm>
-            <StyledNoAccountMsg>
+            <StyledInfo>
                 <p>
                     <i className="fa-solid fa-circle-info" />
                     Vous avez déjà un compte ?<br />
                     <Link to="/login">Connectez-vous ici !</Link>
                 </p>
-            </StyledNoAccountMsg>
-        </div>
+            </StyledInfo>
+        </main>
     );
 }
 

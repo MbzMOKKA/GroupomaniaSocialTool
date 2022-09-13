@@ -59,3 +59,13 @@ export async function submitLogIn(token, updateToken, { email, password }, setSh
         setShowErrorApiResponse(error.response.data.message);
     }
 }
+
+export async function getAllUsers(token, updateToken, setUsers, setShowErrorApiResponse) {
+    try {
+        const result = await communicateWithAPI('http://localhost:8000/api/users', 'GET', token, null);
+        setUsers(result.data);
+        setShowErrorApiResponse(null);
+    } catch (error) {
+        setShowErrorApiResponse(error.response.data.message);
+    }
+}

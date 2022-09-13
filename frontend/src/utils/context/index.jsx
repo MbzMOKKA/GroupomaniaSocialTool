@@ -4,6 +4,7 @@ export const SessionContext = createContext();
 
 export const SessionProvider = ({ children }) => {
     const [token, setToken] = useState(null);
+    const [accountId, setAccountId] = useState('???');
     const [accountDisplayName, setAccountDisplayName] = useState('???');
 
     const updateToken = (newToken) => {
@@ -11,5 +12,5 @@ export const SessionProvider = ({ children }) => {
         setToken(newToken);
     };
 
-    return <SessionContext.Provider value={{ token, updateToken, accountDisplayName, setAccountDisplayName }}>{children}</SessionContext.Provider>;
+    return <SessionContext.Provider value={{ token, updateToken, accountId, setAccountId, accountDisplayName, setAccountDisplayName }}>{children}</SessionContext.Provider>;
 };

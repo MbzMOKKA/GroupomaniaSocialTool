@@ -3,7 +3,7 @@ import icon from '../../assets/icon-left-font-monochrome-white.svg';
 import { useState, useEffect, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import BubbleNav from '../navigation/BubbleNav/index';
-import { StyledLinkLogo, StyledIcon, StyledHeader, StyledButtonOpenNav } from './style.jsx';
+import { StyledIconContainer, StyledIcon, StyledHeader, StyledButtonOpenNav } from './style.jsx';
 import { SessionContext } from '../../utils/context/index';
 
 //Component
@@ -25,12 +25,12 @@ function Header() {
 
     //Render
     return (
-        <div>
+        <>
             {navIsOpen === true ? <BubbleNav setNavIsOpen={setNavIsOpen} /> : null}
             <StyledHeader>
-                <StyledLinkLogo to="/">
-                    <StyledIcon id="styledicon" src={icon} alt="icone Groupomania" />
-                </StyledLinkLogo>
+                <StyledIconContainer>
+                    <StyledIcon src={icon} alt="icone Groupomania" />
+                </StyledIconContainer>
                 {location.pathname !== '/signup' && location.pathname !== '/login' && (
                     <StyledButtonOpenNav
                         onClick={() => {
@@ -41,7 +41,7 @@ function Header() {
                     </StyledButtonOpenNav>
                 )}
             </StyledHeader>
-        </div>
+        </>
     );
 }
 

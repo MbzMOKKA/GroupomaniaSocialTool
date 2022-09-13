@@ -8,7 +8,7 @@ export const StyledForm = styled.form`
     flex-direction: column;
     align-items: center;
     div {
-        width: 85%;
+        width: 95%;
     }
     .input-container {
         margin-top: 20px;
@@ -19,13 +19,13 @@ export const StyledForm = styled.form`
         margin-bottom: 10px;
     }
 `;
-export const StyledButtonLogIn = styled.button`
-    width: 95%;
+export const StyledSubmitButton = styled.button`
+    width: 100%;
     margin-top: 30px;
     padding-top: 12px;
     padding-bottom: 12px;
 `;
-export const StyledNoAccountMsg = styled.div`
+export const StyledInfo = styled.div`
     background-color: ${colors.backgroundDarker};
     width: 100%;
     margin-top 100px;

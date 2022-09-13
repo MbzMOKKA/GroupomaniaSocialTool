@@ -1,15 +1,13 @@
 //Imports
 import colors from '../../utils/style/colors';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 
 //Exports
-export const StyledLinkLogo = styled(Link)`
-    width: 90%;
+export const StyledIconContainer = styled.div`
     max-width: 300px;
 `;
 export const StyledIcon = styled.img`
-    width: 100%;
+    width: 90%;
 `;
 export const StyledHeader = styled.header`
     background-color: ${colors.primary};

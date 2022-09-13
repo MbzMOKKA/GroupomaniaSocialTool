@@ -1,22 +1,26 @@
 //Imports
-import { StyledBackground, StyledChildrenContainer } from './style.jsx';
+import { StyledBluring, StyledBackground, StyledChildrenContainer } from './style.jsx';
 
 //Component
 function BubbleContainer({ setNavIsOpen, children }) {
     return (
-        <StyledBackground
-            onClick={() => {
-                setNavIsOpen(false);
-            }}
-        >
-            <StyledChildrenContainer
-                onClick={(e) => {
-                    e.stopPropagation();
+        <>
+            <StyledBluring></StyledBluring>
+            <StyledBackground
+                onClick={() => {
+                    setNavIsOpen(false);
                 }}
             >
-                {children}
-            </StyledChildrenContainer>
-        </StyledBackground>
+                <StyledChildrenContainer
+                    className="padded-app-container"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                    }}
+                >
+                    {children}
+                </StyledChildrenContainer>
+            </StyledBackground>
+        </>
     );
 }
 
