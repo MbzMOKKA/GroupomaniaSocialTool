@@ -14,6 +14,6 @@ module.exports = (request, response, next) => {
         };
         next();
     } catch (error) {
-        response.status(401).json({ message: 'Token expired or invalid' });
+        response.status(401).json({ message: `Jeton d'authentification invalide ou expiré` });
     }
 };

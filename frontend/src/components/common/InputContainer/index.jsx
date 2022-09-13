@@ -3,7 +3,7 @@ import { StyledContainer } from './style.jsx';
 
 //Component
 function InputContainer({ children }) {
-    return <StyledContainer>{children}</StyledContainer>;
+    return <StyledContainer className="input-container">{children}</StyledContainer>;
 }
 
 //Exports

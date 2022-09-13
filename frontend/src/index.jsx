@@ -5,8 +5,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import GlobalStyle from './utils/style/GlobalStyle';
 import ErrorNotFound from './pages/ErrorNotFound/index';
 import Home from './pages/Home/index';
-import LogIn from './pages/LogIn/index';
-import SignUp from './pages/SignUp/index';
+import LogIn from './pages/auth/LogIn/index';
+import SignUp from './pages/auth/SignUp/index';
 import Header from './components/Header/index';
 import { SessionProvider } from './utils/context/index';
 

@@ -33,22 +33,29 @@ export async function communicateWithAPI(url, verb, token, body, overwrittenConf
     }
 }
 
-export async function submitSignUp(e, token, updateToken, { email, password }) {
-    e.preventDefault();
-    const result = await communicateWithAPI('http://localhost:8000/api/auth/signup', 'POST', token, {
-        email,
-        password,
-    });
-    if (result.status === 201) {
-        //account creation success
-        submitLogIn(e, token, updateToken, { email, password });
+export async function submitSignUp(token, updateToken, { email, password }, setShowErrorApiResponse) {
+    try {
+        const result = await communicateWithAPI('http://localhost:8000/api/auth/signup', 'POST', token, {
+            email,
+            password,
+        });
+        if (result.status === 201) {
+            //account creation success
+            submitLogIn(token, updateToken, { email, password }, setShowErrorApiResponse);
+        }
+    } catch (error) {
+        setShowErrorApiResponse(error.response.data.message);
     }
 }
 
-export async function submitLogIn(e, token, updateToken, { email, password }) {
-    const result = await communicateWithAPI('http://localhost:8000/api/auth/login', 'POST', token, {
-        email,
-        password,
-    });
-    updateToken(result.data.token);
+export async function submitLogIn(token, updateToken, { email, password }, setShowErrorApiResponse) {
+    try {
+        const result = await communicateWithAPI('http://localhost:8000/api/auth/login', 'POST', token, {
+            email,
+            password,
+        });
+        updateToken(result.data.token);
+    } catch (error) {
+        setShowErrorApiResponse(error.response.data.message);
+    }
 }

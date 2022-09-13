@@ -1,9 +1,24 @@
 //Imports
-//import styled from 'styled-components';
+import { /*Link, */ Navigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { SessionContext } from '../../utils/context/index';
 
 function Home() {
+    const { token, updateToken } = useContext(SessionContext);
     return (
         <div>
+            {
+                //Redirect to Login page when disconnected
+                token === null ? <Navigate to="/login" replace={true} /> : null
+            }
+            <button
+                onClick={(e) => {
+                    e.preventDefault();
+                    updateToken(null);
+                }}
+            >
+                {token}
+            </button>
             <h1>Dernières publications :</h1>
             <i className="fa-regular fa-comment-dots" />
             Commentaires

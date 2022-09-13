@@ -1,6 +1,7 @@
 //Imports
 import icon from '../../assets/icon-left-font-monochrome-white.svg';
 import { useState, useEffect, useContext } from 'react';
+import { useLocation } from 'react-router-dom';
 import BubbleNav from '../navigation/BubbleNav/index';
 import { StyledLinkLogo, StyledIcon, StyledHeader, StyledButtonOpenNav } from './style.jsx';
 import { SessionContext } from '../../utils/context/index';
@@ -9,6 +10,7 @@ import { SessionContext } from '../../utils/context/index';
 function Header() {
     const { updateToken } = useContext(SessionContext);
     const [navIsOpen, setNavIsOpen] = useState(false);
+    const location = useLocation();
 
     //Getting the token from the storage when loading the page
     useEffect(() => {
@@ -29,13 +31,15 @@ function Header() {
                 <StyledLinkLogo to="/">
                     <StyledIcon id="styledicon" src={icon} alt="icone Groupomania" />
                 </StyledLinkLogo>
-                <StyledButtonOpenNav
-                    onClick={() => {
-                        setNavIsOpen(true);
-                    }}
-                >
-                    <i className="fa-solid fa-ellipsis" />
-                </StyledButtonOpenNav>
+                {location.pathname !== '/signup' && location.pathname !== '/login' && (
+                    <StyledButtonOpenNav
+                        onClick={() => {
+                            setNavIsOpen(true);
+                        }}
+                    >
+                        <i className="fa-solid fa-ellipsis" />
+                    </StyledButtonOpenNav>
+                )}
             </StyledHeader>
         </div>
     );

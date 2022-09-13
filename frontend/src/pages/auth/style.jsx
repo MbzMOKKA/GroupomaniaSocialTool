@@ -9,8 +9,14 @@ export const StyledForm = styled.form`
     align-items: center;
     div {
         width: 85%;
-        margin-top: 30px;
-        margin-bottom: 30px;
+    }
+    .input-container {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .error-msg {
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
 `;
 export const StyledButtonLogIn = styled.button`

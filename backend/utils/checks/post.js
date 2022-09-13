@@ -11,10 +11,10 @@ exports.ifContentTxtIsValid = (contentText) => {
     const lengthMax = 1000;
     const lengthMin = 1;
     if (contentText.length > lengthMax) {
-        errorFunctions.sendBadRequestError(response, `Post text content cannot be longer than ${lengthMax} caracters`);
+        errorFunctions.sendBadRequestError(response, `Une publication ne peut pas contenir plus de ${lengthMax} caractères`);
     } else {
         if (contentText.length < lengthMin) {
-            errorFunctions.sendBadRequestError(response, `Post text content cannot be empty`);
+            errorFunctions.sendBadRequestError(response, `Le contenu texte ne peut pas être vide`);
         } else {
             return true;
         }
