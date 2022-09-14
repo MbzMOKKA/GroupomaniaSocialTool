@@ -8,20 +8,22 @@ import ErrorMsg from '../../components/common/ErrorMsg/index';
 import { userRoleString, userStateString } from '../../utils/misc/index';
 
 function UserList() {
-    const { token, updateToken } = useContext(SessionContext);
+    const { token, updateToken, accountInfo } = useContext(SessionContext);
     const [showErrorApiResponse, setShowErrorApiResponse] = useState(null);
     const [users, setUsers] = useState([]);
     const [showModToolsId, setShowModToolsId] = useState(null);
     //Getting the users from the API
     useEffect(() => {
-        getAllUsers(token, updateToken, setUsers, setShowErrorApiResponse);
+        if (token !== null) {
+            getAllUsers(token, updateToken, setUsers, setShowErrorApiResponse);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
     return (
         <main className="padded-app-container">
             {
                 //Redirect to Login page when disconnected
-                token === null ? <Navigate to="/login" replace={true} /> : null
+                //token === null ? <Navigate to="/login" replace={true} /> : null
             }
             <h1>Tout les utilisateurs</h1>
             <div>
@@ -33,16 +35,17 @@ function UserList() {
             <StyledUserList>
                 {users.map((user) => {
                     return (
-                        <StyledUserCard key={user._id}>
+                        <StyledUserCard key={user._id} yourself={accountInfo.userId === user._id}>
                             <StyledDisplayName>
                                 <i className="fa-solid fa-circle-user" />
                                 {user.email}
+                                {accountInfo.userId === user._id ? <> (Moi)</> : null}
                             </StyledDisplayName>
                             <StyledUserInfo>
                                 <p className="user-role">Rôle : {userRoleString(user.role)}</p>
                                 <p className="user-state">État : {userStateString(user.state)}</p>
                             </StyledUserInfo>
-                            {user.role === 2 ? (
+                            {accountInfo.userId === user._id || accountInfo.state > 0 || accountInfo.role <= user.role ? (
                                 <StyledShowModButton canInterract={false}>Aucune action possible</StyledShowModButton>
                             ) : (
                                 <>
@@ -57,7 +60,7 @@ function UserList() {
                                                 Fermer les options
                                             </StyledShowModButton>
                                             <StyledUserManage>
-                                                {user.role === 0 && (
+                                                {user.role === 0 && accountInfo.role > 1 && (
                                                     <button
                                                         onClick={(e) => {
                                                             setUserRole(token, updateToken, users, setUsers, user._id, 1, setShowErrorApiResponse);
@@ -67,7 +70,7 @@ function UserList() {
                                                         Promouvoir (modérateur)
                                                     </button>
                                                 )}
-                                                {user.role === 1 && (
+                                                {user.role === 1 && accountInfo.role > 1 && (
                                                     <button
                                                         onClick={(e) => {
                                                             setUserRole(token, updateToken, users, setUsers, user._id, 0, setShowErrorApiResponse);
@@ -77,7 +80,7 @@ function UserList() {
                                                         Rétrograder (staff)
                                                     </button>
                                                 )}
-                                                {user.state !== 0 && (
+                                                {user.state !== 0 && accountInfo.role > user.role && (
                                                     <button
                                                         onClick={(e) => {
                                                             setUserState(token, updateToken, users, setUsers, user._id, 0, setShowErrorApiResponse);
@@ -87,7 +90,7 @@ function UserList() {
                                                         Réactiver
                                                     </button>
                                                 )}
-                                                {user.state !== 1 && (
+                                                {user.state !== 1 && accountInfo.role > user.role && (
                                                     <button
                                                         onClick={(e) => {
                                                             setUserState(token, updateToken, users, setUsers, user._id, 1, setShowErrorApiResponse);
@@ -97,7 +100,7 @@ function UserList() {
                                                         Restreindre
                                                     </button>
                                                 )}
-                                                {user.state !== 2 && (
+                                                {user.state !== 2 && accountInfo.role > 1 && accountInfo.role > user.role && (
                                                     <button
                                                         onClick={(e) => {
                                                             setUserState(token, updateToken, users, setUsers, user._id, 2, setShowErrorApiResponse);

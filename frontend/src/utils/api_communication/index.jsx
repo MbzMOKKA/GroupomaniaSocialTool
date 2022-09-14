@@ -85,6 +85,18 @@ export async function submitLogIn(token, updateToken, { email, password }, setSh
     }
 }
 
+export async function getMyAccountInfo(token, updateToken, updateAccountInfo, redirect) {
+    try {
+        const result = await communicateWithAPI('http://localhost:8000/api/users/me', 'GET', token, null);
+        const account = result.data;
+        updateAccountInfo(account.userId, account.displayName, account.role, account.state);
+    } catch (error) {
+        if (error.response.status !== 500) {
+            updateToken(null);
+        }
+    }
+}
+
 export async function getAllUsers(token, updateToken, setUsers, setShowErrorApiResponse) {
     try {
         const result = await communicateWithAPI('http://localhost:8000/api/users', 'GET', token, null);

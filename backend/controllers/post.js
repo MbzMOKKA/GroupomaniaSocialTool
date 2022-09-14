@@ -21,7 +21,7 @@ exports.getAllPosts = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const postLoadedByClient = request.params.loaded;
     //Getting the requester account
-    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Token invalide', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, `Jeton d'authentification invalide`, (askingUser) => {
         //Checking if the requester isn't suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
             //Finding the newest post uploaded
@@ -39,7 +39,7 @@ exports.getOnePost = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const targetPostId = request.params.id;
     //Getting the requester account
-    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Token invalide', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, `Jeton d'authentification invalide`, (askingUser) => {
         //Checking if the requester isn't restrained or suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
             //Checking if the post exists
@@ -72,7 +72,7 @@ exports.getNewPosts = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const lastPostSeenId = request.params.id;
     //Getting the requester account
-    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Token invalide', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, `Jeton d'authentification invalide`, (askingUser) => {
         //Checking if the requester isn't suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
             //Finding the newest post uploaded
@@ -91,7 +91,7 @@ exports.getNewPosts = (request, response, next) => {
 exports.uploadPost = (request, response, next) => {
     const askingUserId = request.auth.userId;
     //Getting the requester account
-    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Token invalide', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, `Jeton d'authentification invalide`, (askingUser) => {
         //Checking if the requester isn't restrained or suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
             const contentImg = request.file ? doPostAction.buildImageUploadedURL(request) : 'no_img';
@@ -128,7 +128,7 @@ exports.commentPost = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const targetPostId = request.params.id;
     //Getting the requester account
-    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Token invalide', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, `Jeton d'authentification invalide`, (askingUser) => {
         //Checking if the requester isn't restrained or suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
             //Checking if the post exists
@@ -174,7 +174,7 @@ exports.likePost = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const targetPostId = request.params.id;
     //Getting the requester account
-    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Token invalide', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, `Jeton d'authentification invalide`, (askingUser) => {
         //Checking if the requester isn't restrained or suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
             //Checking if the post exists
@@ -220,7 +220,7 @@ exports.modifyPost = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const targetPostId = request.params.id;
     //Getting the requester account
-    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Token invalide', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, `Jeton d'authentification invalide`, (askingUser) => {
         //Checking if the requester isn't restrained or suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
             //Checking if the post exists
@@ -278,7 +278,7 @@ exports.deletePost = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const targetPostId = request.params.id;
     //Getting the requester account
-    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Token invalide', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, `Jeton d'authentification invalide`, (askingUser) => {
         //Checking if the requester isn't restrained or suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
             //Checking if the post exists

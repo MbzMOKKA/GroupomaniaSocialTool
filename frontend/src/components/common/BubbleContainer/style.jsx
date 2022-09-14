@@ -32,6 +32,15 @@ export const StyledChildrenContainer = styled.div`
     border: 2px white solid;
     border-radius: 12px;
     padding: 20px;
+    i {
+        font-size: 22px;
+        margin-right: 6px;
+    }
+    p {
+        font-size: 22px;
+        padding-bottom: 12px;
+        border-bottom: 1px white solid;
+    }
     button {
         font-size: 26px;
         width: 100%;

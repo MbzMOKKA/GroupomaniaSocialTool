@@ -4,13 +4,29 @@ export const SessionContext = createContext();
 
 export const SessionProvider = ({ children }) => {
     const [token, setToken] = useState(null);
-    const [accountId, setAccountId] = useState('???');
-    const [accountDisplayName, setAccountDisplayName] = useState('???');
+    const [accountInfo, setAccountInfo] = useState({ userId: '???', displayName: '???', role: 0, state: 0 });
 
-    const updateToken = (newToken) => {
+    function updateToken(newToken) {
         localStorage.setItem('token', newToken);
         setToken(newToken);
-    };
+    }
 
-    return <SessionContext.Provider value={{ token, updateToken, accountId, setAccountId, accountDisplayName, setAccountDisplayName }}>{children}</SessionContext.Provider>;
+    function updateAccountInfo(newUserId, newDisplayName, newRole, newState) {
+        let updatedAccountInfo = JSON.parse(JSON.stringify(accountInfo));
+        if (newUserId !== null) {
+            updatedAccountInfo.userId = newUserId;
+        }
+        if (newDisplayName !== null) {
+            updatedAccountInfo.displayName = newDisplayName;
+        }
+        if (newRole !== null) {
+            updatedAccountInfo.role = newRole;
+        }
+        if (newState !== null) {
+            updatedAccountInfo.state = newState;
+        }
+        setAccountInfo(updatedAccountInfo);
+    }
+
+    return <SessionContext.Provider value={{ token, updateToken, accountInfo, updateAccountInfo }}>{children}</SessionContext.Provider>;
 };

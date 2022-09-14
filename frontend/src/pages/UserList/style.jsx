@@ -7,7 +7,7 @@ export const StyledUserList = styled.ul`
     margin-top: 24px;
 `;
 export const StyledUserCard = styled.li`
-    background-color: ${colors.backgroundLighter};
+    background-color: ${({ yourself }) => (yourself === true ? `${colors.yourself}` : `${colors.backgroundLighter}`)};
     border-radius: 12px;
     margin-bottom: 12px;
     padding: 10px;

@@ -16,7 +16,7 @@ const successFunctions = require('../utils/responses/successes');
 exports.getAllUser = (request, response, next) => {
     const askingUserId = request.auth.userId;
     //Getting the requester account
-    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Token invalide', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, `Jeton d'authentification invalide`, (askingUser) => {
         //Checking if the requester isn't suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
             //Getting every user documents from the database
@@ -38,6 +38,24 @@ exports.getAllUser = (request, response, next) => {
         }
     });
 };
+exports.getMyAccountInfo = (request, response, next) => {
+    const askingUserId = request.auth.userId;
+    //Getting the requester account
+    check.ifDocumentExists(response, User, { _id: askingUserId }, `Jeton d'authentification invalide`, (askingUser) => {
+        //Checking if the requester isn't suspended
+        if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
+            doAction.getUserDisplayName(askingUserId).then((displayName) => {
+                const accountInfo = {
+                    userId: askingUserId,
+                    displayName: displayName,
+                    role: askingUser.role,
+                    state: askingUser.state,
+                };
+                response.status(200).json(accountInfo);
+            });
+        }
+    });
+};
 
 exports.modifyUserRole = (request, response, next) => {
     const modUserId = request.auth.userId;
@@ -46,7 +64,7 @@ exports.modifyUserRole = (request, response, next) => {
     //Checking if the target exists
     check.ifDocumentExists(response, User, { _id: targetUserId }, "Cet utilisateur n'existe pas", (targetUser) => {
         //Getting the mod account
-        check.ifDocumentExists(response, User, { _id: modUserId }, 'Token invalide', (modUser) => {
+        check.ifDocumentExists(response, User, { _id: modUserId }, `Jeton d'authentification invalide`, (modUser) => {
             //Checking if the mod have the privilege
             if (checkUser.ifHasRequiredPrivilege(response, modUser, 2, 1)) {
                 if (targetUser.role < 2) {
@@ -75,8 +93,8 @@ exports.modifyUserState = (request, response, next) => {
     //Checking if the target exists
     check.ifDocumentExists(response, User, { _id: targetUserId }, "Cet utilisateur n'existe pas", (targetUser) => {
         //Getting the mod account
-        check.ifDocumentExists(response, User, { _id: modUserId }, 'Token invalide', (modUser) => {
-            //Checking if the mod have the privilege (own post or being admin)
+        check.ifDocumentExists(response, User, { _id: modUserId }, `Jeton d'authentification invalide`, (modUser) => {
+            //Checking if the mod have the privilege (role above target)
             if (checkUser.ifHasRequiredPrivilege(response, modUser, targetUser.role + 1, 1)) {
                 if (modUser.role >= 2 || newState < 2) {
                     //Checking if the targetted user doesn't already have this state as its current
