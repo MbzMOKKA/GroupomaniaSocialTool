@@ -2,7 +2,7 @@
 import { /*Link, */ Navigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { SessionContext } from '../../utils/context/index';
-import { getAllUsers } from '../../utils/api_communication/index';
+import { getAllUsers, setUserRole, setUserState } from '../../utils/api_communication/index';
 import { StyledUserList, StyledUserCard, StyledDisplayName, StyledUserInfo, StyledShowModButton, StyledUserManage } from './style';
 import ErrorMsg from '../../components/common/ErrorMsg/index';
 import { userRoleString, userStateString } from '../../utils/misc/index';
@@ -24,6 +24,12 @@ function UserList() {
                 token === null ? <Navigate to="/login" replace={true} /> : null
             }
             <h1>Tout les utilisateurs</h1>
+            <div>
+                {
+                    //Error showing when email or password are incorrect
+                    showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null
+                }
+            </div>
             <StyledUserList>
                 {users.map((user) => {
                     return (
@@ -54,7 +60,7 @@ function UserList() {
                                                 {user.role === 0 && (
                                                     <button
                                                         onClick={(e) => {
-                                                            //setUserRole(e, user._id, 1);
+                                                            setUserRole(token, updateToken, users, setUsers, user._id, 1, setShowErrorApiResponse);
                                                         }}
                                                     >
                                                         <i className="fa-solid fa-angles-up" />
@@ -64,7 +70,7 @@ function UserList() {
                                                 {user.role === 1 && (
                                                     <button
                                                         onClick={(e) => {
-                                                            //setUserRole(e, user._id, 0);
+                                                            setUserRole(token, updateToken, users, setUsers, user._id, 0, setShowErrorApiResponse);
                                                         }}
                                                     >
                                                         <i className="fa-solid fa-angles-down" />
@@ -74,7 +80,7 @@ function UserList() {
                                                 {user.state !== 0 && (
                                                     <button
                                                         onClick={(e) => {
-                                                            //setUserState(e, user._id, 0);
+                                                            setUserState(token, updateToken, users, setUsers, user._id, 0, setShowErrorApiResponse);
                                                         }}
                                                     >
                                                         <i className="fa-solid fa-user-check" />
@@ -84,7 +90,7 @@ function UserList() {
                                                 {user.state !== 1 && (
                                                     <button
                                                         onClick={(e) => {
-                                                            //setUserState(e, user._id, 1);
+                                                            setUserState(token, updateToken, users, setUsers, user._id, 1, setShowErrorApiResponse);
                                                         }}
                                                     >
                                                         <i className="fa-solid fa-lock" />
@@ -94,7 +100,7 @@ function UserList() {
                                                 {user.state !== 2 && (
                                                     <button
                                                         onClick={(e) => {
-                                                            //setUserState(e, user._id, 2);
+                                                            setUserState(token, updateToken, users, setUsers, user._id, 2, setShowErrorApiResponse);
                                                         }}
                                                     >
                                                         <i className="fa-solid fa-ban" />
@@ -121,12 +127,6 @@ function UserList() {
                     );
                 })}
             </StyledUserList>
-            <div>
-                {
-                    //Error showing when email or password are incorrect
-                    showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null
-                }
-            </div>
         </main>
     );
 }

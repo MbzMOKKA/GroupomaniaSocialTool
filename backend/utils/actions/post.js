@@ -35,7 +35,7 @@ async function findNewPosts(response, indexMax, lastPostSeenId, askingUserId) {
     //Finalizing the range of exploration
     const lastPostSeen = await Post.findById(lastPostSeenId);
     if (lastPostSeen === null) {
-        errorFunctions.sendBadRequestError(response, "Last post seen doesn't exists");
+        errorFunctions.sendBadRequestError(response, "Dernier post chargé n'existe pas");
         return null;
     }
     try {

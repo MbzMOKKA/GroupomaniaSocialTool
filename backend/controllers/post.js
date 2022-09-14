@@ -21,7 +21,7 @@ exports.getAllPosts = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const postLoadedByClient = request.params.loaded;
     //Getting the requester account
-    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Token invalide', (askingUser) => {
         //Checking if the requester isn't suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
             //Finding the newest post uploaded
@@ -39,11 +39,11 @@ exports.getOnePost = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const targetPostId = request.params.id;
     //Getting the requester account
-    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Token invalide', (askingUser) => {
         //Checking if the requester isn't restrained or suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
             //Checking if the post exists
-            check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
+            check.ifDocumentExists(response, Post, { _id: targetPostId }, "Ce post n'existe pas", (targetPost) => {
                 //Getting the content of the comments
                 doPostAction.findChildPostsContent(targetPost.childPosts, askingUserId).then((comments) => {
                     doAction.getUserDisplayName(targetPost.uploaderId).then((uploaderDisplayName) => {
@@ -72,7 +72,7 @@ exports.getNewPosts = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const lastPostSeenId = request.params.id;
     //Getting the requester account
-    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Token invalide', (askingUser) => {
         //Checking if the requester isn't suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
             //Finding the newest post uploaded
@@ -91,7 +91,7 @@ exports.getNewPosts = (request, response, next) => {
 exports.uploadPost = (request, response, next) => {
     const askingUserId = request.auth.userId;
     //Getting the requester account
-    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Token invalide', (askingUser) => {
         //Checking if the requester isn't restrained or suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
             const contentImg = request.file ? doPostAction.buildImageUploadedURL(request) : 'no_img';
@@ -128,11 +128,11 @@ exports.commentPost = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const targetPostId = request.params.id;
     //Getting the requester account
-    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Token invalide', (askingUser) => {
         //Checking if the requester isn't restrained or suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
             //Checking if the post exists
-            check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
+            check.ifDocumentExists(response, Post, { _id: targetPostId }, "Ce post n'existe pas", (targetPost) => {
                 const contentImg = request.file ? doPostAction.buildImageUploadedURL(request) : 'no_img';
                 const contentTxt = request.body.uploadFormTxt;
                 if (checkPost.ifContentTxtIsValid(contentTxt)) {
@@ -174,12 +174,12 @@ exports.likePost = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const targetPostId = request.params.id;
     //Getting the requester account
-    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Token invalide', (askingUser) => {
         //Checking if the requester isn't restrained or suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
             //Checking if the post exists
-            check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
-                let actionName = 'Like';
+            check.ifDocumentExists(response, Post, { _id: targetPostId }, "Ce post n'existe pas", (targetPost) => {
+                let actionName = "J'aime";
                 let actionDone = false;
                 const userHasLiked = targetPost.userLikeList.includes(askingUserId);
                 switch (request.body.action) {
@@ -191,7 +191,7 @@ exports.likePost = (request, response, next) => {
                         }
                         break;
                     case false: //Trying to unlike
-                        actionName = 'Unlike';
+                        actionName = "Retrait du j'aime";
                         if (userHasLiked === true) {
                             //User hasn't liked yet: we like
                             const userIdIndexLike = targetPost.userLikeList.indexOf(askingUserId);
@@ -200,16 +200,16 @@ exports.likePost = (request, response, next) => {
                         }
                         break;
                     default: //Unknown action
-                        actionName = 'Unknown action';
+                        actionName = 'Action inconnu';
                         break;
                 }
                 if (actionDone === true) {
                     //Updating the likes on the data base if something has been done
                     doAction.updateDocumentOnDB(response, Post, targetPostId, targetPost, () => {
-                        response.status(200).json({ message: actionName + ` successful` });
+                        response.status(200).json({ message: actionName + ` effectué` });
                     });
                 } else {
-                    errorFunctions.sendBadRequestError(response, actionName + ` failed : bad request`);
+                    errorFunctions.sendBadRequestError(response, actionName + ` échoué : requête incorrect`);
                 }
             });
         }
@@ -220,11 +220,11 @@ exports.modifyPost = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const targetPostId = request.params.id;
     //Getting the requester account
-    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Token invalide', (askingUser) => {
         //Checking if the requester isn't restrained or suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
             //Checking if the post exists
-            check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
+            check.ifDocumentExists(response, Post, { _id: targetPostId }, "Ce post n'existe pas", (targetPost) => {
                 //Checking if the requester can do this action (deleting your own post or being admin)
                 if (askingUserId === targetPost.uploaderId || checkUser.ifHasRequiredPrivilege(response, askingUser, 2, 1) === true) {
                     const contentTxt = request.body.uploadFormTxt;
@@ -278,13 +278,13 @@ exports.deletePost = (request, response, next) => {
     const askingUserId = request.auth.userId;
     const targetPostId = request.params.id;
     //Getting the requester account
-    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Token invalide', (askingUser) => {
         //Checking if the requester isn't restrained or suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
             //Checking if the post exists
-            check.ifDocumentExists(response, Post, { _id: targetPostId }, "This post doesn't exists", (targetPost) => {
+            check.ifDocumentExists(response, Post, { _id: targetPostId }, "Ce post n'existe pas", (targetPost) => {
                 //Getting the post uploader
-                check.ifDocumentExists(response, User, { _id: targetPost.uploaderId }, 'Uploader account no longer exists: you must delete this post directly from the database', (uploaderUser) => {
+                check.ifDocumentExists(response, User, { _id: targetPost.uploaderId }, `Le compte du publieur n'existe plus : vous devez supprimer ce post directement sur la base de donnée`, (uploaderUser) => {
                     //Checking if the requester can do this action (deleting your own post or being moderator/admin)
                     if (askingUserId === targetPost.uploaderId || checkUser.ifHasRequiredPrivilege(response, askingUser, uploaderUser.role + 1, 1) === true) {
                         //Deleting the image of the sauce on the server

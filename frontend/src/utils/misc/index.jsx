@@ -38,6 +38,7 @@ export function userStateString(stateId) {
             return 'Actif';
     }
 }
+
 /*
 function fallbackCopyTextToClipboard(text) {
     var textArea = document.createElement('textarea');

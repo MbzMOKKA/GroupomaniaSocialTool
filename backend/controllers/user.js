@@ -16,7 +16,7 @@ const successFunctions = require('../utils/responses/successes');
 exports.getAllUser = (request, response, next) => {
     const askingUserId = request.auth.userId;
     //Getting the requester account
-    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Invalid token', (askingUser) => {
+    check.ifDocumentExists(response, User, { _id: askingUserId }, 'Token invalide', (askingUser) => {
         //Checking if the requester isn't suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
             //Getting every user documents from the database
@@ -44,9 +44,9 @@ exports.modifyUserRole = (request, response, next) => {
     const targetUserId = request.params.id;
     const newRole = request.body.newRole;
     //Checking if the target exists
-    check.ifDocumentExists(response, User, { _id: targetUserId }, "This user doesn't exists", (targetUser) => {
+    check.ifDocumentExists(response, User, { _id: targetUserId }, "Cet utilisateur n'existe pas", (targetUser) => {
         //Getting the mod account
-        check.ifDocumentExists(response, User, { _id: modUserId }, 'Invalid token', (modUser) => {
+        check.ifDocumentExists(response, User, { _id: modUserId }, 'Token invalide', (modUser) => {
             //Checking if the mod have the privilege
             if (checkUser.ifHasRequiredPrivilege(response, modUser, 2, 1)) {
                 if (targetUser.role < 2) {
@@ -54,15 +54,15 @@ exports.modifyUserRole = (request, response, next) => {
                     if (targetUser.role !== newRole) {
                         targetUser.role = newRole;
                         //Modifying the targetted user on the database
-                        const message = `User ${targetUser.email} role has been updated to ${targetUser.role}`;
+                        const message = `Rôle de l'utilisateur ${targetUser.email} mis à jour à ${targetUser.role}`;
                         doAction.updateDocumentOnDB(response, User, targetUserId, targetUser, () => {
                             successFunctions.sendModifySuccess(response, message);
                         });
                     } else {
-                        errorFunctions.sendUnauthorizeError(response, 'This is already the role of the user');
+                        errorFunctions.sendUnauthorizeError(response, `C'est déjà le rôle de ce compte`);
                     }
                 } else {
-                    errorFunctions.sendUnauthorizeError(response, 'Cannot change the role of an admin');
+                    errorFunctions.sendUnauthorizeError(response, `Impossible de changer le rôle d'un administrateur`);
                 }
             }
         });
@@ -73,9 +73,9 @@ exports.modifyUserState = (request, response, next) => {
     const targetUserId = request.params.id;
     const newState = request.body.newState;
     //Checking if the target exists
-    check.ifDocumentExists(response, User, { _id: targetUserId }, "This user doesn't exists", (targetUser) => {
+    check.ifDocumentExists(response, User, { _id: targetUserId }, "Cet utilisateur n'existe pas", (targetUser) => {
         //Getting the mod account
-        check.ifDocumentExists(response, User, { _id: modUserId }, 'Invalid token', (modUser) => {
+        check.ifDocumentExists(response, User, { _id: modUserId }, 'Token invalide', (modUser) => {
             //Checking if the mod have the privilege (own post or being admin)
             if (checkUser.ifHasRequiredPrivilege(response, modUser, targetUser.role + 1, 1)) {
                 if (modUser.role >= 2 || newState < 2) {
@@ -83,15 +83,15 @@ exports.modifyUserState = (request, response, next) => {
                     if (targetUser.state !== newState) {
                         targetUser.state = newState;
                         //Modifying the targetted user on the database
-                        const message = `User ${targetUser.email} state has been updated to ${targetUser.state}`;
+                        const message = `État de l'utilisateur ${targetUser.email} mis à jour à ${targetUser.state}`;
                         doAction.updateDocumentOnDB(response, User, targetUserId, targetUser, () => {
                             successFunctions.sendModifySuccess(response, message);
                         });
                     } else {
-                        errorFunctions.sendUnauthorizeError(response, 'This is already the state of the user');
+                        errorFunctions.sendUnauthorizeError(response, `C'est déjà l'état de ce compte`);
                     }
                 } else {
-                    errorFunctions.sendUnauthorizeError(response, 'Moderators cannot suspend users');
+                    errorFunctions.sendUnauthorizeError(response, 'Seul les administrateurs peuvent suspendre des comptes');
                 }
             }
         });

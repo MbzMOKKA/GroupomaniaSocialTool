@@ -1,5 +1,30 @@
 //Imports
 import axios from 'axios';
+//import {  } from '../misc/index';
+
+//Reused functions
+function updateUserRoleLocally(users, setUsers, userId, newRole) {
+    let newUsers = JSON.parse(JSON.stringify(users));
+    for (let index in newUsers) {
+        const user = newUsers[index];
+        if (user._id === userId) {
+            user.role = newRole;
+            break;
+        }
+    }
+    setUsers(newUsers);
+}
+function updateUserStateLocally(users, setUsers, userId, newState) {
+    let newUsers = JSON.parse(JSON.stringify(users));
+    for (let index in newUsers) {
+        const user = newUsers[index];
+        if (user._id === userId) {
+            user.state = newState;
+            break;
+        }
+    }
+    setUsers(newUsers);
+}
 
 //Exports
 export async function communicateWithAPI(url, verb, token, body, overwrittenConfig = null) {
@@ -64,6 +89,25 @@ export async function getAllUsers(token, updateToken, setUsers, setShowErrorApiR
     try {
         const result = await communicateWithAPI('http://localhost:8000/api/users', 'GET', token, null);
         setUsers(result.data);
+        setShowErrorApiResponse(null);
+    } catch (error) {
+        setShowErrorApiResponse(error.response.data.message);
+    }
+}
+
+export async function setUserRole(token, updateToken, users, setUsers, userId, newRole, setShowErrorApiResponse) {
+    try {
+        await communicateWithAPI(`http://localhost:8000/api/users/role/${userId}`, 'PUT', token, { newRole });
+        updateUserRoleLocally(users, setUsers, userId, newRole);
+        setShowErrorApiResponse(null);
+    } catch (error) {
+        setShowErrorApiResponse(error.response.data.message);
+    }
+}
+export async function setUserState(token, updateToken, users, setUsers, userId, newState, setShowErrorApiResponse) {
+    try {
+        await communicateWithAPI(`http://localhost:8000/api/users/state/${userId}`, 'PUT', token, { newState });
+        updateUserStateLocally(users, setUsers, userId, newState);
         setShowErrorApiResponse(null);
     } catch (error) {
         setShowErrorApiResponse(error.response.data.message);
