@@ -8,14 +8,14 @@ import ErrorMsg from '../../components/common/ErrorMsg/index';
 import { userRoleString, userStateString } from '../../utils/misc/index';
 
 function UserList() {
-    const { token, updateToken, accountInfo } = useContext(SessionContext);
+    const { token, accountInfo } = useContext(SessionContext);
     const [showErrorApiResponse, setShowErrorApiResponse] = useState(null);
     const [users, setUsers] = useState([]);
     const [showModToolsId, setShowModToolsId] = useState(null);
-    //Getting the users from the API
+    //Getting the users from the API when the page is loaded
     useEffect(() => {
         if (token !== null) {
-            getAllUsers(token, updateToken, setUsers, setShowErrorApiResponse);
+            getAllUsers(token, setUsers, setShowErrorApiResponse);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
@@ -63,7 +63,7 @@ function UserList() {
                                                 {user.role === 0 && accountInfo.role > 1 && (
                                                     <button
                                                         onClick={(e) => {
-                                                            setUserRole(token, updateToken, users, setUsers, user._id, 1, setShowErrorApiResponse);
+                                                            setUserRole(token, users, setUsers, user._id, 1, setShowErrorApiResponse);
                                                         }}
                                                     >
                                                         <i className="fa-solid fa-angles-up" />
@@ -73,7 +73,7 @@ function UserList() {
                                                 {user.role === 1 && accountInfo.role > 1 && (
                                                     <button
                                                         onClick={(e) => {
-                                                            setUserRole(token, updateToken, users, setUsers, user._id, 0, setShowErrorApiResponse);
+                                                            setUserRole(token, users, setUsers, user._id, 0, setShowErrorApiResponse);
                                                         }}
                                                     >
                                                         <i className="fa-solid fa-angles-down" />
@@ -83,7 +83,7 @@ function UserList() {
                                                 {user.state !== 0 && accountInfo.role > user.role && (
                                                     <button
                                                         onClick={(e) => {
-                                                            setUserState(token, updateToken, users, setUsers, user._id, 0, setShowErrorApiResponse);
+                                                            setUserState(token, users, setUsers, user._id, 0, setShowErrorApiResponse);
                                                         }}
                                                     >
                                                         <i className="fa-solid fa-user-check" />
@@ -93,7 +93,7 @@ function UserList() {
                                                 {user.state !== 1 && accountInfo.role > user.role && (
                                                     <button
                                                         onClick={(e) => {
-                                                            setUserState(token, updateToken, users, setUsers, user._id, 1, setShowErrorApiResponse);
+                                                            setUserState(token, users, setUsers, user._id, 1, setShowErrorApiResponse);
                                                         }}
                                                     >
                                                         <i className="fa-solid fa-lock" />
@@ -103,7 +103,7 @@ function UserList() {
                                                 {user.state !== 2 && accountInfo.role > 1 && accountInfo.role > user.role && (
                                                     <button
                                                         onClick={(e) => {
-                                                            setUserState(token, updateToken, users, setUsers, user._id, 2, setShowErrorApiResponse);
+                                                            setUserState(token, users, setUsers, user._id, 2, setShowErrorApiResponse);
                                                         }}
                                                     >
                                                         <i className="fa-solid fa-ban" />

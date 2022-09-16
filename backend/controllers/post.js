@@ -175,8 +175,8 @@ exports.likePost = (request, response, next) => {
     const targetPostId = request.params.id;
     //Getting the requester account
     check.ifDocumentExists(response, User, { _id: askingUserId }, `Jeton d'authentification invalide`, (askingUser) => {
-        //Checking if the requester isn't restrained or suspended
-        if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
+        //Checking if the requester isn't suspended
+        if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
             //Checking if the post exists
             check.ifDocumentExists(response, Post, { _id: targetPostId }, "Ce post n'existe pas", (targetPost) => {
                 let actionName = "J'aime";

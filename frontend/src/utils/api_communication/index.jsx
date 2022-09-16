@@ -85,7 +85,7 @@ export async function submitLogIn(token, updateToken, { email, password }, setSh
     }
 }
 
-export async function getMyAccountInfo(token, updateToken, updateAccountInfo, redirect) {
+export async function getMyAccountInfo(token, updateToken, updateAccountInfo) {
     try {
         const result = await communicateWithAPI('http://localhost:8000/api/users/me', 'GET', token, null);
         const account = result.data;
@@ -97,7 +97,7 @@ export async function getMyAccountInfo(token, updateToken, updateAccountInfo, re
     }
 }
 
-export async function getAllUsers(token, updateToken, setUsers, setShowErrorApiResponse) {
+export async function getAllUsers(token, setUsers, setShowErrorApiResponse) {
     try {
         const result = await communicateWithAPI('http://localhost:8000/api/users', 'GET', token, null);
         setUsers(result.data);
@@ -107,7 +107,7 @@ export async function getAllUsers(token, updateToken, setUsers, setShowErrorApiR
     }
 }
 
-export async function setUserRole(token, updateToken, users, setUsers, userId, newRole, setShowErrorApiResponse) {
+export async function setUserRole(token, users, setUsers, userId, newRole, setShowErrorApiResponse) {
     try {
         await communicateWithAPI(`http://localhost:8000/api/users/role/${userId}`, 'PUT', token, { newRole });
         updateUserRoleLocally(users, setUsers, userId, newRole);
@@ -116,11 +116,51 @@ export async function setUserRole(token, updateToken, users, setUsers, userId, n
         setShowErrorApiResponse(error.response.data.message);
     }
 }
-export async function setUserState(token, updateToken, users, setUsers, userId, newState, setShowErrorApiResponse) {
+export async function setUserState(token, users, setUsers, userId, newState, setShowErrorApiResponse) {
     try {
         await communicateWithAPI(`http://localhost:8000/api/users/state/${userId}`, 'PUT', token, { newState });
         updateUserStateLocally(users, setUsers, userId, newState);
         setShowErrorApiResponse(null);
+    } catch (error) {
+        setShowErrorApiResponse(error.response.data.message);
+    }
+}
+
+export async function getAllPosts(token, posts, setPosts, addAsUnread, unread, setUnread, setShowErrorApiResponse) {
+    try {
+        const postLoaded = posts.length;
+        const result = await communicateWithAPI(`http://localhost:8000/api/posts/${postLoaded}`, 'GET', token, null);
+        if (result.status === 200) {
+            if (addAsUnread === true) {
+                setUnread(unread + result.data.length);
+            }
+            setPosts([...posts, ...result.data]);
+        }
+    } catch (error) {
+        setShowErrorApiResponse(error.response.data.message);
+    }
+}
+
+export async function uploadPost(token, uploadContentTxt, setUploadContentTxt, uploadContentImg, setUploadContentImg, formImagePreviewChange, setShowErrorApiResponse) {
+    try {
+        const formData = new FormData();
+        formData.append('uploadFormTxt', uploadContentTxt);
+        formData.append('uploadFormImg', uploadContentImg);
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data',
+            },
+        };
+        const result = await communicateWithAPI(`http://localhost:8000/api/posts`, 'POST', token, formData, config);
+        if (result.status === 201) {
+            //Upload successful : resetting the form
+            setUploadContentTxt('');
+            setUploadContentImg(null);
+            document.getElementById('uploadFormTxt').value = '';
+            document.getElementById('uploadFormImg').value = null;
+            formImagePreviewChange(null);
+            console.log('ici');
+        }
     } catch (error) {
         setShowErrorApiResponse(error.response.data.message);
     }

@@ -21,6 +21,7 @@ function Header() {
         const prevToken = localStorage.getItem('token');
         if (prevToken === 'null') {
             updateToken(null);
+            redirect('/login', { replace: true });
         } else {
             updateToken(prevToken);
         }
@@ -31,7 +32,7 @@ function Header() {
     //Getting the account info when connected, redirect to the login page when disconnected
     useEffect(() => {
         if (token !== null) {
-            getMyAccountInfo(token, updateToken, updateAccountInfo, redirect);
+            getMyAccountInfo(token, updateToken, updateAccountInfo);
         } else {
             if (tokenCheckedFromLS === true) {
                 redirect('/login', { replace: true });
@@ -45,7 +46,7 @@ function Header() {
         <>
             {navIsOpen === true ? <BubbleNav setNavIsOpen={setNavIsOpen} /> : null}
             <StyledHeader>
-                <StyledIconContainer>
+                <StyledIconContainer to="/">
                     <StyledIcon src={icon} alt="icone Groupomania" />
                 </StyledIconContainer>
                 {location.pathname !== '/signup' && location.pathname !== '/login' && (
