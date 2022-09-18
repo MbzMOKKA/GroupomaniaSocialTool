@@ -9,6 +9,7 @@ import UserList from './pages/UserList/index';
 import LogIn from './pages/auth/LogIn/index';
 import SignUp from './pages/auth/SignUp/index';
 import Header from './components/Header/index';
+import ButtonScrollTop from './components/ButtonScrollTop/index';
 import { SessionProvider } from './utils/context/index';
 
 //Render
@@ -25,6 +26,7 @@ root.render(
                 <Route path="/users" element={<UserList />}></Route>
                 <Route path="*" element={<ErrorNotFound />}></Route>
             </Routes>
+            <ButtonScrollTop />
         </SessionProvider>
     </BrowserRouter>
 );

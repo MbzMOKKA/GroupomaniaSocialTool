@@ -141,6 +141,26 @@ export async function getAllPosts(token, posts, setPosts, addAsUnread, unread, s
     }
 }
 
+export async function getNewPosts(token, lastPostLoadedId, posts, setPosts, unread, setUnread, setShowErrorApiResponse) {
+    try {
+        if (token !== null) {
+            if (lastPostLoadedId === null) {
+                //No post yet, trying to get every posts from the api
+                getAllPosts(token, posts, setPosts, true, unread, setUnread, setShowErrorApiResponse);
+            } else {
+                //Some posts are already shown, trying to get only new post from the api
+                const result = await communicateWithAPI(`http://localhost:8000/api/posts/new/${lastPostLoadedId}`, 'GET', token, null);
+                //if (result.status === 200) {
+                setUnread(unread + result.data.length);
+                setPosts([...result.data, ...posts]);
+                //}
+            }
+        }
+    } catch (error) {
+        setShowErrorApiResponse(error.response.data.message);
+    }
+}
+
 export async function uploadPost(token, uploadContentTxt, setUploadContentTxt, uploadContentImg, setUploadContentImg, formImagePreviewChange, setShowErrorApiResponse) {
     try {
         const formData = new FormData();

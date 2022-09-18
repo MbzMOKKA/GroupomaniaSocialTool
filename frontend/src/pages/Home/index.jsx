@@ -1,7 +1,7 @@
 //Imports
 import { useContext, useEffect, useState } from 'react';
 import { SessionContext } from '../../utils/context/index';
-import { getAllPosts, uploadPost } from '../../utils/api_communication/index';
+import { getAllPosts, getNewPosts, uploadPost } from '../../utils/api_communication/index';
 import { StyleButtonUpload, StyledPostList } from './style';
 import { IconInButton } from '../../utils/style/GlobalStyle';
 import ErrorMsg from '../../components/common/ErrorMsg/index';
@@ -12,8 +12,10 @@ function Home() {
     const [showErrorApiResponse, setShowErrorApiResponse] = useState(null);
     const [posts, setPosts] = useState([]);
     const [unread, setUnread] = useState(0);
+    const [newCheckCounter, setNewCheckCounter] = useState(0);
     const [uploadContentTxt, setUploadContentTxt] = useState('');
     const [uploadContentImg, setUploadContentImg] = useState(null);
+    const newCheckCooldown = 1000 * 5;
     const contentTxtLengthLimit = 1000;
 
     //Getting the users from the API when the page is loaded
@@ -23,6 +25,35 @@ function Home() {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
+
+    //New post check loop
+    useEffect(() => {
+        let lastPostLoadedId = null;
+        try {
+            lastPostLoadedId = posts[0]._id;
+        } catch (error) {
+            lastPostLoadedId = null;
+        }
+        getNewPosts(token, lastPostLoadedId, posts, setPosts, unread, setUnread, setShowErrorApiResponse);
+        setTimeout(() => {
+            setNewCheckCounter(newCheckCounter + 1);
+            if (document.hasFocus()) {
+                setUnread(0);
+            }
+        }, newCheckCooldown);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [newCheckCounter]);
+
+    //Changing the page title when new message are recieved
+    /*useEffect(() => {
+        let name = ``;
+        if (unread > 0) {
+            name = name + `(${unread}) `;
+        } else {
+        }
+        name = name + `Groupomania`;
+        document.title = name;
+    }, [unread]);*/
 
     ////////////////////////////////////////////////////////
 
@@ -69,12 +100,6 @@ function Home() {
                 <IconInButton className="fa-solid fa-pencil" />
                 Créer une publication
             </StyleButtonUpload>
-            <div>
-                {
-                    //Error showing when email or password are incorrect
-                    showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null
-                }
-            </div>
             {/*
                 <form
                     className="uploadForm"
@@ -97,12 +122,27 @@ function Home() {
                     <img id="uploadFormImgPreview" src="#" alt="upload content" width={200} height={200} />
                     <button type="submit">Publier</button>
                 </form>
-            */}
+                    */}
             <StyledPostList>
                 {posts.map((post) => {
                     return <Post key={post._id} post={post} posts={posts} setPosts={setPosts} />;
                 })}
             </StyledPostList>
+            {posts.length > 0 && (
+                <button
+                    onClick={() => {
+                        getAllPosts(token, posts, setPosts, false, null, null, setShowErrorApiResponse);
+                    }}
+                >
+                    Voir plus
+                </button>
+            )}
+            <div>
+                {
+                    //Error showing when email or password are incorrect
+                    showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null
+                }
+            </div>
         </main>
     );
 }

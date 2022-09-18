@@ -35,7 +35,6 @@ export const StyledButtonPostOptions = styled.button`
     display: flex;
     justify-content: center;
     align-items: center;
-    //background-color: ${colors.backgroundDarker};
     width: 32px;
     height: 32px;
     padding: 0px;

@@ -18,8 +18,8 @@ function Post({ post, posts, setPosts }) {
             <StyledPostHeader>
                 <StyledPostUploaderAndDate>
                     <h2>
-                        <i className="fa-solid fa-circle-user" />
-                        {post.uploaderId === accountInfo.userId ? <>Vous avez publié :</> : <>{post.uploaderDisplayName} à publié :</>}
+                        <i className="fa-solid fa-pen-to-square" />
+                        {post.uploaderId === accountInfo.userId ? <>Vous avez </> : <>{post.uploaderDisplayName} à </>}publié :
                     </h2>
                     <p>{formatDate(post.uploadDate)}</p>
                 </StyledPostUploaderAndDate>
@@ -40,7 +40,7 @@ function Post({ post, posts, setPosts }) {
                             likePost(token, post._id, posts, setPosts, setShowErrorApiResponse);
                         }}
                     >
-                        <IconInButton className="fa-regular fa-heart" />
+                        {post.youHaveLiked === true ? <IconInButton className="fa-solid fa-heart" /> : <IconInButton className="fa-regular fa-heart" />}
                         {post.likeCounter}
                     </button>
                     <button onClick={() => {}}>
