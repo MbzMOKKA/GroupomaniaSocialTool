@@ -165,3 +165,29 @@ export async function uploadPost(token, uploadContentTxt, setUploadContentTxt, u
         setShowErrorApiResponse(error.response.data.message);
     }
 }
+
+export async function likePost(token, postToLikeId, posts, setPosts, setShowErrorApiResponse) {
+    try {
+        let action = undefined;
+        //changing the like locally
+        let newPostList = JSON.parse(JSON.stringify(posts));
+        for (let index in newPostList) {
+            const post = newPostList[index];
+            if (post._id === postToLikeId) {
+                if (post.youHaveLiked === true) {
+                    post.likeCounter--;
+                } else {
+                    post.likeCounter++;
+                }
+                post.youHaveLiked = !post.youHaveLiked;
+                action = post.youHaveLiked;
+                break;
+            }
+        }
+        setPosts(newPostList);
+        //sending the new desired like state to the server
+        await communicateWithAPI(`http://localhost:8000/api/posts/like/${postToLikeId}`, 'POST', token, { action });
+    } catch (error) {
+        setShowErrorApiResponse(error.response.data.message);
+    }
+}

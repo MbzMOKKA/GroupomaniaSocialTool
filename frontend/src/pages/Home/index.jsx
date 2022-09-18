@@ -1,20 +1,21 @@
 //Imports
-import { /*Link, */ Navigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { SessionContext } from '../../utils/context/index';
 import { getAllPosts, uploadPost } from '../../utils/api_communication/index';
-import { formatDate } from '../../utils/misc/index';
-import { StyleButtonUpload, StyledPostList, StyledPostCard, StyledPostHeader, StyledPostUploaderAndDate, StyledButtonPostOptions, StyledPostContent, StyledPostText, StyledPostImage, StyledPostFooter, StyledPostReaction, StyledPostEditCounter } from './style';
+import { StyleButtonUpload, StyledPostList } from './style';
 import { IconInButton } from '../../utils/style/GlobalStyle';
+import ErrorMsg from '../../components/common/ErrorMsg/index';
+import Post from '../../components/post/Generic/index';
 
 function Home() {
-    const { token, accountInfo } = useContext(SessionContext);
+    const { token } = useContext(SessionContext);
     const [showErrorApiResponse, setShowErrorApiResponse] = useState(null);
     const [posts, setPosts] = useState([]);
     const [unread, setUnread] = useState(0);
     const [uploadContentTxt, setUploadContentTxt] = useState('');
     const [uploadContentImg, setUploadContentImg] = useState(null);
     const contentTxtLengthLimit = 1000;
+
     //Getting the users from the API when the page is loaded
     useEffect(() => {
         if (token !== null) {
@@ -68,6 +69,12 @@ function Home() {
                 <IconInButton className="fa-solid fa-pencil" />
                 Créer une publication
             </StyleButtonUpload>
+            <div>
+                {
+                    //Error showing when email or password are incorrect
+                    showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null
+                }
+            </div>
             {/*
                 <form
                     className="uploadForm"
@@ -90,44 +97,10 @@ function Home() {
                     <img id="uploadFormImgPreview" src="#" alt="upload content" width={200} height={200} />
                     <button type="submit">Publier</button>
                 </form>
-                    */}
+            */}
             <StyledPostList>
                 {posts.map((post) => {
-                    return (
-                        <StyledPostCard key={post._id}>
-                            <StyledPostHeader>
-                                <StyledPostUploaderAndDate>
-                                    <h2>
-                                        <i className="fa-solid fa-circle-user" />
-                                        {post.uploaderId === accountInfo.userId ? <>Vous avez publié :</> : <>{post.uploaderDisplayName} à publié :</>}
-                                    </h2>
-                                    <p>{formatDate(post.uploadDate)}</p>
-                                </StyledPostUploaderAndDate>
-                                {accountInfo.role > 0 && (
-                                    <StyledButtonPostOptions onClick={() => {}}>
-                                        <i className="fa-solid fa-ellipsis" />
-                                    </StyledButtonPostOptions>
-                                )}
-                            </StyledPostHeader>
-                            <StyledPostContent>
-                                <StyledPostText>{post.contentText}</StyledPostText>
-                                {post.contentImg !== 'no_img' && <StyledPostImage src={post.contentImg} alt="" />}
-                            </StyledPostContent>
-                            <StyledPostFooter>
-                                <StyledPostReaction>
-                                    <button onClick={() => {}}>
-                                        <IconInButton className="fa-regular fa-heart" />
-                                        {post.likeCounter}
-                                    </button>
-                                    <button onClick={() => {}}>
-                                        <IconInButton className="fa-regular fa-comment-dots" />
-                                        {post.commentCounter}
-                                    </button>
-                                </StyledPostReaction>
-                                {post.editCounter > 0 && <StyledPostEditCounter>Modifié</StyledPostEditCounter>}
-                            </StyledPostFooter>
-                        </StyledPostCard>
-                    );
+                    return <Post key={post._id} post={post} posts={posts} setPosts={setPosts} />;
                 })}
             </StyledPostList>
         </main>
