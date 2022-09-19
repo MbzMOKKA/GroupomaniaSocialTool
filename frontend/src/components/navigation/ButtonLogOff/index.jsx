@@ -2,9 +2,12 @@
 import { StyledButtonSecondary, IconInButton } from '../../../utils/style/GlobalStyle';
 import { useContext } from 'react';
 import { SessionContext } from '../../../utils/context/index';
+
 //Component
 function ButtonLogOff({ setBubbleIsOpen }) {
     const { updateToken } = useContext(SessionContext);
+
+    //Render
     return (
         <StyledButtonSecondary
             onClick={() => {

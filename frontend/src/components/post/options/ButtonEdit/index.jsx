@@ -1,7 +1,9 @@
 //Imports
 import { StyledButtonSecondary, IconInButton } from '../../../../utils/style/GlobalStyle';
+
 //Component
 function ButtonEdit({ setBubbleIsOpen }) {
+    //Render
     return (
         <StyledButtonSecondary
             onClick={() => {

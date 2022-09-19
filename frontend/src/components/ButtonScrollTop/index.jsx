@@ -5,6 +5,7 @@ import { StyledButton } from './style.jsx';
 //Component
 function ButtonScrollTop() {
     const [showButton, setShowButton] = useState(false);
+
     window.addEventListener('scroll', () => {
         if (window.scrollY > 1) {
             setShowButton(true);
@@ -12,6 +13,8 @@ function ButtonScrollTop() {
             setShowButton(false);
         }
     });
+
+    //Render
     return (
         <>
             {showButton === true && (

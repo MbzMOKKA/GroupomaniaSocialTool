@@ -11,6 +11,8 @@ import { SessionContext } from '../../../utils/context/index';
 function BubbleNav({ setBubbleIsOpen }) {
     const { accountInfo } = useContext(SessionContext);
     const location = useLocation();
+
+    //Render
     return (
         <BubbleContainer setBubbleIsOpen={setBubbleIsOpen}>
             <p>

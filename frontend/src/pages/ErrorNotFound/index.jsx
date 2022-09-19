@@ -2,7 +2,9 @@
 import { Link } from 'react-router-dom';
 import { StyledTitle, StyledExplaination } from './style';
 
+//Component
 function ErrorNotFound() {
+    //Render
     return (
         <main className="padded-app-container">
             <StyledTitle>

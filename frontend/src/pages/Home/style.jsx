@@ -1,5 +1,5 @@
 //Imports
-import colors from '../../utils/style/colors';
+//import colors from '../../utils/style/colors';
 import styled from 'styled-components';
 
 //Exports
@@ -11,4 +11,9 @@ export const StyleButtonUpload = styled.button`
 `;
 export const StyledPostList = styled.ul`
     margin-top: 34px;
+`;
+export const StyledNoPostMsg = styled.p`
+    i {
+        margin-right: 8px;
+    }
 `;

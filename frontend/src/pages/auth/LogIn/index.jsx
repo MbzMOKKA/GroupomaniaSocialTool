@@ -8,11 +8,14 @@ import { submitLogIn } from '../../../utils/api_communication/index';
 import { useContext } from 'react';
 import { SessionContext } from '../../../utils/context/index';
 
+//Component
 function LogIn() {
     const { token, updateToken } = useContext(SessionContext);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showErrorApiResponse, setShowErrorApiResponse] = useState(null);
+
+    //Render
     return (
         <main>
             {
@@ -50,12 +53,7 @@ function LogIn() {
                         }}
                     />
                 </InputContainer>
-                <div>
-                    {
-                        //Error showing when email or password are incorrect
-                        showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null
-                    }
-                </div>
+                <div>{showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null}</div>
                 <StyledSubmitButton type="submit">Se connecter</StyledSubmitButton>
             </StyledForm>
             <StyledInfo>

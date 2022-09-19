@@ -3,6 +3,7 @@ import { StyledBluring, StyledBackground, StyledChildrenContainer } from './styl
 
 //Component
 function BubbleContainer({ setBubbleIsOpen, children }) {
+    //Render
     return (
         <>
             <StyledBluring></StyledBluring>

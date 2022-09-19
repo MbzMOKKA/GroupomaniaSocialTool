@@ -8,7 +8,7 @@ const check = require('./common');
 
 //Check if the text of a post contain [1;1000] caracters
 exports.ifContentTxtIsValid = (contentText) => {
-    const lengthMax = 1000;
+    const lengthMax = 500;
     const lengthMin = 1;
     if (contentText.length > lengthMax) {
         errorFunctions.sendBadRequestError(response, `Une publication ne peut pas contenir plus de ${lengthMax} caractères`);

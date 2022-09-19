@@ -58,12 +58,7 @@ function Post({ post, posts, setPosts }) {
                     </StyledPostReaction>
                     {post.editCounter > 0 && <StyledPostEditCounter>Modifié</StyledPostEditCounter>}
                 </StyledPostFooter>
-                <div>
-                    {
-                        //Error showing when email or password are incorrect
-                        showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null
-                    }
-                </div>
+                <div>{showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null}</div>
             </StyledPostCard>
         </>
     );

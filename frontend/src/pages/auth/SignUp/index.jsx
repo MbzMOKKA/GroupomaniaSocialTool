@@ -8,6 +8,7 @@ import { submitSignUp } from '../../../utils/api_communication/index';
 import { useContext } from 'react';
 import { SessionContext } from '../../../utils/context/index';
 
+//Component
 function SignUp() {
     const { token, updateToken } = useContext(SessionContext);
     const [email, setEmail] = useState('');
@@ -25,6 +26,7 @@ function SignUp() {
         return false;
     }
 
+    //Render
     return (
         <main>
             {
@@ -81,14 +83,8 @@ function SignUp() {
                     />
                 </InputContainer>
                 <div>
-                    {
-                        //Error showing when email is already use for an other account
-                        showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null
-                    }
-                    {
-                        //Error showing when password === confirm password
-                        showErrorPasswordNotSame === true ? <ErrorMsg>· La confirmation du mot de passe ne correspond pas !</ErrorMsg> : null
-                    }
+                    {showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null}
+                    {showErrorPasswordNotSame === true ? <ErrorMsg>· La confirmation du mot de passe ne correspond pas !</ErrorMsg> : null}
                 </div>
                 <StyledSubmitButton type="submit">Créer un compte</StyledSubmitButton>
             </StyledForm>

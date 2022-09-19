@@ -179,10 +179,11 @@ export async function uploadPost(token, uploadContentTxt, setUploadContentTxt, u
             document.getElementById('uploadFormTxt').value = '';
             document.getElementById('uploadFormImg').value = null;
             formImagePreviewChange(null);
-            console.log('ici');
         }
+        return true;
     } catch (error) {
         setShowErrorApiResponse(error.response.data.message);
+        return false;
     }
 }
 

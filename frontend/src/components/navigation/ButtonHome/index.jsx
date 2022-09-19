@@ -4,10 +4,12 @@ import { StyledButtonSecondary, IconInButton } from '../../../utils/style/Global
 //Component
 function ButtonHome({ setBubbleIsOpen }) {
     const redirect = useNavigate();
+
+    //Render
     return (
         <StyledButtonSecondary
             onClick={() => {
-                redirect('/', { replace: true });
+                redirect('/', { replace: false });
                 setBubbleIsOpen(false);
             }}
         >

@@ -6,11 +6,13 @@ import { StyledUserCard, StyledDisplayName, StyledUserInfo, StyledShowModButton,
 import ErrorMsg from '../../components/common/ErrorMsg/index';
 import { userRoleString, userStateString } from '../../utils/misc/index';
 
+//Component
 function User({ user, users, setUsers }) {
     const { token, accountInfo } = useContext(SessionContext);
     const [showErrorApiResponse, setShowErrorApiResponse] = useState(null);
     const [showModTools, setShowModTools] = useState(false);
 
+    //Render
     return (
         <StyledUserCard yourself={accountInfo.userId === user._id}>
             <StyledDisplayName>
@@ -88,12 +90,7 @@ function User({ user, users, setUsers }) {
                                     </button>
                                 )}
                             </StyledUserManage>
-                            <div>
-                                {
-                                    //Error showing when email or password are incorrect
-                                    showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null
-                                }
-                            </div>
+                            <div>{showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null}</div>
                         </>
                     ) : (
                         <>
