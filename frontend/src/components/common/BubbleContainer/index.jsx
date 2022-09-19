@@ -2,13 +2,13 @@
 import { StyledBluring, StyledBackground, StyledChildrenContainer } from './style.jsx';
 
 //Component
-function BubbleContainer({ setNavIsOpen, children }) {
+function BubbleContainer({ setBubbleIsOpen, children }) {
     return (
         <>
             <StyledBluring></StyledBluring>
             <StyledBackground
                 onClick={() => {
-                    setNavIsOpen(false);
+                    setBubbleIsOpen(false);
                 }}
             >
                 <StyledChildrenContainer

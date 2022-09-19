@@ -44,7 +44,7 @@ function Header() {
     //Render
     return (
         <>
-            {navIsOpen === true ? <BubbleNav setNavIsOpen={setNavIsOpen} /> : null}
+            {navIsOpen === true ? <BubbleNav setBubbleIsOpen={setNavIsOpen} /> : null}
             <StyledHeader>
                 <StyledIconContainer to="/">
                     <StyledIcon src={icon} alt="icone Groupomania" />

@@ -211,3 +211,19 @@ export async function likePost(token, postToLikeId, posts, setPosts, setShowErro
         setShowErrorApiResponse(error.response.data.message);
     }
 }
+
+export async function deletePost(token, postToDeleteId, posts, setPosts, setShowErrorApiResponse) {
+    try {
+        await communicateWithAPI(`http://localhost:8000/api/posts/${postToDeleteId}`, 'DELETE', token, null);
+        let newPostList = JSON.parse(JSON.stringify(posts));
+        for (let index in newPostList) {
+            if (newPostList[index]._id === postToDeleteId) {
+                newPostList.splice(index, 1);
+                break;
+            }
+        }
+        setPosts(newPostList);
+    } catch (error) {
+        setShowErrorApiResponse(error.response.data.message);
+    }
+}

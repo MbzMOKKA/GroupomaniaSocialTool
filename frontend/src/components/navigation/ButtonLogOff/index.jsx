@@ -3,14 +3,13 @@ import { StyledButtonSecondary, IconInButton } from '../../../utils/style/Global
 import { useContext } from 'react';
 import { SessionContext } from '../../../utils/context/index';
 //Component
-function ButtonLogOff({ setNavIsOpen }) {
+function ButtonLogOff({ setBubbleIsOpen }) {
     const { updateToken } = useContext(SessionContext);
     return (
         <StyledButtonSecondary
-            onClick={(e) => {
-                e.preventDefault();
+            onClick={() => {
                 updateToken(null);
-                setNavIsOpen(false);
+                setBubbleIsOpen(false);
             }}
         >
             <IconInButton className="fa-solid fa-power-off" />

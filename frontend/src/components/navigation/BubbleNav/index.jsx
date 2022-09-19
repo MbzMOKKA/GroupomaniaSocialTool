@@ -1,5 +1,5 @@
 //Imports
-import BubbleBackground from '../../common/BubbleContainer/index';
+import BubbleContainer from '../../common/BubbleContainer/index';
 import ButtonHome from '../ButtonHome/index';
 import ButtonUsers from '../ButtonUsers/index';
 import ButtonLogOff from '../ButtonLogOff/index';
@@ -8,19 +8,19 @@ import { useLocation } from 'react-router-dom';
 import { SessionContext } from '../../../utils/context/index';
 
 //Component
-function BubbleNav({ setNavIsOpen }) {
+function BubbleNav({ setBubbleIsOpen }) {
     const { accountInfo } = useContext(SessionContext);
     const location = useLocation();
     return (
-        <BubbleBackground setNavIsOpen={setNavIsOpen}>
+        <BubbleContainer setBubbleIsOpen={setBubbleIsOpen}>
             <p>
                 <i className="fa-solid fa-circle-user" />
                 {accountInfo.displayName} :
             </p>
-            {location.pathname !== '/' && <ButtonHome setNavIsOpen={setNavIsOpen} />}
-            {location.pathname !== '/users' && <ButtonUsers setNavIsOpen={setNavIsOpen} />}
-            <ButtonLogOff setNavIsOpen={setNavIsOpen} />
-        </BubbleBackground>
+            {location.pathname !== '/' && <ButtonHome setBubbleIsOpen={setBubbleIsOpen} />}
+            {location.pathname !== '/users' && <ButtonUsers setBubbleIsOpen={setBubbleIsOpen} />}
+            <ButtonLogOff setBubbleIsOpen={setBubbleIsOpen} />
+        </BubbleContainer>
     );
 }
 

@@ -2,14 +2,13 @@
 import { useNavigate } from 'react-router-dom';
 import { StyledButtonSecondary, IconInButton } from '../../../utils/style/GlobalStyle';
 //Component
-function ButtonHome({ setNavIsOpen }) {
+function ButtonHome({ setBubbleIsOpen }) {
     const redirect = useNavigate();
     return (
         <StyledButtonSecondary
-            onClick={(e) => {
-                e.preventDefault();
+            onClick={() => {
                 redirect('/', { replace: true });
-                setNavIsOpen(false);
+                setBubbleIsOpen(false);
             }}
         >
             <IconInButton className="fa-solid fa-house" />

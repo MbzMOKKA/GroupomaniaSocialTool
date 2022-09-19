@@ -6,57 +6,66 @@ import { StyledPostCard, StyledPostHeader, StyledPostUploaderAndDate, StyledButt
 import { IconInButton } from '../../../utils/style/GlobalStyle';
 import { SessionContext } from '../../../utils/context/index';
 import ErrorMsg from '../../../components/common/ErrorMsg/index';
+import PostOptions from '../options/BubbleOptions/index';
 
 //Component
 function Post({ post, posts, setPosts }) {
     const { token, accountInfo } = useContext(SessionContext);
     const [showErrorApiResponse, setShowErrorApiResponse] = useState(null);
+    const [showPostOptions, setShowPostOptions] = useState(false);
 
     //Render
     return (
-        <StyledPostCard>
-            <StyledPostHeader>
-                <StyledPostUploaderAndDate>
-                    <h2>
-                        <i className="fa-solid fa-pen-to-square" />
-                        {post.uploaderId === accountInfo.userId ? <>Vous avez </> : <>{post.uploaderDisplayName} à </>}publié :
-                    </h2>
-                    <p>{formatDate(post.uploadDate)}</p>
-                </StyledPostUploaderAndDate>
-                {accountInfo.role > 0 && (
-                    <StyledButtonPostOptions onClick={() => {}}>
-                        <i className="fa-solid fa-ellipsis" />
-                    </StyledButtonPostOptions>
-                )}
-            </StyledPostHeader>
-            <StyledPostContent>
-                <StyledPostText>{post.contentText}</StyledPostText>
-                {post.contentImg !== 'no_img' && <StyledPostImage src={post.contentImg} alt="" />}
-            </StyledPostContent>
-            <StyledPostFooter>
-                <StyledPostReaction>
-                    <button
-                        onClick={() => {
-                            likePost(token, post._id, posts, setPosts, setShowErrorApiResponse);
-                        }}
-                    >
-                        {post.youHaveLiked === true ? <IconInButton className="fa-solid fa-heart" /> : <IconInButton className="fa-regular fa-heart" />}
-                        {post.likeCounter}
-                    </button>
-                    <button onClick={() => {}}>
-                        <IconInButton className="fa-regular fa-comment-dots" />
-                        {post.commentCounter}
-                    </button>
-                </StyledPostReaction>
-                {post.editCounter > 0 && <StyledPostEditCounter>Modifié</StyledPostEditCounter>}
-            </StyledPostFooter>
-            <div>
-                {
-                    //Error showing when email or password are incorrect
-                    showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null
-                }
-            </div>
-        </StyledPostCard>
+        <>
+            {showPostOptions === true && <PostOptions setBubbleIsOpen={setShowPostOptions} posts={posts} setPosts={setPosts} postToDeleteId={post._id} />}
+            <StyledPostCard>
+                <StyledPostHeader>
+                    <StyledPostUploaderAndDate>
+                        <h2>
+                            <i className="fa-solid fa-pen-to-square" />
+                            {post.uploaderId === accountInfo.userId ? <>Vous avez </> : <>{post.uploaderDisplayName} à </>}publié :
+                        </h2>
+                        <p>{formatDate(post.uploadDate)}</p>
+                    </StyledPostUploaderAndDate>
+                    {accountInfo.role > 0 && (
+                        <StyledButtonPostOptions
+                            onClick={() => {
+                                setShowPostOptions(true);
+                            }}
+                        >
+                            <i className="fa-solid fa-ellipsis" />
+                        </StyledButtonPostOptions>
+                    )}
+                </StyledPostHeader>
+                <StyledPostContent>
+                    <StyledPostText>{post.contentText}</StyledPostText>
+                    {post.contentImg !== 'no_img' && <StyledPostImage src={post.contentImg} alt="" />}
+                </StyledPostContent>
+                <StyledPostFooter>
+                    <StyledPostReaction>
+                        <button
+                            onClick={() => {
+                                likePost(token, post._id, posts, setPosts, setShowErrorApiResponse);
+                            }}
+                        >
+                            {post.youHaveLiked === true ? <IconInButton className="fa-solid fa-heart" /> : <IconInButton className="fa-regular fa-heart" />}
+                            {post.likeCounter}
+                        </button>
+                        <button onClick={() => {}}>
+                            <IconInButton className="fa-regular fa-comment-dots" />
+                            {post.commentCounter}
+                        </button>
+                    </StyledPostReaction>
+                    {post.editCounter > 0 && <StyledPostEditCounter>Modifié</StyledPostEditCounter>}
+                </StyledPostFooter>
+                <div>
+                    {
+                        //Error showing when email or password are incorrect
+                        showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null
+                    }
+                </div>
+            </StyledPostCard>
+        </>
     );
 }
 

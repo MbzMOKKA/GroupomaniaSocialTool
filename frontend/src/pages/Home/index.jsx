@@ -134,6 +134,7 @@ function Home() {
                         getAllPosts(token, posts, setPosts, false, null, null, setShowErrorApiResponse);
                     }}
                 >
+                    <IconInButton className="fa-solid fa-circle-chevron-down" />
                     Voir plus
                 </button>
             )}
