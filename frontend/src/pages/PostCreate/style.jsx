@@ -9,6 +9,7 @@ export const StyledSendOrCancelContainer = styled.div`
     justify-content: center;
     align-items: center;
     margin-top: 18px;
+    margin-bottom: 8px;
     button {
         margin-left: 4px;
         margin-right: 4px;
@@ -21,7 +22,7 @@ export const StyledForm = styled.form`
     display: flex;
     flex-direction: column;
     border-top: 2px white solid;
-    margin-top: 18px;
+    margin-top: 10px;
 `;
 export const StyledLabel = styled.label`
     color: ${colors.secondary};

@@ -10,10 +10,17 @@ export const StyledPostCard = styled.li`
     padding: 10px;
     list-style: none;
 `;
+export const StyledDetailledPostCard = styled.div`
+    background-color: ${colors.backgroundDarker};
+    margin-top: 18px;
+    margin-bottom: 20px;
+    padding-top: 38px;
+    padding-bottom: 38px;
+`;
 export const StyledPostHeader = styled.header`
     display: flex;
     justify-content: space-between;
-    border-bottom: 2px white solid;
+    border-bottom: 1px white solid;
     padding-bottom: 8px;
 `;
 export const StyledPostUploaderAndDate = styled.div`
@@ -63,7 +70,7 @@ export const StyledPostFooter = styled.footer`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 2px white solid;
+    border-top: 1px white solid;
     padding-top: 12px;
 `;
 export const StyledPostReaction = styled.div`

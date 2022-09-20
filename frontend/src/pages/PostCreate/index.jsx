@@ -7,7 +7,7 @@ import { StyledSendOrCancelContainer, StyledForm, StyledLabel, StyledInputInfo, 
 //import { IconInButton } from '../../utils/style/GlobalStyle';
 import ErrorMsg from '../../components/common/ErrorMsg/index';
 
-function Home() {
+function PostCreate({ parentPostId }) {
     const { token } = useContext(SessionContext);
     const [showErrorApiResponse, setShowErrorApiResponse] = useState(null);
     const [uploadContentTxt, setUploadContentTxt] = useState('');
@@ -35,33 +35,42 @@ function Home() {
     //Render
     return (
         <main className="padded-app-container">
-            <h1>Créer une publication</h1>
+            <h1>{parentPostId === null ? <>Créer une publication</> : <>Poster un commentaire</>}</h1>
             <StyledSendOrCancelContainer>
                 <button
                     onClick={() => {
-                        redirect('/', { replace: false });
+                        redirect(-1, { replace: false });
                     }}
                 >
                     Annuler
                 </button>
                 <button
                     onClick={() => {
-                        uploadPost(token, uploadContentTxt, setUploadContentTxt, uploadContentImg, setUploadContentImg, formImagePreviewChange, setShowErrorApiResponse).then((uploadSuccessful) => {
+                        uploadPost(token, uploadContentTxt, setUploadContentTxt, uploadContentImg, setUploadContentImg, formImagePreviewChange, parentPostId, setShowErrorApiResponse).then((uploadSuccessful) => {
                             if (uploadSuccessful === true) {
-                                redirect('/', { replace: true });
+                                redirect(-1, { replace: true });
                             }
                         });
                     }}
                 >
-                    Publier
+                    {parentPostId === null ? <>Publier</> : <>Commenter</>}
                 </button>
             </StyledSendOrCancelContainer>
+            <div>{showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null}</div>
             <StyledForm className="uploadForm">
                 <StyledLabel htmlFor="uploadFormTxt">Texte</StyledLabel>
                 <StyledInputInfo>
                     {uploadContentTxt.length}/{contentTxtLengthLimit}
                 </StyledInputInfo>
-                <StyledInputText id="uploadFormTxt" name="uploadFormTxt" maxLength={contentTxtLengthLimit} onChange={(e) => setUploadContentTxt(e.target.value)}></StyledInputText>
+                <StyledInputText
+                    id="uploadFormTxt"
+                    name="uploadFormTxt"
+                    maxLength={contentTxtLengthLimit}
+                    onChange={(e) => {
+                        setUploadContentTxt(e.target.value);
+                        setShowErrorApiResponse(null);
+                    }}
+                ></StyledInputText>
 
                 <StyledLabel htmlFor="uploadFormImg">Image</StyledLabel>
                 <StyledInputInfo>png, jpg ou gif</StyledInputInfo>
@@ -104,10 +113,9 @@ function Home() {
                     </>
                 )}
             </StyledForm>
-            <div>{showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null}</div>
         </main>
     );
 }
 
 //Exports
-export default Home;
+export default PostCreate;

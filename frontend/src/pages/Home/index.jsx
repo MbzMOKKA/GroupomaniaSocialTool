@@ -71,26 +71,29 @@ function Home() {
             <h1>Dernières publications</h1>
             <StyleButtonUpload
                 onClick={() => {
-                    redirect('/post/new', { replace: false });
+                    redirect('/posts/create', { replace: false });
                 }}
             >
                 <IconInButton className="fa-solid fa-pencil" />
                 Créer une publication
             </StyleButtonUpload>
-            <StyledPostList>
-                {posts.map((post) => {
-                    return <Post key={post._id} post={post} posts={posts} setPosts={setPosts} />;
-                })}
-            </StyledPostList>
+
             {posts.length > 0 ? (
-                <button
-                    onClick={() => {
-                        getAllPosts(token, posts, setPosts, false, null, null, setShowErrorApiResponse);
-                    }}
-                >
-                    <IconInButton className="fa-solid fa-circle-chevron-down" />
-                    Voir plus
-                </button>
+                <>
+                    <StyledPostList>
+                        {posts.map((post) => {
+                            return <Post key={post._id} post={post} posts={posts} setPosts={setPosts} isComment={false} />;
+                        })}
+                    </StyledPostList>
+                    <button
+                        onClick={() => {
+                            getAllPosts(token, posts, setPosts, false, null, null, setShowErrorApiResponse);
+                        }}
+                    >
+                        <IconInButton className="fa-solid fa-circle-chevron-down" />
+                        Voir plus
+                    </button>
+                </>
             ) : (
                 <StyledNoPostMsg>
                     <i className="fa-solid fa-circle-info" />

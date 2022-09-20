@@ -9,6 +9,8 @@ import SignUp from './pages/auth/SignUp/index';
 import Home from './pages/Home/index';
 import UserList from './pages/UserList/index';
 import PostCreate from './pages/PostCreate/index';
+import CommentCreate from './pages/CommentCreate/index';
+import PostDetails from './pages/PostDetails/index';
 import Header from './components/Header/index';
 import ButtonScrollTop from './components/ButtonScrollTop/index';
 import { SessionProvider } from './utils/context/index';
@@ -17,15 +19,17 @@ import { SessionProvider } from './utils/context/index';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
-        <GlobalStyle />
         <SessionProvider>
+            <GlobalStyle />
             <Header />
             <Routes>
-                <Route exact path="/" element={<Home />}></Route>
-                <Route exact path="/login" element={<LogIn />}></Route>
-                <Route exact path="/signup" element={<SignUp />}></Route>
-                <Route exact path="/post/new" element={<PostCreate />}></Route>
-                <Route exact path="/users" element={<UserList />}></Route>
+                <Route path="/" element={<Home />}></Route>
+                <Route path="login" element={<LogIn />}></Route>
+                <Route path="signup" element={<SignUp />}></Route>
+                <Route path="users" element={<UserList />}></Route>
+                <Route path="posts/create" element={<PostCreate parentPostId={null} />}></Route>
+                <Route path="posts/reply/:postId" element={<CommentCreate />}></Route>
+                <Route path="posts/details/:postId" element={<PostDetails />}></Route>
                 <Route path="*" element={<ErrorNotFound />}></Route>
             </Routes>
             <ButtonScrollTop />

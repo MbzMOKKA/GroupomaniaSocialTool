@@ -96,7 +96,7 @@ exports.uploadPost = (request, response, next) => {
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
             const contentImg = request.file ? doPostAction.buildImageUploadedURL(request) : 'no_img';
             const contentTxt = request.body.uploadFormTxt;
-            if (checkPost.ifContentTxtIsValid(contentTxt)) {
+            if (checkPost.ifContentTxtIsValid(response, contentTxt)) {
                 //Couting how much posts existed on the database before
                 doPostAction.getLastPostUploadedIndex(response).then((lastPostIndex) => {
                     const upload = new Post({
@@ -135,7 +135,7 @@ exports.commentPost = (request, response, next) => {
             check.ifDocumentExists(response, Post, { _id: targetPostId }, "Ce post n'existe pas", (targetPost) => {
                 const contentImg = request.file ? doPostAction.buildImageUploadedURL(request) : 'no_img';
                 const contentTxt = request.body.uploadFormTxt;
-                if (checkPost.ifContentTxtIsValid(contentTxt)) {
+                if (checkPost.ifContentTxtIsValid(response, contentTxt)) {
                     //Couting how much posts existed on the database before
                     Post.count({}, function (err, count) {
                         const upload = new Post({
@@ -228,7 +228,7 @@ exports.modifyPost = (request, response, next) => {
                 //Checking if the requester can do this action (deleting your own post or being admin)
                 if (askingUserId === targetPost.uploaderId || checkUser.ifHasRequiredPrivilege(response, askingUser, 2, 1) === true) {
                     const contentTxt = request.body.uploadFormTxt;
-                    if (checkPost.ifContentTxtIsValid(contentTxt)) {
+                    if (checkPost.ifContentTxtIsValid(response, contentTxt)) {
                         const oldContentImg = targetPost.contentImg;
                         let contentImg = oldContentImg;
                         let imageIsChanged = false;

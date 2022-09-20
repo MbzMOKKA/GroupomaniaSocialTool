@@ -116,6 +116,7 @@ export async function setUserRole(token, users, setUsers, userId, newRole, setSh
         setShowErrorApiResponse(error.response.data.message);
     }
 }
+
 export async function setUserState(token, users, setUsers, userId, newState, setShowErrorApiResponse) {
     try {
         await communicateWithAPI(`http://localhost:8000/api/users/state/${userId}`, 'PUT', token, { newState });
@@ -150,10 +151,8 @@ export async function getNewPosts(token, lastPostLoadedId, posts, setPosts, unre
             } else {
                 //Some posts are already shown, trying to get only new post from the api
                 const result = await communicateWithAPI(`http://localhost:8000/api/posts/new/${lastPostLoadedId}`, 'GET', token, null);
-                //if (result.status === 200) {
                 setUnread(unread + result.data.length);
                 setPosts([...result.data, ...posts]);
-                //}
             }
         }
     } catch (error) {
@@ -161,7 +160,16 @@ export async function getNewPosts(token, lastPostLoadedId, posts, setPosts, unre
     }
 }
 
-export async function uploadPost(token, uploadContentTxt, setUploadContentTxt, uploadContentImg, setUploadContentImg, formImagePreviewChange, setShowErrorApiResponse) {
+export async function getPostDetails(token, postId, setPost, setShowErrorApiResponse) {
+    try {
+        const result = await communicateWithAPI(`http://localhost:8000/api/posts/details/${postId}`, 'GET', token, null);
+        setPost(result.data);
+    } catch (error) {
+        setShowErrorApiResponse(error.response.data.message);
+    }
+}
+
+export async function uploadPost(token, uploadContentTxt, setUploadContentTxt, uploadContentImg, setUploadContentImg, formImagePreviewChange, parentPostId, setShowErrorApiResponse) {
     try {
         const formData = new FormData();
         formData.append('uploadFormTxt', uploadContentTxt);
@@ -171,7 +179,12 @@ export async function uploadPost(token, uploadContentTxt, setUploadContentTxt, u
                 'content-type': 'multipart/form-data',
             },
         };
-        const result = await communicateWithAPI(`http://localhost:8000/api/posts`, 'POST', token, formData, config);
+        let result = undefined;
+        if (parentPostId === null) {
+            result = await communicateWithAPI(`http://localhost:8000/api/posts`, 'POST', token, formData, config);
+        } else {
+            result = await communicateWithAPI(`http://localhost:8000/api/posts/${parentPostId}`, 'POST', token, formData, config);
+        }
         if (result.status === 201) {
             //Upload successful : resetting the form
             setUploadContentTxt('');
@@ -187,25 +200,43 @@ export async function uploadPost(token, uploadContentTxt, setUploadContentTxt, u
     }
 }
 
-export async function likePost(token, postToLikeId, posts, setPosts, setShowErrorApiResponse) {
-    try {
-        let action = undefined;
-        //changing the like locally
-        let newPostList = JSON.parse(JSON.stringify(posts));
-        for (let index in newPostList) {
-            const post = newPostList[index];
-            if (post._id === postToLikeId) {
-                if (post.youHaveLiked === true) {
-                    post.likeCounter--;
-                } else {
-                    post.likeCounter++;
-                }
-                post.youHaveLiked = !post.youHaveLiked;
-                action = post.youHaveLiked;
-                break;
+export function updatePostLikeLocally(post, setPost) {
+    let action = undefined;
+    //changing the like locally
+    let newPost = JSON.parse(JSON.stringify(post));
+    if (newPost.youHaveLiked === true) {
+        newPost.likeCounter--;
+    } else {
+        newPost.likeCounter++;
+    }
+    newPost.youHaveLiked = !newPost.youHaveLiked;
+    action = newPost.youHaveLiked;
+    setPost(newPost);
+    return action;
+}
+export function updatePostLikeInListLocally(postToLikeId, posts, setPosts) {
+    let action = undefined;
+    //changing the like locally
+    let newPostList = JSON.parse(JSON.stringify(posts));
+    for (let index in newPostList) {
+        const post = newPostList[index];
+        if (post._id === postToLikeId) {
+            if (post.youHaveLiked === true) {
+                post.likeCounter--;
+            } else {
+                post.likeCounter++;
             }
+            post.youHaveLiked = !post.youHaveLiked;
+            action = post.youHaveLiked;
+            break;
         }
-        setPosts(newPostList);
+    }
+    setPosts(newPostList);
+    return action;
+}
+
+export async function likePost(token, postToLikeId, action, setShowErrorApiResponse) {
+    try {
         //sending the new desired like state to the server
         await communicateWithAPI(`http://localhost:8000/api/posts/like/${postToLikeId}`, 'POST', token, { action });
     } catch (error) {

@@ -13,7 +13,7 @@ export const StyleButtonUpload = styled.button`
 export const StyledPostList = styled.ul`
     margin-top: 34px;
 `;
-export const StyledNoPostMsg = styled.p`
+export const StyledNoCommentMsg = styled.p`
     margin-top: 24px;
     i {
         margin-right: 8px;

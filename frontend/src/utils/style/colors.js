@@ -6,7 +6,7 @@ const colors = {
     backgroundDarker: '#333333',
     positive: '#AEFF00',
     negative: '#FF0000',
-    yourself: '#85DADD',
+    yourself: '#1FA5C9',
 };
 
 export default colors;
