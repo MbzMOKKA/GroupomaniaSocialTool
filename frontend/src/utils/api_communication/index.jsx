@@ -244,18 +244,23 @@ export async function likePost(token, postToLikeId, action, setShowErrorApiRespo
     }
 }
 
-export async function deletePost(token, postToDeleteId, posts, setPosts, setShowErrorApiResponse) {
+export async function deletePost(token, postToDeleteId, posts, setPosts, redirect, setShowErrorApiResponse) {
     try {
         await communicateWithAPI(`http://localhost:8000/api/posts/${postToDeleteId}`, 'DELETE', token, null);
-        let newPostList = JSON.parse(JSON.stringify(posts));
-        for (let index in newPostList) {
-            if (newPostList[index]._id === postToDeleteId) {
-                newPostList.splice(index, 1);
-                break;
+        if (redirect === false) {
+            let newPostList = JSON.parse(JSON.stringify(posts));
+            for (let index in newPostList) {
+                if (newPostList[index]._id === postToDeleteId) {
+                    newPostList.splice(index, 1);
+                    break;
+                }
             }
+            setPosts(newPostList);
+        } else {
+            redirect(-1);
         }
-        setPosts(newPostList);
     } catch (error) {
+        console.log(error);
         setShowErrorApiResponse(error.response.data.message);
     }
 }

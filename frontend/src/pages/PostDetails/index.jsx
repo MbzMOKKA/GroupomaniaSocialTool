@@ -4,11 +4,10 @@ import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { SessionContext } from '../../utils/context/index';
 import { getPostDetails } from '../../utils/api_communication/index';
-import { StyledPostList, StyleButtonUpload, StyledNoCommentMsg } from './style';
+import { StyledCommentList, StyledCommentElement, StyleButtonUpload, StyledNoCommentMsg } from './style';
 import { IconInButton } from '../../utils/style/GlobalStyle';
 import ErrorMsg from '../../components/common/ErrorMsg/index';
-import DetailledPost from '../../components/post/Detailled/index';
-import Comment from '../../components/post/Comment/index';
+import Post from '../../components/post/Standard/index';
 import ButtonBack from '../../components/ButtonBack/index';
 
 //Component
@@ -40,7 +39,7 @@ function PostDetails() {
             <div className="padded-app-container">
                 <ButtonBack />
             </div>
-            <DetailledPost key={post._id} post={post} setPost={setPost} />
+            <Post key={post._id} post={post} setPost={setPost} isComment={post.parentPost !== null} isDetailled={true} />
             <div className="padded-app-container">
                 <h1>Commentaires</h1>
                 <StyleButtonUpload
@@ -55,11 +54,15 @@ function PostDetails() {
 
                 {post.comments.length > 0 ? (
                     <>
-                        <StyledPostList>
+                        <StyledCommentList>
                             {post.comments.map((comment) => {
-                                return <Comment key={comment._id} comment={comment} comments={post.comments} updateComments={updateComments} />;
+                                return (
+                                    <StyledCommentElement key={comment._id}>
+                                        <Post post={comment} posts={post.comments} setPosts={updateComments} isComment={true} isDetailled={false} />
+                                    </StyledCommentElement>
+                                );
                             })}
-                        </StyledPostList>
+                        </StyledCommentList>
                     </>
                 ) : (
                     <StyledNoCommentMsg>

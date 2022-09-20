@@ -13,6 +13,9 @@ export const StyleButtonUpload = styled.button`
 export const StyledPostList = styled.ul`
     margin-top: 34px;
 `;
+export const StyledPostElement = styled.li`
+    list-style: none;
+`;
 export const StyledNoPostMsg = styled.p`
     margin-top: 24px;
     i {

@@ -10,7 +10,7 @@ function PostOptions({ setBubbleIsOpen, posts, setPosts, postToDeleteId }) {
         <BubbleContainer setBubbleIsOpen={setBubbleIsOpen}>
             <p>Plus d'action :</p>
             <ButtonEdit setBubbleIsOpen={setBubbleIsOpen} />
-            <ButtonDelete setBubbleIsOpen={setBubbleIsOpen} postToDeleteId={postToDeleteId} posts={posts} setPosts={setPosts} />
+            <ButtonDelete setBubbleIsOpen={setBubbleIsOpen} postToDeleteId={postToDeleteId} posts={posts} setPosts={setPosts} postIsDetailled={false} />
         </BubbleContainer>
     );
 }

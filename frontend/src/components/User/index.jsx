@@ -18,7 +18,7 @@ function User({ user, users, setUsers }) {
             <StyledDisplayName>
                 <i className="fa-solid fa-circle-user" />
                 {user.email}
-                {accountInfo.userId === user._id ? <> (Moi)</> : null}
+                {accountInfo.userId === user._id ? <> (Vous)</> : null}
             </StyledDisplayName>
             <StyledUserInfo>
                 <p className="user-role">Rôle : {userRoleString(user.role)}</p>

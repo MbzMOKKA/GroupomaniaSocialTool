@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { SessionContext } from '../../utils/context/index';
 import { getAllPosts, getNewPosts } from '../../utils/api_communication/index';
-import { StyleButtonUpload, StyledPostList, StyledNoPostMsg } from './style';
+import { StyleButtonUpload, StyledPostList, StyledPostElement, StyledNoPostMsg } from './style';
 import { IconInButton } from '../../utils/style/GlobalStyle';
 import ErrorMsg from '../../components/common/ErrorMsg/index';
-import Post from '../../components/post/Generic/index';
+import Post from '../../components/post/Standard/index';
 
 //Component
 function Home() {
@@ -82,7 +82,11 @@ function Home() {
                 <>
                     <StyledPostList>
                         {posts.map((post) => {
-                            return <Post key={post._id} post={post} posts={posts} setPosts={setPosts} isComment={false} />;
+                            return (
+                                <StyledPostElement key={post._id}>
+                                    <Post post={post} posts={posts} setPosts={setPosts} isComment={false} isDetailled={false} />
+                                </StyledPostElement>
+                            );
                         })}
                     </StyledPostList>
                     <button
