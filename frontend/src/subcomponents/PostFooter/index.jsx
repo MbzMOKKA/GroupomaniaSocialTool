@@ -36,7 +36,7 @@ function PostFooter({ post, setPost, posts, setPosts, isDetailled, setShowErrorA
                             redirect(`/posts/details/${post._id}`, { replace: false });
                         }}
                     >
-                        <IconInButton className="fa-regular fa-comment-dots" />
+                        <IconInButton className="fa-regular fa-comments" />
                         {post.commentCounter}
                     </button>
                 )}

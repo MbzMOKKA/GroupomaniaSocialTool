@@ -8,7 +8,7 @@ import { useContext } from 'react';
 import { SessionContext } from '../../../../utils/context/index';
 
 //Component
-function ButtonDelete({ setBubbleIsOpen, posts, setPosts, postToDeleteId, postIsDetailled }) {
+function ButtonDelete({ setBubbleIsOpen, posts, setPosts, postId, postIsDetailled }) {
     const { token } = useContext(SessionContext);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [showErrorApiResponse, setShowErrorApiResponse] = useState(null);
@@ -38,7 +38,7 @@ function ButtonDelete({ setBubbleIsOpen, posts, setPosts, postToDeleteId, postIs
                                 if (postIsDetailled === true) {
                                     doRedirect = redirect;
                                 }
-                                deletePost(token, postToDeleteId, posts, setPosts, doRedirect, setShowErrorApiResponse);
+                                deletePost(token, postId, posts, setPosts, doRedirect, setShowErrorApiResponse);
                                 if (postIsDetailled === false) {
                                     setBubbleIsOpen(false);
                                 }

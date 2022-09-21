@@ -19,15 +19,15 @@ function Post({ post, setPost, posts, setPosts, isComment, isDetailled }) {
     //Render
     return (
         <>
-            {showPostOptions === true && <PostOptions setBubbleIsOpen={setShowPostOptions} posts={posts} setPosts={setPosts} postToDeleteId={post._id} />}
+            {showPostOptions === true && <PostOptions setBubbleIsOpen={setShowPostOptions} posts={posts} setPosts={setPosts} postId={post._id} />}
             <StyledPostCard isDetailled={isDetailled} className="padded-app-container">
                 <PostHeader post={post} isComment={isComment} isDetailled={isDetailled} setShowPostOptions={setShowPostOptions} />
                 <PostContent post={post} />
                 <PostFooter post={post} setPost={setPost} posts={posts} setPosts={setPosts} isDetailled={isDetailled} setShowErrorApiResponse={setShowErrorApiResponse} />
                 {isDetailled === true && (accountInfo.role > 0 || accountInfo.userId === post.uploaderId) && (
                     <StyledPostOptionsContainer>
-                        <ButtonEdit />
-                        <ButtonDelete postToDeleteId={post._id} postIsDetailled={true} />
+                        {accountInfo.role > 1 && <ButtonEdit postId={post._id} postIsDetailled={true} />}
+                        <ButtonDelete postId={post._id} postIsDetailled={true} />
                     </StyledPostOptionsContainer>
                 )}
                 <div>{showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null}</div>

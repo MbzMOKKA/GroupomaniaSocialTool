@@ -39,7 +39,7 @@ function PostDetails() {
             <div className="padded-app-container">
                 <ButtonBack />
             </div>
-            <Post key={post._id} post={post} setPost={setPost} isComment={post.parentPost !== null} isDetailled={true} />
+            <Post key={post._id} post={post} setPost={setPost} isComment={post.parentPost !== 'null'} isDetailled={true} />
             <div className="padded-app-container">
                 <h1>Commentaires</h1>
                 <StyleButtonUpload
@@ -47,7 +47,7 @@ function PostDetails() {
                         redirect(`/posts/reply/${postId}`, { replace: false });
                     }}
                 >
-                    <IconInButton className="fa-regular fa-comment-dots" />
+                    <IconInButton className="fa-solid fa-comment-dots" />
                     Poster un commentaire
                 </StyleButtonUpload>
                 <div>{showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null}</div>

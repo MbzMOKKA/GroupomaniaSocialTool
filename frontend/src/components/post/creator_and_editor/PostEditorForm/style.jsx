@@ -1,22 +1,8 @@
 //Imports
-import colors from '../../utils/style/colors';
+import colors from '../../../../utils/style/colors';
 import styled from 'styled-components';
 
 //Exports
-export const StyledSendOrCancelContainer = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 18px;
-    margin-bottom: 8px;
-    button {
-        margin-left: 4px;
-        margin-right: 4px;
-        flex-grow: 1;
-        font-size: 24px;
-    }
-`;
 export const StyledForm = styled.form`
     width: 100%;
     display: flex;
@@ -72,7 +58,8 @@ export const StyleImageManageContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 8px;
+    margin-top: 12px;
+    margin-bottom: 92px;
     button {
         margin-left: 12px;
         margin-right: 12px;
@@ -82,9 +69,9 @@ export const StyleImageManageContainer = styled.div`
     }
 `;
 export const StyledImagePreview = styled.img`
-    display: ${({ content }) => content === null && 'none'};
+    display: ${({ content }) => content === 'no_img' && 'none'};
     width: 100%;
-    max-width: 500px;
+    max-width: 512px;
     border-radius: 15px;
     margin: auto;
 `;

@@ -172,11 +172,11 @@ export async function getPostDetails(token, postId, setPost, setShowErrorApiResp
     }
 }
 
-export async function uploadPost(token, uploadContentTxt, setUploadContentTxt, uploadContentImg, setUploadContentImg, formImagePreviewChange, parentPostId, setShowErrorApiResponse) {
+export async function uploadPost(token, formContentTxt, uploadContentImg, parentPostId, setShowErrorApiResponse) {
     try {
         const formData = new FormData();
-        formData.append('uploadFormTxt', uploadContentTxt);
-        formData.append('uploadFormImg', uploadContentImg);
+        formData.append('postFormTxt', formContentTxt);
+        formData.append('postFormImg', uploadContentImg);
         const config = {
             headers: {
                 'content-type': 'multipart/form-data',
@@ -190,12 +190,30 @@ export async function uploadPost(token, uploadContentTxt, setUploadContentTxt, u
         }
         if (result.status === 201) {
             //Upload successful : resetting the form
-            setUploadContentTxt('');
-            setUploadContentImg(null);
-            document.getElementById('uploadFormTxt').value = '';
-            document.getElementById('uploadFormImg').value = null;
-            formImagePreviewChange(null);
+            //setUploadContentTxt('');
+            // setUploadContentImg(null);
+            //document.getElementById('uploadFormTxt').value = '';
+            //document.getElementById('uploadFormImg').value = null;
+            //formImagePreviewChange(null);
         }
+        return true;
+    } catch (error) {
+        setShowErrorApiResponse(error.response.data.message);
+        return false;
+    }
+}
+
+export async function savePostEdit(token, formContentTxt, uploadContentImg, postId, setShowErrorApiResponse) {
+    try {
+        const formData = new FormData();
+        formData.append('postFormTxt', formContentTxt);
+        formData.append('postFormImg', uploadContentImg);
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data',
+            },
+        };
+        await communicateWithAPI(`http://localhost:8000/api/posts/${postId}`, 'PUT', token, formData, config);
         return true;
     } catch (error) {
         setShowErrorApiResponse(error.response.data.message);
@@ -264,7 +282,6 @@ export async function deletePost(token, postToDeleteId, posts, setPosts, redirec
             redirect(-1);
         }
     } catch (error) {
-        console.log(error);
         setShowErrorApiResponse(error.response.data.message);
     }
 }

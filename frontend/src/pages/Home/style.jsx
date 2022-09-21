@@ -18,7 +18,7 @@ export const StyledPostElement = styled.li`
 `;
 export const StyledLoadMoreButton = styled.button`
     margin-top: 12px;
-    margin-bottom: 100px;
+    margin-bottom: 92px;
 `;
 export const StyledNoPostMsg = styled.p`
     margin-top: 24px;

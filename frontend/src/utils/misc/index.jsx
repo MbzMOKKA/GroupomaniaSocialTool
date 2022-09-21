@@ -47,6 +47,7 @@ export function getPageSubTitle(pathname) {
     if (pathname === '/posts/create') return 'Créer une publication - ';
     if (pathname.split('/details/')[0] === '/posts') return 'Commentaires - ';
     if (pathname.split('/reply/')[0] === '/posts') return 'Poster un commentaire - ';
+    if (pathname.split('/edit/')[0] === '/posts') return 'Modifier le post - ';
     //default case
     return '';
 }

@@ -59,6 +59,7 @@ exports.getOnePost = (request, response, next) => {
                             contentImg: targetPost.contentImg,
                             uploadDate: targetPost.uploadDate,
                             editCounter: targetPost.editCounter,
+                            parentPost: targetPost.parentPost,
                         };
                         response.status(200).json(detailledPost);
                     });
@@ -95,7 +96,7 @@ exports.uploadPost = (request, response, next) => {
         //Checking if the requester isn't restrained or suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
             const contentImg = request.file ? doPostAction.buildImageUploadedURL(request) : 'no_img';
-            const contentTxt = request.body.uploadFormTxt;
+            const contentTxt = request.body.postFormTxt;
             if (checkPost.ifContentTxtIsValid(response, contentTxt)) {
                 //Couting how much posts existed on the database before
                 doPostAction.getLastPostUploadedIndex(response).then((lastPostIndex) => {
@@ -134,7 +135,7 @@ exports.commentPost = (request, response, next) => {
             //Checking if the post exists
             check.ifDocumentExists(response, Post, { _id: targetPostId }, "Ce post n'existe pas", (targetPost) => {
                 const contentImg = request.file ? doPostAction.buildImageUploadedURL(request) : 'no_img';
-                const contentTxt = request.body.uploadFormTxt;
+                const contentTxt = request.body.postFormTxt;
                 if (checkPost.ifContentTxtIsValid(response, contentTxt)) {
                     //Couting how much posts existed on the database before
                     Post.count({}, function (err, count) {
@@ -227,7 +228,7 @@ exports.modifyPost = (request, response, next) => {
             check.ifDocumentExists(response, Post, { _id: targetPostId }, "Ce post n'existe pas", (targetPost) => {
                 //Checking if the requester can do this action (deleting your own post or being admin)
                 if (askingUserId === targetPost.uploaderId || checkUser.ifHasRequiredPrivilege(response, askingUser, 2, 1) === true) {
-                    const contentTxt = request.body.uploadFormTxt;
+                    const contentTxt = request.body.postFormTxt;
                     if (checkPost.ifContentTxtIsValid(response, contentTxt)) {
                         const oldContentImg = targetPost.contentImg;
                         let contentImg = oldContentImg;
@@ -237,9 +238,9 @@ exports.modifyPost = (request, response, next) => {
                             contentImg = doPostAction.buildImageUploadedURL(request);
                             imageIsChanged = true;
                         } else {
-                            if (request.body.uploadFormImg === 'no_img') {
+                            if (request.body.postFormImg === 'no_img') {
                                 //Image is changed to be removed
-                                contentImg = request.body.uploadFormImg;
+                                contentImg = request.body.postFormImg;
                                 imageIsChanged = true;
                             }
                         }

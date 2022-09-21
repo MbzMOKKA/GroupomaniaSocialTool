@@ -24,4 +24,4 @@ const storage = multer.diskStorage({
 });
 
 //Exports
-module.exports = multer({ storage }).single('uploadFormImg');
+module.exports = multer({ storage }).single('postFormImg');
