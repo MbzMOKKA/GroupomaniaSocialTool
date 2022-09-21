@@ -132,7 +132,8 @@ export async function getAllPosts(token, posts, setPosts, addAsUnread, unread, s
         const postLoaded = posts.length;
         const result = await communicateWithAPI(`http://localhost:8000/api/posts/${postLoaded}`, 'GET', token, null);
         if (result.status === 200) {
-            if (addAsUnread === true) {
+            //if (addAsUnread === true) {
+            if (!document.hasFocus()) {
                 setUnread(unread + result.data.length);
             }
             setPosts([...posts, ...result.data]);
@@ -151,7 +152,9 @@ export async function getNewPosts(token, lastPostLoadedId, posts, setPosts, unre
             } else {
                 //Some posts are already shown, trying to get only new post from the api
                 const result = await communicateWithAPI(`http://localhost:8000/api/posts/new/${lastPostLoadedId}`, 'GET', token, null);
-                setUnread(unread + result.data.length);
+                if (!document.hasFocus()) {
+                    setUnread(unread + result.data.length);
+                }
                 setPosts([...result.data, ...posts]);
             }
         }
@@ -214,6 +217,7 @@ export function updatePostLikeLocally(post, setPost) {
     setPost(newPost);
     return action;
 }
+
 export function updatePostLikeInListLocally(postToLikeId, posts, setPosts) {
     let action = undefined;
     //changing the like locally

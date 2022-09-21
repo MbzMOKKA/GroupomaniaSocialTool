@@ -30,3 +30,11 @@ export const SessionProvider = ({ children }) => {
 
     return <SessionContext.Provider value={{ token, updateToken, accountInfo, updateAccountInfo }}>{children}</SessionContext.Provider>;
 };
+
+export const NotificationContext = createContext();
+
+export const NotificationProvider = ({ children }) => {
+    const [unread, setUnread] = useState(0);
+
+    return <NotificationContext.Provider value={{ unread, setUnread }}>{children}</NotificationContext.Provider>;
+};

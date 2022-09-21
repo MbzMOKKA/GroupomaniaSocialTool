@@ -39,6 +39,18 @@ export function userStateString(stateId) {
     }
 }
 
+export function getPageSubTitle(pathname) {
+    if (pathname === '/') return 'Accueil - ';
+    if (pathname === '/users') return 'Utilisateurs - ';
+    if (pathname === '/login') return 'Connexion - ';
+    if (pathname === '/signup') return 'Créer un compte - ';
+    if (pathname === '/posts/create') return 'Créer une publication - ';
+    if (pathname.split('/details/')[0] === '/posts') return 'Commentaires - ';
+    if (pathname.split('/reply/')[0] === '/posts') return 'Poster un commentaire - ';
+    //default case
+    return '';
+}
+
 /*
 function fallbackCopyTextToClipboard(text) {
     var textArea = document.createElement('textarea');

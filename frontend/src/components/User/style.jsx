@@ -20,16 +20,16 @@ export const StyledUserInfo = styled.div`
     display: flex;
     justify-content: space-between;
     margin-top: 8px;
-    padding-bottom: 4px;
-    border-bottom: 2px white solid;
+    padding-bottom: 8px;
+    border-bottom: 1px white solid;
 `;
 export const StyledShowModButton = styled.button`
     background-color: ${({ canInterract }) => (canInterract === false ? 'black' : 'ineherit')};
     opacity: ${({ canInterract }) => (canInterract === false ? '0.35' : '1')};
     width: 100%;
-    margin-top: 8px;
-    padding-top: 12px;
-    padding-bottom: 12px;
+    margin-top: 12px;
+    padding-top: 8px;
+    padding-bottom: 8px;
     font-size: 20px;
     i {
         font-size: 24px;

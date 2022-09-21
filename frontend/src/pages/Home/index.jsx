@@ -1,9 +1,9 @@
 //Imports
 import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
-import { SessionContext } from '../../utils/context/index';
+import { SessionContext, NotificationContext } from '../../utils/context/index';
 import { getAllPosts, getNewPosts } from '../../utils/api_communication/index';
-import { StyleButtonUpload, StyledPostList, StyledPostElement, StyledNoPostMsg } from './style';
+import { StyleButtonUpload, StyledPostList, StyledPostElement, StyledLoadMoreButton, StyledNoPostMsg } from './style';
 import { IconInButton } from '../../utils/style/GlobalStyle';
 import ErrorMsg from '../../components/common/ErrorMsg/index';
 import Post from '../../components/post/Standard/index';
@@ -11,9 +11,9 @@ import Post from '../../components/post/Standard/index';
 //Component
 function Home() {
     const { token } = useContext(SessionContext);
+    const { unread, setUnread } = useContext(NotificationContext);
     const [showErrorApiResponse, setShowErrorApiResponse] = useState(null);
     const [posts, setPosts] = useState([]);
-    const [unread, setUnread] = useState(0);
     const [newCheckCounter, setNewCheckCounter] = useState(0);
     const redirect = useNavigate();
     const newCheckCooldown = 1000 * 5;
@@ -37,23 +37,12 @@ function Home() {
         getNewPosts(token, lastPostLoadedId, posts, setPosts, unread, setUnread, setShowErrorApiResponse);
         setTimeout(() => {
             setNewCheckCounter(newCheckCounter + 1);
-            if (document.hasFocus()) {
+            /* if (document.hasFocus()) {
                 setUnread(0);
-            }
+            }*/
         }, newCheckCooldown);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [newCheckCounter]);
-
-    //Changing the page title when new message are recieved
-    /*useEffect(() => {
-        let name = ``;
-        if (unread > 0) {
-            name = name + `(${unread}) `;
-        } else {
-        }
-        name = name + `Groupomania`;
-        document.title = name;
-    }, [unread]);*/
 
     ////////////////////////////////////////////////////////
 
@@ -89,14 +78,14 @@ function Home() {
                             );
                         })}
                     </StyledPostList>
-                    <button
+                    <StyledLoadMoreButton
                         onClick={() => {
                             getAllPosts(token, posts, setPosts, false, null, null, setShowErrorApiResponse);
                         }}
                     >
                         <IconInButton className="fa-solid fa-circle-chevron-down" />
                         Voir plus
-                    </button>
+                    </StyledLoadMoreButton>
                 </>
             ) : (
                 <StyledNoPostMsg>

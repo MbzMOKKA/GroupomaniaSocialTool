@@ -16,6 +16,10 @@ export const StyledPostList = styled.ul`
 export const StyledPostElement = styled.li`
     list-style: none;
 `;
+export const StyledLoadMoreButton = styled.button`
+    margin-top: 12px;
+    margin-bottom: 100px;
+`;
 export const StyledNoPostMsg = styled.p`
     margin-top: 24px;
     i {

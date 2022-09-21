@@ -2,15 +2,17 @@
 import icon from '../../assets/icon-left-font-monochrome-white.svg';
 import { useNavigate } from 'react-router-dom';
 import { getMyAccountInfo } from '../../utils/api_communication/index';
+import { getPageSubTitle } from '../../utils/misc/index';
 import { useState, useEffect, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import BubbleNav from '../navigation/BubbleNav/index';
 import { StyledIconContainer, StyledIcon, StyledHeader, StyledButtonOpenNav } from './style.jsx';
-import { SessionContext } from '../../utils/context/index';
+import { SessionContext, NotificationContext } from '../../utils/context/index';
 
 //Component
 function Header() {
     const { token, updateToken, updateAccountInfo } = useContext(SessionContext);
+    const { unread, setUnread } = useContext(NotificationContext);
     const [navIsOpen, setNavIsOpen] = useState(false);
     const [tokenCheckedFromLS, setTokenCheckedFromLS] = useState(false);
     const location = useLocation();
@@ -40,6 +42,22 @@ function Header() {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
+
+    //Changing the page title when new messages are recieved
+    useEffect(() => {
+        let name = ``;
+        if (unread > 0) {
+            name = name + `(${unread}) `;
+        }
+        name = name + getPageSubTitle(location.pathname);
+        name = name + `Groupomania`;
+        document.title = name;
+    }, [unread, location.pathname]);
+
+    //Resetting the unread to 0 when page is focused
+    window.addEventListener('focus', () => {
+        setUnread(0);
+    });
 
     //Render
     return (
