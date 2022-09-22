@@ -19,7 +19,7 @@ function PostHeader({ post, isComment, isDetailled, setShowPostOptions }) {
                 </h2>
                 <p>{formatDate(post.uploadDate)}</p>
             </StyledPostUploaderAndDate>
-            {(accountInfo.role > 0 || accountInfo.userId === post.uploaderId) && isDetailled === false && (
+            {(accountInfo.role > post.uploaderRole || accountInfo.userId === post.uploaderId) && isDetailled === false && accountInfo.state === 0 && (
                 <StyledButtonPostOptions
                     onClick={() => {
                         setShowPostOptions(true);

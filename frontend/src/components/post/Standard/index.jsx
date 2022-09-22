@@ -24,7 +24,7 @@ function Post({ post, setPost, posts, setPosts, isComment, isDetailled }) {
                 <PostHeader post={post} isComment={isComment} isDetailled={isDetailled} setShowPostOptions={setShowPostOptions} />
                 <PostContent post={post} />
                 <PostFooter post={post} setPost={setPost} posts={posts} setPosts={setPosts} isDetailled={isDetailled} setShowErrorApiResponse={setShowErrorApiResponse} />
-                {isDetailled === true && (accountInfo.role > 0 || accountInfo.userId === post.uploaderId) && (
+                {isDetailled === true && (accountInfo.role > post.uploaderRole || accountInfo.userId === post.uploaderId) && accountInfo.state === 0 && (
                     <StyledPostOptionsContainer>
                         {accountInfo.role > 1 && <ButtonEdit postId={post._id} postIsDetailled={true} />}
                         <ButtonDelete postId={post._id} postIsDetailled={true} />

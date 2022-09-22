@@ -10,7 +10,7 @@ import Post from '../../components/post/Standard/index';
 
 //Component
 function Home() {
-    const { token } = useContext(SessionContext);
+    const { token, accountInfo } = useContext(SessionContext);
     const { unread, setUnread } = useContext(NotificationContext);
     const [showErrorApiResponse, setShowErrorApiResponse] = useState(null);
     const [posts, setPosts] = useState([]);
@@ -27,7 +27,7 @@ function Home() {
     }, [token]);
 
     //New post check loop
-    /*useEffect(() => {
+    useEffect(() => {
         let lastPostLoadedId = null;
         try {
             lastPostLoadedId = posts[0]._id;
@@ -40,31 +40,21 @@ function Home() {
         }, newCheckCooldown);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [newCheckCounter]);
-    */
 
-    ////////////////////////////////////////////////////////
-
-    /*function startEditPost(e, post) {
-         e.preventDefault();
-        setEditedPostObj({
-            _id: post._id,
-            contentTxt: post.contentText,
-            contentImg: post.contentImg,
-        });
-    }*/
     //Render
     return (
         <main className="padded-app-container">
             <h1>Dernières publications</h1>
-            <StyleButtonUpload
-                onClick={() => {
-                    redirect('/posts/create', { replace: false });
-                }}
-            >
-                <IconInButton className="fa-solid fa-pencil" />
-                Créer une publication
-            </StyleButtonUpload>
-
+            {accountInfo.state === 0 && (
+                <StyleButtonUpload
+                    onClick={() => {
+                        redirect('/posts/create', { replace: false });
+                    }}
+                >
+                    <IconInButton className="fa-solid fa-pencil" />
+                    Créer une publication
+                </StyleButtonUpload>
+            )}
             {posts.length > 0 ? (
                 <>
                     <StyledPostList>

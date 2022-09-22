@@ -12,7 +12,7 @@ function PostOptions({ setBubbleIsOpen, posts, setPosts, postId }) {
     //Render
     return (
         <BubbleContainer setBubbleIsOpen={setBubbleIsOpen}>
-            <p>Modération :</p>
+            <p>Plus d'action :</p>
             {accountInfo.role > 1 && <ButtonEdit setBubbleIsOpen={setBubbleIsOpen} postId={postId} postIsDetailled={false} />}
             <ButtonDelete setBubbleIsOpen={setBubbleIsOpen} postId={postId} posts={posts} setPosts={setPosts} postIsDetailled={false} />
         </BubbleContainer>

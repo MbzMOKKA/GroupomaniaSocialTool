@@ -44,15 +44,13 @@ exports.getMyAccountInfo = (request, response, next) => {
     check.ifDocumentExists(response, User, { _id: askingUserId }, `Jeton d'authentification invalide`, (askingUser) => {
         //Checking if the requester isn't suspended
         if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
-            doAction.getUserDisplayName(askingUserId).then((displayName) => {
-                const accountInfo = {
-                    userId: askingUserId,
-                    displayName: displayName,
-                    role: askingUser.role,
-                    state: askingUser.state,
-                };
-                response.status(200).json(accountInfo);
-            });
+            const accountInfo = {
+                userId: askingUserId,
+                displayName: askingUser.email,
+                role: askingUser.role,
+                state: askingUser.state,
+            };
+            response.status(200).json(accountInfo);
         }
     });
 };

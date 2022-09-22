@@ -40,18 +40,19 @@ exports.getOnePost = (request, response, next) => {
     const targetPostId = request.params.id;
     //Getting the requester account
     check.ifDocumentExists(response, User, { _id: askingUserId }, `Jeton d'authentification invalide`, (askingUser) => {
-        //Checking if the requester isn't restrained or suspended
-        if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 1)) {
+        //Checking if the requester isn't suspended
+        if (checkUser.ifHasRequiredPrivilege(response, askingUser, 0, 2)) {
             //Checking if the post exists
             check.ifDocumentExists(response, Post, { _id: targetPostId }, "Ce post n'existe pas", (targetPost) => {
                 //Getting the content of the comments
                 doPostAction.findChildPostsContent(targetPost.childPosts, askingUserId).then((comments) => {
-                    doAction.getUserDisplayName(targetPost.uploaderId).then((uploaderDisplayName) => {
+                    doAction.getUser(targetPost.uploaderId).then((uploader) => {
                         //Sending the result
                         const detailledPost = {
                             _id: targetPost._id,
                             uploaderId: targetPost.uploaderId,
-                            uploaderDisplayName: uploaderDisplayName,
+                            uploaderDisplayName: uploader.email,
+                            uploaderRole: uploader.role,
                             comments: comments,
                             youHaveLiked: checkUser.ifHasLikedPost(targetPost, askingUserId),
                             likeCounter: targetPost.userLikeList.length,

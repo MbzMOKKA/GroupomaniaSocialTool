@@ -10,10 +10,12 @@ const Post = require('../../models/post');
 
 //Create an object that represent an undetailled post shown that will be sent to the user
 async function formatSimplifiedPost(post, askingUserId) {
+    const uploader = await doAction.getUser(post.uploaderId);
     return {
         _id: post._id,
         uploaderId: post.uploaderId,
-        uploaderDisplayName: await doAction.getUserDisplayName(post.uploaderId),
+        uploaderDisplayName: uploader.email,
+        uploaderRole: uploader.role,
         contentText: post.contentText,
         contentImg: post.contentImg,
         commentCounter: post.childPosts.length,
@@ -80,8 +82,6 @@ exports.findChildPostsContent = findChildPostsContent;
 //Return an array of X posts
 async function findHomepagePosts(scanIndex, postLoadedByClient, askingUserId) {
     //Ignoring the posts and comments that the user has already loaded
-    console.log('==================================');
-    console.log('début :' + scanIndex);
     while (postLoadedByClient > 0) {
         const post = await Post.findOne({ postUploadedBefore: scanIndex });
         if (post !== null) {
@@ -94,7 +94,6 @@ async function findHomepagePosts(scanIndex, postLoadedByClient, askingUserId) {
         }
         scanIndex--;
     }
-    console.log('milieu :' + scanIndex);
     let scanRemaining = 3; //Maximum amount of posts returned at once : it doesn't return every existing posts
     let posts = [];
     //Finding the next few posts that the user is requesting while ignoring comments
@@ -112,7 +111,6 @@ async function findHomepagePosts(scanIndex, postLoadedByClient, askingUserId) {
             scanRemaining = 0;
         }
     }
-    console.log('fin :' + scanIndex);
     return posts;
 }
 exports.findHomepagePosts = findHomepagePosts;
@@ -126,7 +124,6 @@ async function getLastPostUploadedIndex(response) {
             return -1;
         } else {
             //At least one post exists, we return its index+1
-            console.log(newestPost);
             return newestPost[0].postUploadedBefore;
         }
     } catch (error) {

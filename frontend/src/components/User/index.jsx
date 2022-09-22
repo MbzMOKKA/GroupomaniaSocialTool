@@ -2,7 +2,7 @@
 import { useContext, useState } from 'react';
 import { SessionContext } from '../../utils/context/index';
 import { setUserRole, setUserState } from '../../utils/api_communication/index';
-import { StyledUserCard, StyledDisplayName, StyledUserInfo, StyledShowModButton, StyledUserManage } from './style';
+import { StyledUserCard, StyledDisplayName, StyledUserInfo, StyledButtonsContainer, StyledShowModButton, StyledUserManage } from './style';
 import ErrorMsg from '../../components/common/ErrorMsg/index';
 import { userRoleString, userStateString } from '../../utils/misc/index';
 
@@ -24,10 +24,8 @@ function User({ user, users, setUsers }) {
                 <p className="user-role">Rôle : {userRoleString(user.role)}</p>
                 <p className="user-state">État : {userStateString(user.state)}</p>
             </StyledUserInfo>
-            {accountInfo.userId === user._id || accountInfo.state > 0 || accountInfo.role <= user.role ? (
-                <StyledShowModButton canInterract={false}>Aucune action possible</StyledShowModButton>
-            ) : (
-                <>
+            {accountInfo.userId !== user._id && accountInfo.state === 0 && accountInfo.role > user.role && (
+                <StyledButtonsContainer>
                     {showModTools === true ? (
                         <>
                             <StyledShowModButton
@@ -105,7 +103,7 @@ function User({ user, users, setUsers }) {
                             </StyledShowModButton>
                         </>
                     )}
-                </>
+                </StyledButtonsContainer>
             )}
         </StyledUserCard>
     );

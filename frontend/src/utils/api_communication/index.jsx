@@ -167,8 +167,10 @@ export async function getPostDetails(token, postId, setPost, setShowErrorApiResp
     try {
         const result = await communicateWithAPI(`http://localhost:8000/api/posts/details/${postId}`, 'GET', token, null);
         setPost(result.data);
+        return true;
     } catch (error) {
-        setShowErrorApiResponse(error.response.data.message);
+        //setShowErrorApiResponse(error.response.data.message);
+        return false;
     }
 }
 
@@ -182,19 +184,10 @@ export async function uploadPost(token, formContentTxt, uploadContentImg, parent
                 'content-type': 'multipart/form-data',
             },
         };
-        let result = undefined;
         if (parentPostId === null) {
-            result = await communicateWithAPI(`http://localhost:8000/api/posts`, 'POST', token, formData, config);
+            await communicateWithAPI(`http://localhost:8000/api/posts`, 'POST', token, formData, config);
         } else {
-            result = await communicateWithAPI(`http://localhost:8000/api/posts/${parentPostId}`, 'POST', token, formData, config);
-        }
-        if (result.status === 201) {
-            //Upload successful : resetting the form
-            //setUploadContentTxt('');
-            // setUploadContentImg(null);
-            //document.getElementById('uploadFormTxt').value = '';
-            //document.getElementById('uploadFormImg').value = null;
-            //formImagePreviewChange(null);
+            await communicateWithAPI(`http://localhost:8000/api/posts/${parentPostId}`, 'POST', token, formData, config);
         }
         return true;
     } catch (error) {

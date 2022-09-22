@@ -21,11 +21,11 @@ export const StyledUserInfo = styled.div`
     justify-content: space-between;
     margin-top: 8px;
     padding-bottom: 8px;
-    border-bottom: 1px white solid;
+`;
+export const StyledButtonsContainer = styled.div`
+    border-top: 1px white solid;
 `;
 export const StyledShowModButton = styled.button`
-    background-color: ${({ canInterract }) => (canInterract === false ? 'black' : 'ineherit')};
-    opacity: ${({ canInterract }) => (canInterract === false ? '0.35' : '1')};
     width: 100%;
     margin-top: 12px;
     padding-top: 8px;

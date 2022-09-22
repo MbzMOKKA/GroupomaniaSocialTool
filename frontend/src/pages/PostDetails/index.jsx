@@ -12,7 +12,7 @@ import ButtonBack from '../../components/ButtonBack/index';
 
 //Component
 function PostDetails() {
-    const { token } = useContext(SessionContext);
+    const { token, accountInfo } = useContext(SessionContext);
     const { postId } = useParams();
     const [showErrorApiResponse, setShowErrorApiResponse] = useState(null);
     const [post, setPost] = useState({ comments: [] });
@@ -28,7 +28,11 @@ function PostDetails() {
     //Getting the post details from the API when the page is loaded
     useEffect(() => {
         if (token !== null) {
-            getPostDetails(token, postId, setPost, setShowErrorApiResponse);
+            getPostDetails(token, postId, setPost, setShowErrorApiResponse).then((success) => {
+                if (success === false) {
+                    redirect(`/notfound/posts/${postId}`, { replace: false });
+                }
+            });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token, postId]);
@@ -42,14 +46,16 @@ function PostDetails() {
             <Post key={post._id} post={post} setPost={setPost} isComment={post.parentPost !== 'null'} isDetailled={true} />
             <div className="padded-app-container">
                 <h1>Commentaires</h1>
-                <StyleButtonUpload
-                    onClick={() => {
-                        redirect(`/posts/reply/${postId}`, { replace: false });
-                    }}
-                >
-                    <IconInButton className="fa-solid fa-comment-dots" />
-                    Poster un commentaire
-                </StyleButtonUpload>
+                {accountInfo.state === 0 && (
+                    <StyleButtonUpload
+                        onClick={() => {
+                            redirect(`/posts/reply/${postId}`, { replace: false });
+                        }}
+                    >
+                        <IconInButton className="fa-solid fa-comment-dots" />
+                        Poster un commentaire
+                    </StyleButtonUpload>
+                )}
                 <div>{showErrorApiResponse !== null ? <ErrorMsg>· {showErrorApiResponse} !</ErrorMsg> : null}</div>
 
                 {post.comments.length > 0 ? (

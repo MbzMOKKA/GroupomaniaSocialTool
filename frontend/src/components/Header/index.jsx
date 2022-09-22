@@ -6,12 +6,12 @@ import { getPageSubTitle } from '../../utils/misc/index';
 import { useState, useEffect, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import BubbleNav from '../navigation/BubbleNav/index';
-import { StyledIconContainer, StyledIcon, StyledHeader, StyledButtonOpenNav } from './style.jsx';
+import { StyledRestrainedMsg, StyledHeader, StyledIconContainer, StyledIcon, StyledButtonOpenNav } from './style.jsx';
 import { SessionContext, NotificationContext } from '../../utils/context/index';
 
 //Component
 function Header() {
-    const { token, updateToken, updateAccountInfo } = useContext(SessionContext);
+    const { token, updateToken, accountInfo, updateAccountInfo } = useContext(SessionContext);
     const { unread, setUnread } = useContext(NotificationContext);
     const [navIsOpen, setNavIsOpen] = useState(false);
     const [tokenCheckedFromLS, setTokenCheckedFromLS] = useState(false);
@@ -63,6 +63,12 @@ function Header() {
     return (
         <>
             {navIsOpen === true ? <BubbleNav setBubbleIsOpen={setNavIsOpen} /> : null}
+            {accountInfo.state === 1 && (
+                <StyledRestrainedMsg>
+                    <i className="fa-solid fa-circle-info" />
+                    Compte restreind
+                </StyledRestrainedMsg>
+            )}
             <StyledHeader>
                 <StyledIconContainer to="/">
                     <StyledIcon src={icon} alt="icone Groupomania" />
