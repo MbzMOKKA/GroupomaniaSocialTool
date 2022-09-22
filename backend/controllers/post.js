@@ -138,9 +138,9 @@ exports.commentPost = (request, response, next) => {
                 const contentTxt = request.body.postFormTxt;
                 if (checkPost.ifContentTxtIsValid(response, contentTxt)) {
                     //Couting how much posts existed on the database before
-                    Post.count({}, function (err, count) {
+                    doPostAction.getLastPostUploadedIndex(response).then((lastPostIndex) => {
                         const upload = new Post({
-                            postUploadedBefore: count,
+                            postUploadedBefore: lastPostIndex + 1,
                             uploaderId: askingUserId,
                             parentPost: targetPost._id,
                             childPosts: [],
@@ -157,9 +157,7 @@ exports.commentPost = (request, response, next) => {
                                 targetPost.childPosts.push(targetComment._id);
                                 //updating the parent post on the database to include the comment as a child
                                 doAction.updateDocumentOnDB(response, Post, targetPostId, targetPost, () => {
-                                    doPostAction.formatSimplifiedPost(targetComment, askingUserId).then((returnedUploadedComment) => {
-                                        response.status(201).json({ returnedUploadedComment });
-                                    });
+                                    successFunctions.sendUploadSuccess(response);
                                 });
                             })
                             //Creation failed

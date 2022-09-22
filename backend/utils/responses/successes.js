@@ -3,7 +3,7 @@ exports.sendGenericSuccess = (response, message = 'Requête réussit') => {
     response.status(200).json({ message });
 };
 //Response that is sent if a deletion is successfully done
-exports.sendDeleteSuccess = (response, message = 'Supression effectué') => {
+exports.sendDeleteSuccess = (response, message = 'Suppression effectué') => {
     response.status(200).json({ message });
 };
 //Response that is sent if a modification is successfully done

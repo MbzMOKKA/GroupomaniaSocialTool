@@ -27,7 +27,7 @@ function Home() {
     }, [token]);
 
     //New post check loop
-    useEffect(() => {
+    /*useEffect(() => {
         let lastPostLoadedId = null;
         try {
             lastPostLoadedId = posts[0]._id;
@@ -37,12 +37,10 @@ function Home() {
         getNewPosts(token, lastPostLoadedId, posts, setPosts, unread, setUnread, setShowErrorApiResponse);
         setTimeout(() => {
             setNewCheckCounter(newCheckCounter + 1);
-            /* if (document.hasFocus()) {
-                setUnread(0);
-            }*/
         }, newCheckCooldown);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [newCheckCounter]);
+    */
 
     ////////////////////////////////////////////////////////
 

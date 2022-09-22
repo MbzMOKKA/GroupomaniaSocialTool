@@ -80,6 +80,8 @@ exports.findChildPostsContent = findChildPostsContent;
 //Return an array of X posts
 async function findHomepagePosts(scanIndex, postLoadedByClient, askingUserId) {
     //Ignoring the posts and comments that the user has already loaded
+    console.log('==================================');
+    console.log('début :' + scanIndex);
     while (postLoadedByClient > 0) {
         const post = await Post.findOne({ postUploadedBefore: scanIndex });
         if (post !== null) {
@@ -92,6 +94,7 @@ async function findHomepagePosts(scanIndex, postLoadedByClient, askingUserId) {
         }
         scanIndex--;
     }
+    console.log('milieu :' + scanIndex);
     let scanRemaining = 3; //Maximum amount of posts returned at once : it doesn't return every existing posts
     let posts = [];
     //Finding the next few posts that the user is requesting while ignoring comments
@@ -109,11 +112,12 @@ async function findHomepagePosts(scanIndex, postLoadedByClient, askingUserId) {
             scanRemaining = 0;
         }
     }
+    console.log('fin :' + scanIndex);
     return posts;
 }
 exports.findHomepagePosts = findHomepagePosts;
 
-//getting the post index of the newly uploaded post
+//Getting the post index of the newly uploaded post
 async function getLastPostUploadedIndex(response) {
     try {
         const newestPost = await Post.find().sort({ _id: -1 }).limit(1);
@@ -122,6 +126,7 @@ async function getLastPostUploadedIndex(response) {
             return -1;
         } else {
             //At least one post exists, we return its index+1
+            console.log(newestPost);
             return newestPost[0].postUploadedBefore;
         }
     } catch (error) {
