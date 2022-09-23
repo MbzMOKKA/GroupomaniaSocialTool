@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { SessionContext } from '../../utils/context/index';
 import { updatePostLikeLocally, updatePostLikeInListLocally, likePost } from '../../utils/api_communication/index';
-import { StyledPostFooter, StyledPostReaction, StyledPostEditCounter } from './style';
+import { StyledPostFooter, StyledPostReaction, StyledLikeButton, StyledPostEditCounter } from './style';
 import { IconInButton } from '../../utils/style/GlobalStyle';
 
 //Component
@@ -15,7 +15,8 @@ function PostFooter({ post, setPost, posts, setPosts, isDetailled, setShowErrorA
     return (
         <StyledPostFooter>
             <StyledPostReaction>
-                <button
+                <StyledLikeButton
+                    youHaveLiked={post.youHaveLiked}
                     onClick={() => {
                         let action = undefined;
                         if (isDetailled === true) {
@@ -29,7 +30,7 @@ function PostFooter({ post, setPost, posts, setPosts, isDetailled, setShowErrorA
                     {post.youHaveLiked === true ? <IconInButton className="fa-solid fa-heart" /> : <IconInButton className="fa-regular fa-heart" />}
                     {post.likeCounter}
                     {isDetailled === true && <> J'aime</>}
-                </button>
+                </StyledLikeButton>
                 {isDetailled === false && (
                     <button
                         onClick={() => {

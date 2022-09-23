@@ -1,6 +1,7 @@
 //Imports
 import colors from '../../utils/style/colors';
 import styled from 'styled-components';
+import { animUserModOptionsFadeIn } from '../../utils/style/animations';
 
 //Exports
 export const StyledUserCard = styled.li`
@@ -43,6 +44,7 @@ export const StyledUserManage = styled.div`
     margin-top: 4px;
     overflow: hidden;
     button {
+        animation: ${animUserModOptionsFadeIn} 300ms ease-out;
         width: 95%;
         margin: 4px;
         i {

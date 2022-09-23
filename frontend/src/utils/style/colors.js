@@ -5,7 +5,7 @@ const colors = {
     backgroundLighter: '#66697A',
     backgroundDarker: '#333333',
     positive: '#AEFF00',
-    negative: '#FF0000',
+    negative: '#E29A9A',
     yourself: '#1FA5C9',
 };
 

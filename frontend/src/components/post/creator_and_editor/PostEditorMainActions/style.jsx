@@ -1,4 +1,5 @@
 //Imports
+import colors from '../../../../utils/style/colors';
 import styled from 'styled-components';
 
 //Exports
@@ -15,4 +16,10 @@ export const StyledMainActionsContainer = styled.div`
         flex-grow: 1;
         font-size: 24px;
     }
+`;
+export const StyledCancelButton = styled.button`
+    background-color: ${colors.negative};
+`;
+export const StyledConfirmButton = styled.button`
+    background-color: ${colors.positive};
 `;

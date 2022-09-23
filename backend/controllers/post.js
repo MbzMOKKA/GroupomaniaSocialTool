@@ -184,20 +184,20 @@ exports.likePost = (request, response, next) => {
                 const userHasLiked = targetPost.userLikeList.includes(askingUserId);
                 switch (request.body.action) {
                     case true: //Trying to like
-                        if (userHasLiked === false) {
-                            //User hasn't liked yet: we like
-                            targetPost.userLikeList.push(askingUserId);
-                            actionDone = true;
-                        }
+                        //if (userHasLiked === false) {
+                        //User hasn't liked yet: we like
+                        targetPost.userLikeList.push(askingUserId);
+                        actionDone = true;
+                        //}
                         break;
                     case false: //Trying to unlike
                         actionName = "Retrait du j'aime";
-                        if (userHasLiked === true) {
-                            //User hasn't liked yet: we like
-                            const userIdIndexLike = targetPost.userLikeList.indexOf(askingUserId);
-                            targetPost.userLikeList.splice(userIdIndexLike, 1);
-                            actionDone = true;
-                        }
+                        //if (userHasLiked === true) {
+                        //User hasn't liked yet: we like
+                        const userIdIndexLike = targetPost.userLikeList.indexOf(askingUserId);
+                        targetPost.userLikeList.splice(userIdIndexLike, 1);
+                        actionDone = true;
+                        //}
                         break;
                     default: //Unknown action
                         actionName = 'Action inconnu';

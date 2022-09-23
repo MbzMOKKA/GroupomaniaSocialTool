@@ -1,5 +1,6 @@
 //Imports
 import styled from 'styled-components';
+import { animBubbleFadeIn } from '../../../utils/style/animations';
 
 //Exports
 export const StyledBluring = styled.div`
@@ -26,6 +27,7 @@ export const StyledBackground = styled.div`
     align-items: center;
 `;
 export const StyledChildrenContainer = styled.div`
+    animation: ${animBubbleFadeIn} 200ms ease-out;
     width: 80%;
     background-color: rgba(0, 0, 0, 0.4);
     position: fixed;

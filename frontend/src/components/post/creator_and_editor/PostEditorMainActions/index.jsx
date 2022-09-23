@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { SessionContext } from '../../../../utils/context/index';
 import { uploadPost, savePostEdit } from '../../../../utils/api_communication/index';
-import { StyledMainActionsContainer } from './style';
+import { StyledMainActionsContainer, StyledCancelButton, StyledConfirmButton } from './style';
 
 //Component
 function PostEditorMainActions({ formContentTxt, formContentImg, postId, setShowErrorApiResponse, isModify }) {
@@ -13,14 +13,14 @@ function PostEditorMainActions({ formContentTxt, formContentImg, postId, setShow
     //Render
     return (
         <StyledMainActionsContainer>
-            <button
+            <StyledCancelButton
                 onClick={() => {
                     redirect(-1, { replace: false });
                 }}
             >
                 Annuler
-            </button>
-            <button
+            </StyledCancelButton>
+            <StyledConfirmButton
                 onClick={() => {
                     if (isModify === true) {
                         savePostEdit(token, formContentTxt, formContentImg, postId, setShowErrorApiResponse).then((editSuccessful) => {
@@ -38,7 +38,7 @@ function PostEditorMainActions({ formContentTxt, formContentImg, postId, setShow
                 }}
             >
                 {isModify === true ? <>Appliquer</> : <>{postId === null ? <>Publier</> : <>Commenter</>}</>}
-            </button>
+            </StyledConfirmButton>
         </StyledMainActionsContainer>
     );
 }

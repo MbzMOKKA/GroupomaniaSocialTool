@@ -5,6 +5,8 @@ const checkUser = require('../checks/user');
 const doPostAction = require('./post');
 const doAction = require('./common');
 const Post = require('../../models/post');
+const dotenv = require('dotenv');
+dotenv.config();
 
 //Exports
 
@@ -94,7 +96,7 @@ async function findHomepagePosts(scanIndex, postLoadedByClient, askingUserId) {
         }
         scanIndex--;
     }
-    let scanRemaining = 3; //Maximum amount of posts returned at once : it doesn't return every existing posts
+    let scanRemaining = process.env.HOMEPAGE_POST_SENT_AT_ONCE; //Maximum amount of posts returned at once : it doesn't return every existing posts
     let posts = [];
     //Finding the next few posts that the user is requesting while ignoring comments
     while (scanRemaining > 0) {

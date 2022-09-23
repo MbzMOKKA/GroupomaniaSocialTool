@@ -28,6 +28,7 @@ export const StyledButtonPostOptions = styled.button`
     align-items: center;
     width: 32px;
     height: 32px;
+    min-width: 32px;
     padding: 0px;
     border-radius: 50%;
     i {

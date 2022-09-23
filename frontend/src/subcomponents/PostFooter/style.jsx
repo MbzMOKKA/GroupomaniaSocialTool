@@ -22,3 +22,15 @@ export const StyledPostEditCounter = styled.p`
     color: ${colors.secondary};
     font-style: italic;
 `;
+export const StyledLikeButton = styled.button`
+    i {
+        color: ${({ youHaveLiked }) => (youHaveLiked === true ? `${colors.positive};` : `inherit`)};
+        transition: transform 3000ms cubic-bezier(0, 0.9, 0.1, 1);
+    }
+    :active {
+        i {
+            transform: scale(2);
+            transition: none;
+        }
+    }
+`;
