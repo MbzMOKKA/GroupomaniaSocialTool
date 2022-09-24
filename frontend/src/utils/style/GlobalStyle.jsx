@@ -19,6 +19,7 @@ const StyledGlobalStyle = createGlobalStyle`
     main {
         display: flex;
         flex-direction: column;
+        padding-top: 32px;
     }
     button {
         background-color: ${colors.primary};
@@ -34,6 +35,9 @@ const StyledGlobalStyle = createGlobalStyle`
         border: none;
         border-radius: 15px;
         font-weight: 900;
+        :hover{
+            cursor:pointer;
+        }
     }
     a {
         color: ${colors.secondary};
@@ -63,6 +67,16 @@ const StyledGlobalStyle = createGlobalStyle`
     .padded-app-container {
         padding-left: 3%;
         padding-right: 3%;
+    }
+    .desktop-aside{
+        width: 26vw;
+        height: 100vh;
+        display: none;
+        padding-top: 24px;
+        flex-direction: column;
+        @media screen and (min-width: 1024px) {
+            display: flex;
+        }
     }
 `;
 

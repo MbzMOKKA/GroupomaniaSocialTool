@@ -31,7 +31,7 @@ export function userRoleString(roleId) {
 export function userStateString(stateId) {
     switch (stateId) {
         case 1:
-            return 'Restreind';
+            return 'Restreint';
         case 2:
             return 'Suspendu';
         default:

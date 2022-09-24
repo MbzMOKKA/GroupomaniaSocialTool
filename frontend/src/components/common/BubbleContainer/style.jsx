@@ -29,6 +29,7 @@ export const StyledBackground = styled.div`
 export const StyledChildrenContainer = styled.div`
     animation: ${animBubbleFadeIn} 200ms ease-out;
     width: 80%;
+    max-width: 600px;
     background-color: rgba(0, 0, 0, 0.4);
     position: fixed;
     display: flex;

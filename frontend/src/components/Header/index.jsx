@@ -1,13 +1,13 @@
 //Imports
-import icon from '../../assets/icon-left-font-monochrome-white.svg';
 import { useNavigate } from 'react-router-dom';
 import { getMyAccountInfo } from '../../utils/api_communication/index';
 import { getPageSubTitle } from '../../utils/misc/index';
 import { useState, useEffect, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import BubbleNav from '../navigation/BubbleNav/index';
-import { StyledRestrainedMsg, StyledHeader, StyledIconContainer, StyledIcon, StyledButtonOpenNav } from './style.jsx';
+import { StyledRestrainedMsg, StyledHeader, StyledButtonOpenNav } from './style.jsx';
 import { SessionContext, NotificationContext } from '../../utils/context/index';
+import HeaderLogo from '../../subcomponents/HeaderLogo/index';
 
 //Component
 function Header() {
@@ -70,9 +70,7 @@ function Header() {
                 </StyledRestrainedMsg>
             )}
             <StyledHeader>
-                <StyledIconContainer to="/">
-                    <StyledIcon src={icon} alt="icone Groupomania" />
-                </StyledIconContainer>
+                <HeaderLogo />
                 {location.pathname !== '/signup' && location.pathname !== '/login' && (
                     <StyledButtonOpenNav
                         onClick={() => {

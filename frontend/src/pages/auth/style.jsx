@@ -9,6 +9,7 @@ export const StyledForm = styled.form`
     align-items: center;
     div {
         width: 95%;
+        max-width: 700px;
     }
     .input-container {
         margin-top: 20px;
@@ -21,6 +22,7 @@ export const StyledForm = styled.form`
 `;
 export const StyledSubmitButton = styled.button`
     width: 100%;
+    max-width: 700px;
     margin-top: 30px;
     padding-top: 12px;
     padding-bottom: 12px;
@@ -40,6 +42,10 @@ export const StyledInfo = styled.div`
         margin-right: 7.5%;
         font-size: 22px;
         color: white;
+        @media screen and (min-width: 1024px) {
+            margin-left: 15%;
+            margin-right: 15%;
+        }
     }
     a {
         font-size: 22px;

@@ -1,5 +1,4 @@
 //Imports
-import { Link } from 'react-router-dom';
 import colors from '../../utils/style/colors';
 import styled from 'styled-components';
 
@@ -16,14 +15,6 @@ export const StyledRestrainedMsg = styled.p`
     }
 `;
 
-export const StyledIconContainer = styled(Link)`
-    max-width: 300px;
-`;
-
-export const StyledIcon = styled.img`
-    width: 90%;
-`;
-
 export const StyledHeader = styled.header`
     background-color: ${colors.primary};
     display: flex;
@@ -37,6 +28,9 @@ export const StyledHeader = styled.header`
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
     margin-bottom: 15px;
+    @media screen and (min-width: 1024px) {
+        display: none;
+    }
 `;
 
 export const StyledButtonOpenNav = styled.button`
@@ -44,8 +38,8 @@ export const StyledButtonOpenNav = styled.button`
     padding: 0;
     i {
         font-size: 36px;
-        @media (max-width: 230px) {
-            font-size: 24px;
+        @media (max-width: 280px) {
+            font-size: 26px;
         }
     }
 `;

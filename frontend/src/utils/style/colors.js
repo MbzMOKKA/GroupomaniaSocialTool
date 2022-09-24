@@ -4,9 +4,10 @@ const colors = {
     tertiary: '#4E5166',
     backgroundLighter: '#66697A',
     backgroundDarker: '#333333',
+    asideBorder: '#828596',
     positive: '#AEFF00',
     negative: '#E29A9A',
-    yourself: '#1FA5C9',
+    yourself: '#11A7CE ',
 };
 
 export default colors;

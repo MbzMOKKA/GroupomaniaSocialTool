@@ -53,6 +53,9 @@ export const StyledAddImageArea = styled.label`
         font-size: 44px;
         margin-bottom: 4px;
     }
+    :hover {
+        cursor: pointer;
+    }
 `;
 export const StyleImageManageContainer = styled.div`
     display: flex;
@@ -70,8 +73,9 @@ export const StyleImageManageContainer = styled.div`
 `;
 export const StyledImagePreview = styled.img`
     display: ${({ content }) => content === 'no_img' && 'none'};
-    width: 100%;
-    max-width: 512px;
     border-radius: 15px;
     margin: auto;
+    width: 100%;
+    max-height: 512px;
+    object-fit: contain;
 `;

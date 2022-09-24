@@ -15,6 +15,7 @@ export const StyledPostText = styled.p`
     word-break: break-all;
 `;
 export const StyledPostImage = styled.img`
-    height: 200px;
+    width: 100%;
+    max-height: 512px;
     object-fit: contain;
 `;
