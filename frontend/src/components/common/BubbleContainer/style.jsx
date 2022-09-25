@@ -42,15 +42,24 @@ export const StyledChildrenContainer = styled.div`
     i {
         font-size: 22px;
         margin-right: 6px;
+        @media (max-width: 400px) {
+            font-size: 18px;
+        }
     }
     p {
         font-size: 22px;
         padding-bottom: 12px;
         border-bottom: 1px white solid;
+        @media (max-width: 400px) {
+            font-size: 18px;
+        }
     }
     button {
         font-size: 26px;
         width: 100%;
         margin-top: 20px;
+        @media (max-width: 400px) {
+            font-size: 20px;
+        }
     }
 `;

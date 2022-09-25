@@ -12,6 +12,9 @@ const StyledGlobalStyle = createGlobalStyle`
         margin: 0;
         padding: 0;
         color: white;
+        @media (max-width: 400px) {
+            font-size: 16px;
+        }
     }
     body {
         background-color: ${colors.tertiary};
@@ -46,6 +49,9 @@ const StyledGlobalStyle = createGlobalStyle`
         color: ${colors.secondary};
         font-weight: 900;
         font-size: 32px;
+        @media (max-width: 400px) {
+            font-size: 25px;
+        }
     }
     h2 {
         color: ${colors.secondary};

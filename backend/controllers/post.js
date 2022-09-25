@@ -290,9 +290,24 @@ exports.deletePost = (request, response, next) => {
                         //Deleting the image of the sauce on the server
                         const filename = targetPost.contentImg.split('/images/')[1];
                         fileSystem.unlink(`images/${filename}`, () => {
-                            //Deleting the sauce from the data base
+                            const parentId = targetPost.parentPost;
+                            //Deleting the post from the database
                             Post.deleteOne({ _id: targetPostId })
-                                .then(() => successFunctions.sendDeleteSuccess(response))
+                                .then(() => {
+                                    if (parentId === 'null') {
+                                        successFunctions.sendDeleteSuccess(response);
+                                    } else {
+                                        //Removing the comment from its parent comments
+                                        check.ifDocumentExists(response, Post, { _id: parentId }, "Post parent n'existe plus", (targetParent) => {
+                                            let newTargetParent = JSON.parse(JSON.stringify(targetParent));
+                                            const deleteCommentIndex = newTargetParent.childPosts.indexOf(targetPostId);
+                                            newTargetParent.childPosts.splice(deleteCommentIndex, 1);
+                                            doAction.updateDocumentOnDB(response, Post, parentId, newTargetParent, () => {
+                                                successFunctions.sendDeleteSuccess(response);
+                                            });
+                                        });
+                                    }
+                                })
                                 .catch((error) => errorFunctions.sendServerError(response));
                         });
                     }

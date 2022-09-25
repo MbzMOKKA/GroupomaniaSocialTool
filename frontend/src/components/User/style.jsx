@@ -15,6 +15,9 @@ export const StyledDisplayName = styled.h2`
     i {
         font-size: 24px;
         margin-right: 6px;
+        @media (max-width: 400px) {
+            font-size: 18px;
+        }
     }
 `;
 export const StyledUserInfo = styled.div`
@@ -36,6 +39,9 @@ export const StyledShowModButton = styled.button`
         font-size: 24px;
         margin-right: 10px;
     }
+    @media (max-width: 400px) {
+        font-size: 15px;
+    }
 `;
 export const StyledUserManage = styled.div`
     display: flex;
@@ -46,9 +52,12 @@ export const StyledUserManage = styled.div`
     button {
         animation: ${animUserModOptionsFadeIn} 300ms ease-out;
         width: 95%;
-        margin: 4px;
+        margin: 6px;
         i {
             margin-right: 10px;
+        }
+        @media (max-width: 400px) {
+            font-size: 13px;
         }
     }
 `;

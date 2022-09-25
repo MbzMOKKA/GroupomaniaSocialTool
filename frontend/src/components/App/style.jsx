@@ -6,6 +6,7 @@ import colors from '../../utils/style/colors';
 export const StyledAppContainer = styled.div`
     width: 100%;
     display: flex;
+    justify-content: center;
 `;
 export const StyledMainContainer = styled.div`
     display: flex;
@@ -14,5 +15,6 @@ export const StyledMainContainer = styled.div`
     @media screen and (min-width: 1024px) {
         border-left: 1px ${colors.asideBorder} solid;
         border-right: 1px ${colors.asideBorder} solid;
+        max-width: 660px;
     }
 `;

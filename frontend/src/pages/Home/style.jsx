@@ -9,6 +9,11 @@ export const StyleButtonUpload = styled.button`
     font-size: 24px;
     padding-top: 12px;
     padding-bottom: 12px;
+    @media (max-width: 400px) {
+        font-size: 18px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
 `;
 export const StyledPostList = styled.ul`
     margin-top: 34px;

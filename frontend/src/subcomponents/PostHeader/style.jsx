@@ -13,13 +13,22 @@ export const StyledPostUploaderAndDate = styled.div`
     i {
         font-size: 26px;
         margin-right: 10px;
+        @media (max-width: 400px) {
+            font-size: 16px;
+        }
     }
     h2 {
         font-size: 20px;
+        @media (max-width: 400px) {
+            font-size: 16px;
+        }
     }
     p {
         margin-top: 4px;
         font-size: 14px;
+        @media (max-width: 400px) {
+            font-size: 12px;
+        }
     }
 `;
 export const StyledButtonPostOptions = styled.button`
