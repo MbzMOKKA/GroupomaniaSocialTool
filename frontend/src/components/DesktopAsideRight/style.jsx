@@ -8,6 +8,7 @@ export const StyledAsideRight = styled.aside`
     div {
         width: 80%;
         max-width: 380px;
+        margin-top: 24px;
         margin-left: 28px;
     }
 `;

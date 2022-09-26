@@ -1,6 +1,8 @@
-#CURRENT
+#ROOT
 
 todo.txt
+.prettierrc
+.prettierignore
 
 #BACKEND
 

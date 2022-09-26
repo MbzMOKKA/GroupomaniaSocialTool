@@ -78,7 +78,6 @@ const StyledGlobalStyle = createGlobalStyle`
         width: 26vw;
         height: 100vh;
         display: none;
-        padding-top: 24px;
         flex-direction: column;
         @media screen and (min-width: 1024px) {
             display: flex;
