@@ -11,7 +11,7 @@ const postRoutes = require('./routes/post');
 const app = express();
 dotenv.config();
 
-//Connections
+//Connection
 mongoose
     .connect(process.env.DB_LOGIN, {
         useNewUrlParser: true,

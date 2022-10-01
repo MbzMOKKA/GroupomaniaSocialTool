@@ -13,7 +13,7 @@ exports.ifAuthRequestIsValid = (request, response) => {
         return false;
     }
     //checking that the password and the email contains at least 3 caracter
-    const minInputLength = 3;
+    const minInputLength = 5;
     if (request.body.email.length < minInputLength || request.body.password.length < minInputLength) {
         errorFunctions.sendBadRequestError(response, `L'E-mail et le mot de passe doivent inclurent au moins ${minInputLength} caractères`);
         return false;
@@ -27,17 +27,7 @@ exports.ifAuthRequestIsValid = (request, response) => {
     return true;
 };
 
-/*
-//Check if the user behind the request is allowed do to something
-exports.ifMatchesExpectedId = (request, response, expectedId) => {
-    if (request.body.auth.userId === expectedId) {
-        return true;
-    }
-    errorFunctions.sendUnauthorizeError(response);
-    return false;
-};*/
-
-//Check if the user account state is 'active'
+//Check if the user account has requiered privilege (role+state)
 exports.ifHasRequiredPrivilege = (response, targetUser, minRoleRequired, minStateDenied) => {
     if (targetUser.role < minRoleRequired) {
         errorFunctions.sendUnauthorizeError(response, `Votre rôle n'est pas assez élevé pour faire ça`);
@@ -50,7 +40,7 @@ exports.ifHasRequiredPrivilege = (response, targetUser, minRoleRequired, minStat
     return true;
 };
 
-//Check if the user account state is 'active'
+//Check if the user has liked this post
 exports.ifHasLikedPost = (post, askingUserId) => {
     if (post.userLikeList.includes(askingUserId) === true) {
         return true;

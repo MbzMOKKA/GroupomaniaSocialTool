@@ -23,7 +23,7 @@ function Home() {
     //Getting the users from the API when the page is loaded
     useEffect(() => {
         if (token !== null) {
-            getAllPosts(token, posts, setPosts, false, unread, setUnread, setShowErrorApiResponse).then(() => {
+            getAllPosts(token, posts, setPosts, unread, setUnread, setShowErrorApiResponse).then(() => {
                 setIsLoading(false);
             });
         }

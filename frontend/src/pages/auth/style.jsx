@@ -20,6 +20,7 @@ export const StyledForm = styled.form`
         margin-bottom: 10px;
     }
 `;
+
 export const StyledSubmitButton = styled.button`
     width: 100%;
     max-width: 700px;
@@ -27,6 +28,7 @@ export const StyledSubmitButton = styled.button`
     padding-top: 12px;
     padding-bottom: 12px;
 `;
+
 export const StyledInfo = styled.div`
     background-color: ${colors.backgroundDarker};
     width: 100%;

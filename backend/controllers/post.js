@@ -1,7 +1,5 @@
 //Imports
-const bcrypt = require('bcrypt');
 const fileSystem = require('fs');
-const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 

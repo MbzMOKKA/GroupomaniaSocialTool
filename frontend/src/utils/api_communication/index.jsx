@@ -1,6 +1,5 @@
 //Imports
 import axios from 'axios';
-//import {  } from '../misc/index';
 
 //Reused functions
 function updateUserRoleLocally(users, setUsers, userId, newRole) {
@@ -127,12 +126,11 @@ export async function setUserState(token, users, setUsers, userId, newState, set
     }
 }
 
-export async function getAllPosts(token, posts, setPosts, addAsUnread, unread, setUnread, setShowErrorApiResponse) {
+export async function getAllPosts(token, posts, setPosts, unread, setUnread, setShowErrorApiResponse) {
     try {
         const postLoaded = posts.length;
         const result = await communicateWithAPI(`http://localhost:8000/api/posts/${postLoaded}`, 'GET', token, null);
         if (result.status === 200) {
-            //if (addAsUnread === true) {
             if (!document.hasFocus()) {
                 setUnread(unread + result.data.length);
             }
@@ -148,7 +146,7 @@ export async function getNewPosts(token, lastPostLoadedId, posts, setPosts, unre
         if (token !== null) {
             if (lastPostLoadedId === null) {
                 //No post yet, trying to get every posts from the api
-                getAllPosts(token, posts, setPosts, true, unread, setUnread, setShowErrorApiResponse);
+                getAllPosts(token, posts, setPosts, unread, setUnread, setShowErrorApiResponse);
             } else {
                 //Some posts are already shown, trying to get only new post from the api
                 const result = await communicateWithAPI(`http://localhost:8000/api/posts/new/${lastPostLoadedId}`, 'GET', token, null);

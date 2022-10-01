@@ -19,7 +19,7 @@ function Post({ post, setPost, posts, setPosts, isComment, isDetailled }) {
     //Render
     return (
         <>
-            {showPostOptions === true && <PostOptions setBubbleIsOpen={setShowPostOptions} posts={posts} setPosts={setPosts} postId={post._id} />}
+            {showPostOptions === true && <PostOptions setBubbleIsOpen={setShowPostOptions} posts={posts} setPosts={setPosts} post={post} />}
             <StyledPostCard isDetailled={isDetailled} className="padded-app-container">
                 <PostHeader post={post} isComment={isComment} isDetailled={isDetailled} setShowPostOptions={setShowPostOptions} />
                 <PostContent post={post} />

@@ -14,18 +14,6 @@ exports.updateDocumentOnDB = (response, collection, documentId, newDocumentConte
         .catch((error) => errorFunctions.sendServerError(response));
 };
 
-//Return the display name (email) of a user from his account ID
-/*
-async function getUserDisplayName(userId) {
-    const user = await User.findById(userId);
-    if (user === null) {
-        //errorFunctions.sendServerError(response);
-        throw 'getUserDisplayName : user not found';
-    }
-    return user.email;
-}
-exports.getUserDisplayName = getUserDisplayName;
-*/
 //Return the role of a user from his account ID
 async function getUser(userId) {
     const user = await User.findById(userId);

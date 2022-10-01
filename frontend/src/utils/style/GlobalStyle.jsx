@@ -87,10 +87,12 @@ const StyledGlobalStyle = createGlobalStyle`
 
 //Exports
 export const StyledButtonSecondary = styled.button``;
+
 export const IconInButton = styled.i`
     font-size: 24px;
     margin-right: 8px;
 `;
+
 function GlobalStyle() {
     return <StyledGlobalStyle />;
 }

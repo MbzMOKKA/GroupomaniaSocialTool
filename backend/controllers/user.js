@@ -1,6 +1,4 @@
 //Imports
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -84,6 +82,7 @@ exports.modifyUserRole = (request, response, next) => {
         });
     });
 };
+
 exports.modifyUserState = (request, response, next) => {
     const modUserId = request.auth.userId;
     const targetUserId = request.params.id;

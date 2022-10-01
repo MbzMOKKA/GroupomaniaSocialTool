@@ -43,7 +43,7 @@ function Header() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
-    //Changing the page title when new messages are recieved
+    //Changing the page title when new messages are recieved or page is changed
     useEffect(() => {
         let name = ``;
         if (unread > 0) {

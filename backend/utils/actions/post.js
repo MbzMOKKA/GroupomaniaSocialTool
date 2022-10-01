@@ -34,7 +34,7 @@ exports.buildImageUploadedURL = (request) => {
     return `${request.protocol}://${request.get('host')}/images/${request.file.filename}`;
 };
 
-//Find a new post to add without having to refresh the page
+//Find new posts to load without having to refresh the page manually
 async function findNewPosts(response, indexMax, lastPostSeenId, askingUserId) {
     //Finalizing the range of exploration
     const lastPostSeen = await Post.findById(lastPostSeenId);

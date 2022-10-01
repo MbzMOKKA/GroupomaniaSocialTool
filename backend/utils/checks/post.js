@@ -6,7 +6,7 @@ const check = require('./common');
 
 //Exports
 
-//Check if the text of a post contain [1;1000] caracters
+//Check if the text of a post contain [1;500] caracters
 exports.ifContentTxtIsValid = (response, contentText) => {
     const lengthMax = 500;
     const lengthMin = 1;
