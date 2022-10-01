@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { StyledButton } from './style.jsx';
 
 //Component
-function ButtonScrollTop() {
+function ButtonBack() {
     const redirect = useNavigate();
 
     //Render
@@ -21,4 +21,4 @@ function ButtonScrollTop() {
 }
 
 //Exports
-export default ButtonScrollTop;
+export default ButtonBack;

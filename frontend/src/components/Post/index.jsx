@@ -1,14 +1,14 @@
 //Imports
 import { useContext, useState } from 'react';
 import { StyledPostCard, StyledPostOptionsContainer } from './style';
-import { SessionContext } from '../../../utils/context/index';
-import ErrorMsg from '../../common/ErrorMsg/index';
-import PostOptions from '../options/BubbleOptions/index';
-import PostHeader from '../../../subcomponents/PostHeader/index';
-import PostContent from '../../../subcomponents/PostContent/index';
-import PostFooter from '../../../subcomponents/PostFooter/index';
-import ButtonEdit from '../options/ButtonEdit/index';
-import ButtonDelete from '../options/ButtonDelete/index';
+import { SessionContext } from '../../utils/context/index';
+import ErrorMsg from '../common/ErrorMsg/index';
+import PostHeader from '../../subcomponents/PostHeader/index';
+import PostContent from '../../subcomponents/PostContent/index';
+import PostFooter from '../../subcomponents/PostFooter/index';
+import PostOptions from '../../subcomponents/post_options/BubbleOptions/index';
+import ButtonEdit from '../../subcomponents/post_options/ButtonEdit/index';
+import ButtonDelete from '../../subcomponents/post_options/ButtonDelete/index';
 
 //Component
 function Post({ post, setPost, posts, setPosts, isComment, isDetailled }) {

@@ -18,7 +18,6 @@ exports.updateDocumentOnDB = (response, collection, documentId, newDocumentConte
 async function getUser(userId) {
     const user = await User.findById(userId);
     if (user === null) {
-        //errorFunctions.sendServerError(response);
         throw 'getUser : user not found';
     }
     return user;

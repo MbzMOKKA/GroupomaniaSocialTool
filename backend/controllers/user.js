@@ -1,8 +1,6 @@
 //Imports
 const dotenv = require('dotenv');
 dotenv.config();
-
-//Setup
 const User = require('../models/user');
 const doAction = require('../utils/actions/common');
 const check = require('../utils/checks/common');
@@ -36,6 +34,7 @@ exports.getAllUser = (request, response, next) => {
         }
     });
 };
+
 exports.getMyAccountInfo = (request, response, next) => {
     const askingUserId = request.auth.userId;
     //Getting the requester account

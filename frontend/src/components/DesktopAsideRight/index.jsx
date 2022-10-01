@@ -12,6 +12,7 @@ function DesktopAsideRight() {
     const { accountInfo } = useContext(SessionContext);
     const location = useLocation();
     function simulateSetBubbleIsOpen() {}
+
     //Render
     return (
         <StyledAsideRight className="desktop-aside">

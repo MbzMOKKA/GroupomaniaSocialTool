@@ -1,8 +1,5 @@
 //Imports
 const errorFunctions = require('../responses/errors');
-const User = require('../../models/user');
-const Post = require('../../models/post');
-const check = require('./common');
 
 //Exports
 

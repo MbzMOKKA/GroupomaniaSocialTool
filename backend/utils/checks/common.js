@@ -9,7 +9,7 @@ exports.ifDocumentExists = (response, collection, testObj, customErrorMsg, callb
         .findOne(testObj)
         .then((document) => {
             if (document === null) {
-                //Document does not exists : bad request
+                //Document does not exists
                 if (customErrorMsg === null) {
                     errorFunctions.sendNotFoundError(response);
                 } else {

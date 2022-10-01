@@ -1,6 +1,6 @@
 //Imports
 import { useNavigate } from 'react-router-dom';
-import { StyledButtonSecondary, IconInButton } from '../../../../utils/style/GlobalStyle';
+import { StyledButtonSecondary, IconInButton } from '../../../utils/style/GlobalStyle';
 
 //Component
 function ButtonEdit({ setBubbleIsOpen, postId, postIsDetailled }) {

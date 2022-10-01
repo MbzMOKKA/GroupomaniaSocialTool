@@ -1,5 +1,5 @@
 //Imports
-import colors from '../../../../utils/style/colors';
+import colors from '../../../utils/style/colors';
 import styled from 'styled-components';
 
 //Exports
@@ -17,9 +17,11 @@ export const StyledMainActionsContainer = styled.div`
         font-size: 24px;
     }
 `;
+
 export const StyledCancelButton = styled.button`
     background-color: ${colors.negative};
 `;
+
 export const StyledConfirmButton = styled.button`
     background-color: ${colors.positive};
 `;

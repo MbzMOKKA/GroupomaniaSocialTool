@@ -10,10 +10,12 @@ export const StyledPostContent = styled.div`
     display: flex;
     flex-direction: column;
 `;
+
 export const StyledPostText = styled.p`
     margin-bottom: 12px;
     word-break: break-all;
 `;
+
 export const StyledPostImage = styled.img`
     width: 100%;
     max-height: 512px;

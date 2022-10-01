@@ -1,6 +1,7 @@
 //Imports
 import { useNavigate } from 'react-router-dom';
 import { StyledButtonSecondary, IconInButton } from '../../../utils/style/GlobalStyle';
+
 //Component
 function ButtonHome({ setBubbleIsOpen }) {
     const redirect = useNavigate();

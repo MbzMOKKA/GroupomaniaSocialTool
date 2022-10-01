@@ -167,8 +167,11 @@ export async function getPostDetails(token, postId, setPost, setShowErrorApiResp
         setPost(result.data);
         return true;
     } catch (error) {
-        //setShowErrorApiResponse(error.response.data.message);
-        return false;
+        if (error.response.status === 404) {
+            return false;
+        }
+        setShowErrorApiResponse(error.response.data.message);
+        return true;
     }
 }
 

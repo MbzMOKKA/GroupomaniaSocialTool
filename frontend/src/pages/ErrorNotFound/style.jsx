@@ -12,6 +12,7 @@ export const StyledTitle = styled.h1`
         margin-right: 12px;
     }
 `;
+
 export const StyledExplaination = styled.p`
     color: ${colors.negative};
     font-size: 24px;

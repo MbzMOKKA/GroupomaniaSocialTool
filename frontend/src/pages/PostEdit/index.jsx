@@ -4,8 +4,8 @@ import { SessionContext } from '../../utils/context/index';
 import { getPostDetails } from '../../utils/api_communication/index';
 import { useParams } from 'react-router-dom';
 import ErrorMsg from '../../components/common/ErrorMsg/index';
-import MainActions from '../../components/post/creator_and_editor/PostEditorMainActions/index';
-import PostEditorForm from '../../components/post/creator_and_editor/PostEditorForm/index';
+import MainActions from '../../components/post_editor/PostEditorMainActions/index';
+import PostEditorForm from '../../components/post_editor/PostEditorForm/index';
 
 function PostEdit() {
     const { token } = useContext(SessionContext);

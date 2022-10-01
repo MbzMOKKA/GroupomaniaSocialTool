@@ -1,5 +1,4 @@
 //Imports
-import colors from '../../utils/style/colors';
 import styled from 'styled-components';
 
 //Exports

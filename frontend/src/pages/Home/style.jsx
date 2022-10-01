@@ -1,5 +1,4 @@
 //Imports
-//import colors from '../../utils/style/colors';
 import styled from 'styled-components';
 
 //Exports
@@ -15,16 +14,20 @@ export const StyleButtonUpload = styled.button`
         padding-bottom: 8px;
     }
 `;
+
 export const StyledPostList = styled.ul`
     margin-top: 34px;
 `;
+
 export const StyledPostElement = styled.li`
     list-style: none;
 `;
+
 export const StyledLoadMoreButton = styled.button`
     margin-top: 12px;
     margin-bottom: 92px;
 `;
+
 export const StyledNoPostMsg = styled.p`
     margin-top: 24px;
     i {

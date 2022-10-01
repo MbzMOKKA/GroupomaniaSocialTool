@@ -6,7 +6,7 @@ import { getAllPosts, getNewPosts } from '../../utils/api_communication/index';
 import { StyleButtonUpload, StyledPostList, StyledPostElement, StyledLoadMoreButton, StyledNoPostMsg } from './style';
 import { IconInButton } from '../../utils/style/GlobalStyle';
 import ErrorMsg from '../../components/common/ErrorMsg/index';
-import Post from '../../components/post/Standard/index';
+import Post from '../../components/Post/index';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
 //Component

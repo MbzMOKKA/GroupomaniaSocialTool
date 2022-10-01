@@ -2,8 +2,6 @@
 const fileSystem = require('fs');
 const dotenv = require('dotenv');
 dotenv.config();
-
-//Setup
 const User = require('../models/user');
 const Post = require('../models/post');
 const doAction = require('../utils/actions/common');

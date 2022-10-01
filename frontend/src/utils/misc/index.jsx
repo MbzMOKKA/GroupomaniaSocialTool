@@ -1,6 +1,3 @@
-//Imports
-//import axios from 'axios';
-
 //Exports
 export function formatDate(moment) {
     function addZeroIfOneChar(value) {

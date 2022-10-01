@@ -1,8 +1,8 @@
 //Imports
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
-import { SessionContext } from '../../../../utils/context/index';
-import { uploadPost, savePostEdit } from '../../../../utils/api_communication/index';
+import { SessionContext } from '../../../utils/context/index';
+import { uploadPost, savePostEdit } from '../../../utils/api_communication/index';
 import { StyledMainActionsContainer, StyledCancelButton, StyledConfirmButton } from './style';
 
 //Component

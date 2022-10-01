@@ -1,7 +1,7 @@
 //Imports
 import { useContext } from 'react';
-import { SessionContext } from '../../../../utils/context/index';
-import BubbleContainer from '../../../common/BubbleContainer/index';
+import { SessionContext } from '../../../utils/context/index';
+import BubbleContainer from '../../../components/common/BubbleContainer/index';
 import ButtonEdit from '../ButtonEdit/index';
 import ButtonDelete from '../ButtonDelete/index';
 

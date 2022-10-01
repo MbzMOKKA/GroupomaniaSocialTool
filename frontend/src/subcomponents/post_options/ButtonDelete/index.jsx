@@ -1,11 +1,11 @@
-//
+//Imports
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { deletePost } from '../../../../utils/api_communication/index';
-import BubbleContainer from '../../../common/BubbleContainer/index';
-import { StyledButtonSecondary, IconInButton } from '../../../../utils/style/GlobalStyle';
+import { deletePost } from '../../../utils/api_communication/index';
+import BubbleContainer from '../../../components/common/BubbleContainer/index';
+import { StyledButtonSecondary, IconInButton } from '../../../utils/style/GlobalStyle';
 import { useContext } from 'react';
-import { SessionContext } from '../../../../utils/context/index';
+import { SessionContext } from '../../../utils/context/index';
 
 //Component
 function ButtonDelete({ setBubbleIsOpen, posts, setPosts, postId, postIsDetailled }) {

@@ -7,7 +7,7 @@ import { getPostDetails } from '../../utils/api_communication/index';
 import { StyledCommentList, StyledCommentElement, StyleButtonUpload, StyledNoCommentMsg } from './style';
 import { IconInButton } from '../../utils/style/GlobalStyle';
 import ErrorMsg from '../../components/common/ErrorMsg/index';
-import Post from '../../components/post/Standard/index';
+import Post from '../../components/Post/index';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ButtonBack from '../../components/ButtonBack/index';
 

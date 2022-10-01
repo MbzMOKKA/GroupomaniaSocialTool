@@ -1,6 +1,7 @@
-/*loading-animation-propreties: anim-loading-loader 0ms ease $loading-duration forwards;*/
+//Imports
 import { keyframes } from 'styled-components';
 
+//Exports
 export const animBubbleFadeIn = keyframes`
     0% {
         transform: translateY(100px);

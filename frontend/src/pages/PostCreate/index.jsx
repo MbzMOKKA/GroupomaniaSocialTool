@@ -1,9 +1,8 @@
 //Imports
 import { useState } from 'react';
-
 import ErrorMsg from '../../components/common/ErrorMsg/index';
-import MainActions from '../../components/post/creator_and_editor/PostEditorMainActions/index';
-import PostEditorForm from '../../components/post/creator_and_editor/PostEditorForm/index';
+import MainActions from '../../components/post_editor/PostEditorMainActions/index';
+import PostEditorForm from '../../components/post_editor/PostEditorForm/index';
 
 function PostCreate({ parentPostId }) {
     const [showErrorApiResponse, setShowErrorApiResponse] = useState(null);

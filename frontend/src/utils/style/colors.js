@@ -10,4 +10,5 @@ const colors = {
     yourself: '#11A7CE ',
 };
 
+//Exports
 export default colors;

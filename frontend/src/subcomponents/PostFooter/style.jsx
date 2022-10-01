@@ -11,6 +11,7 @@ export const StyledPostFooter = styled.footer`
     padding-top: 12px;
     padding-bottom: 6px;
 `;
+
 export const StyledPostReaction = styled.div`
     display: flex;
     button {
@@ -18,10 +19,12 @@ export const StyledPostReaction = styled.div`
         background-color: transparent;
     }
 `;
+
 export const StyledPostEditCounter = styled.p`
     color: ${colors.secondary};
     font-style: italic;
 `;
+
 export const StyledLikeButton = styled.button`
     i {
         color: ${({ youHaveLiked }) => (youHaveLiked === true ? `${colors.positive};` : `inherit`)};

@@ -1,3 +1,5 @@
+//Exports
+
 //Response that is sent if an generic action is successfully done
 exports.sendGenericSuccess = (response, message = 'Requête réussit') => {
     response.status(200).json({ message });

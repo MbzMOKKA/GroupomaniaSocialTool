@@ -13,6 +13,7 @@ export const StyledBluring = styled.div`
     height: 100vh;
     position: fixed;
 `;
+
 export const StyledBackground = styled.div`
     position: fixed;
     top: 0;
@@ -26,6 +27,7 @@ export const StyledBackground = styled.div`
     justify-content: center;
     align-items: center;
 `;
+
 export const StyledChildrenContainer = styled.div`
     animation: ${animBubbleFadeIn} 200ms ease-out;
     width: 80%;

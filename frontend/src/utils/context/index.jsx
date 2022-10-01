@@ -1,5 +1,8 @@
+//Imports
 import React, { useState, createContext } from 'react';
 
+//Exports
+//Session context
 export const SessionContext = createContext();
 
 export const SessionProvider = ({ children }) => {
@@ -31,6 +34,7 @@ export const SessionProvider = ({ children }) => {
     return <SessionContext.Provider value={{ token, updateToken, accountInfo, updateAccountInfo }}>{children}</SessionContext.Provider>;
 };
 
+//Notification context
 export const NotificationContext = createContext();
 
 export const NotificationProvider = ({ children }) => {

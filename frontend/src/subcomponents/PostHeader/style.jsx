@@ -7,6 +7,7 @@ export const StyledPostHeader = styled.header`
     justify-content: space-between;
     padding-bottom: 8px;
 `;
+
 export const StyledPostUploaderAndDate = styled.div`
     display: flex;
     flex-direction: column;
@@ -31,6 +32,7 @@ export const StyledPostUploaderAndDate = styled.div`
         }
     }
 `;
+
 export const StyledButtonPostOptions = styled.button`
     display: flex;
     justify-content: center;

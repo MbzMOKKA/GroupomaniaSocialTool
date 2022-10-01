@@ -1,10 +1,8 @@
 //Imports
 const express = require('express');
 const router = express.Router();
-
 const userController = require('../controllers/user');
 const middlewareAuth = require('../middlewares/auth');
-const middlewareMulter = require('../middlewares/multer-config');
 
 //Routes
 router.get('', middlewareAuth, userController.getAllUser);

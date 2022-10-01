@@ -1,3 +1,5 @@
+//Exports
+
 //Response that is sent if the request is invalid
 exports.sendBadRequestError = (response, message = `Une erreur s'est produite (400)`) => {
     response.status(400).json({ message });

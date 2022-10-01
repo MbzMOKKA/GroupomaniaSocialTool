@@ -12,6 +12,7 @@ export const StyledAsideRight = styled.aside`
         margin-left: 28px;
     }
 `;
+
 export const StyledDisplayName = styled.p`
     word-break: break-all;
     font-size: 22px;
@@ -22,7 +23,14 @@ export const StyledDisplayName = styled.p`
         font-size: 24px;
         margin-right: 12px;
     }
+    @media screen and (max-width: 1366px) {
+        font-size: 15px;
+        i {
+            font-size: 16px;
+        }
+    }
 `;
+
 export const StyledNav = styled.nav`
     background-color: ${colors.backgroundDarker};
     border-radius: 10px;
@@ -36,5 +44,11 @@ export const StyledNav = styled.nav`
         padding-top: 12px;
         padding-bottom: 12px;
         margin-bottom: 18px;
+        @media screen and (max-width: 1366px) {
+            font-size: 16px;
+            i {
+                font-size: 16px;
+            }
+        }
     }
 `;

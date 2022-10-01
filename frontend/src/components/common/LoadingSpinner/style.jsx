@@ -13,12 +13,14 @@ export const StyledContainer = styled.div`
     margin-top: 72px;
     margin-bottom: 24px;
 `;
+
 export const StyledSpinner = styled.i`
     font-size: 48px;
     color: ${colors.positive};
     animation: ${animLoadingSpinner} 1600ms linear infinite;
     margin-bottom: 16px;
 `;
+
 export const StyledText = styled.p`
     font-size: 24px;
     color: ${colors.positive};

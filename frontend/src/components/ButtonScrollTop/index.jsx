@@ -6,6 +6,7 @@ import { StyledButton } from './style.jsx';
 function ButtonScrollTop() {
     const [showButton, setShowButton] = useState(false);
 
+    //Event to show the button only if the page is scrolled
     window.addEventListener('scroll', () => {
         if (window.scrollY > 1) {
             setShowButton(true);
