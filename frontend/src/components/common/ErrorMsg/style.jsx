@@ -7,8 +7,7 @@ import { animErrorMsgAppear } from '../../../utils/style/animations';
 export const StyledContainer = styled.p`
     animation: ${animErrorMsgAppear} 200ms 3 ease-in;
     strong {
-        color: ${colors.negative};
+        color: ${colors.primary};
         font-size: 16px;
-        font-weight: 300;
     }
 `;

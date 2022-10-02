@@ -5,13 +5,14 @@ import { SessionContext } from '../../../utils/context/index';
 
 //Component
 function ButtonLogOff({ setBubbleIsOpen }) {
-    const { updateToken } = useContext(SessionContext);
+    const { updateToken, updateAccountInfo } = useContext(SessionContext);
 
     //Render
     return (
         <StyledButtonSecondary
             onClick={() => {
                 updateToken(null);
+                updateAccountInfo('???', '???', 0, 0);
                 setBubbleIsOpen(false);
             }}
         >

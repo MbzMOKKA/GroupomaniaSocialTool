@@ -2,12 +2,10 @@ const colors = {
     primary: '#FD2D01',
     secondary: '#FFD7D7',
     tertiary: '#4E5166',
-    backgroundLighter: '#66697A',
-    backgroundDarker: '#333333',
+    button: '#686F96',
+    backgroundDarker: '#404040',
     asideBorder: '#828596',
-    positive: '#AEFF00',
-    negative: '#E29A9A',
-    yourself: '#11A7CE ',
+    yourself: '#5789D0',
 };
 
 //Exports

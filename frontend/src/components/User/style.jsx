@@ -5,7 +5,7 @@ import { animUserModOptionsFadeIn } from '../../utils/style/animations';
 
 //Exports
 export const StyledUserCard = styled.li`
-    background-color: ${({ yourself }) => (yourself === true ? `${colors.yourself}` : `${colors.backgroundLighter}`)};
+    background-color: ${({ yourself }) => (yourself === true ? `${colors.yourself}` : `${colors.backgroundDarker}`)};
     border-radius: 12px;
     margin-bottom: 12px;
     padding: 10px;

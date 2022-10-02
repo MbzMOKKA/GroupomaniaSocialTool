@@ -22,7 +22,9 @@ function SignUp() {
             setShowErrorPasswordNotSame(false);
             return true;
         }
-        setShowErrorPasswordNotSame(true);
+        if (passwordConfirm !== '') {
+            setShowErrorPasswordNotSame(true);
+        }
         return false;
     }
 

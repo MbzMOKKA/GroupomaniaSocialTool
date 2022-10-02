@@ -4,17 +4,16 @@ import styled from 'styled-components';
 
 //Exports
 export const StyledPostCard = styled.div`
+    background-color: ${colors.backgroundDarker};
     ${({ isDetailled }) =>
         isDetailled === true
             ? `
-    background-color: ${colors.backgroundDarker};
     margin-top: 18px;
     margin-bottom: 20px;
     padding-top: 38px;
     padding-bottom: 38px;
     `
             : `
-    background-color: ${colors.backgroundLighter};
     border-radius: 12px;
     margin-bottom: 12px;
     padding: 10px;

@@ -41,6 +41,7 @@ export const StyledNav = styled.nav`
     padding-top: 18px;
     padding-bottom: 0px;
     button {
+        background-color: ${colors.primary};
         padding-top: 12px;
         padding-bottom: 12px;
         margin-bottom: 18px;

@@ -25,7 +25,7 @@ const StyledGlobalStyle = createGlobalStyle`
         padding-top: 32px;
     }
     button {
-        background-color: ${colors.primary};
+        background-color: ${colors.button};
         color: white;
         display: flex;
         flex-direction: row;

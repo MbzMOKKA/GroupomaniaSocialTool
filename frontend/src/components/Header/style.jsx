@@ -5,12 +5,12 @@ import styled from 'styled-components';
 //Exports
 export const StyledRestrainedMsg = styled.p`
     background-color: ${colors.backgroundDarker};
-    color: ${colors.negative};
+    color: ${colors.primary};
     text-align: center;
     padding-top: 6px;
     padding-bottom: 6px;
     i {
-        color: ${colors.negative};
+        color: ${colors.primary};
         margin-right: 6px;
     }
 `;
@@ -34,6 +34,7 @@ export const StyledHeader = styled.header`
 `;
 
 export const StyledButtonOpenNav = styled.button`
+    background-color: ${colors.primary};
     margin-left: 20px;
     padding: 0;
     i {

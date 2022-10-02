@@ -1,8 +1,10 @@
 //Imports
 import styled from 'styled-components';
+import colors from '../../utils/style/colors';
 
 //Exports
 export const StyledButton = styled.button`
+    background-color: ${colors.primary};
     position: fixed;
     right: 20px;
     bottom: 20px;
