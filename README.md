@@ -9,6 +9,16 @@
     - Executer la commande suivante : git clone https://github.com/MbzMOKKA/groupomania_social_tool.git
     - Le dossier "groupomania_social_tool" devrait apparaitre
     - Executer la commande suivante dans le sous-dossier "backend" et dans le sous-dossier "frontend" : npm install
+    -Fichier .env :
+        PORT={PORT UTILISÉ}
+        DB_LOGIN='{LIEN CONNEXION BDD}'
+        TOKEN_SECRET_WORD='{SECRET D'ENCRYPTAGE}'
+        HOMEPAGE_POST_SENT_AT_ONCE={NOMBRE DE POST A CHARGER DANS L'ACCUEIL}
+        -exemple :
+            PORT=8000
+            DB_LOGIN='mongodb://localhost:27017/Groupomania'
+            TOKEN_SECRET_WORD='a651z4875ij416s89t4118864ez19f'
+            HOMEPAGE_POST_SENT_AT_ONCE=3
 
 
 ### 2. IMPORTER LA BASE DE DONNÉES :
